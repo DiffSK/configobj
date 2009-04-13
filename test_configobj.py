@@ -1964,7 +1964,7 @@ def _unexpected_validation_errors():
     1
     
     
-    >>> s = ['[cow]', 'dog = bool']
+    >>> s = ['[cow]', 'dog = boolean']
     >>> c = ['[cow]', 'dog = true']
     >>> ini = ConfigObj(c, configspec=s)
     >>> v = Validator()

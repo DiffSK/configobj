@@ -130,7 +130,7 @@
 
 __docformat__ = "restructuredtext en"
 
-__version__ = '0.3.2'
+__version__ = '1.0.0 alpha'
 
 __revision__ = '$Id: validate.py 123 2005-09-08 08:54:28Z fuzzyman $'
 
