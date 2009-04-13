@@ -2325,7 +2325,7 @@ From version 4 it lists all releases and changes.
 * A section that was supplied as a value (or vice-versa) in the actual config file would cause an exception during validation (the config file is still broken of course, but it is now handled gracefully)
 * Added ``as_list`` method
 * Removed the deprecated ``istrue``, ``encode`` and ``decode`` methods
-* Running test_configobj now also runs the doctests in the configobj module
+* Running test_configobj.py now also runs the doctests in the configobj module
 
 As a consequence of the changes to configspec handling, when you create a ConfigObj instance and provide a configspec, the configspec attribute is only set on the ConfigObj instance - it isn't set on the sections until you validate. You also can't set the configspec attribute to be a dictionary. This wasn't documented but did work previously.
 

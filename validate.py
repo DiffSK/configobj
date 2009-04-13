@@ -130,7 +130,7 @@
 
 __docformat__ = "restructuredtext en"
 
-__version__ = '1.0.0 alpha'
+__version__ = '1.0.0'
 
 __revision__ = '$Id: validate.py 123 2005-09-08 08:54:28Z fuzzyman $'
 
@@ -558,6 +558,7 @@ class Validator(object):
             'mixed_list': is_mixed_list,
             'pass': self._pass,
             'option': is_option,
+            'force_list': force_list,
         }
         if functions is not None:
             self.functions.update(functions)
@@ -1209,6 +1210,29 @@ def is_ip_addr_list(value, min=None, max=None):
     """
     return [is_ip_addr(mem) for mem in is_list(value, min, max)]
 
+
+def force_list(value, min=None, max=None):
+    """
+    Check that a value is a list, coercing strings into
+    a list with one member. Useful where users forget the
+    trailing comma that turns a single value into a list.
+    
+    You can optionally specify the minimum and maximum number of members.
+    A minumum of greater than one will fail if the user only supplies a
+    string.
+    
+    >>> vtor.check('force_list', ())
+    []
+    >>> vtor.check('force_list', [])
+    []
+    >>> vtor.check('force_list', 'hello')
+    ['hello']
+    """
+    if not isinstance(value, (list, tuple)):
+        value = [value]
+    return is_list(value, min, max)
+    
+    
 
 fun_dict = {
     'integer': is_integer,

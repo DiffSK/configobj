@@ -617,7 +617,8 @@ CHANGELOG
 2009/04/13 - Version 1.0.0
 --------------------------
 
-BUGFIX: can now handle multiline strings.
+* BUGFIX: can now handle multiline strings.
+* Addition of 'force_list' validation option.
 
 As there are no known bugs or outstanding feature requests I am marking this 1.0.
 
