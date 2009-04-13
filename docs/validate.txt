@@ -9,8 +9,9 @@
 
 :Authors: `Michael Foord`_, `Nicola Larosa`_, `Mark Andrews`_
 :Version: Validate 1.0.0
-:Date: 2008/02/24
+:Date: 2009/04/13
 :Homepage: `Validate Homepage`_
+:Repository: `Google code homepage <http://code.google.com/p/configobj/>`_
 :License: `BSD License`_
 :Support: `Mailing List`_
 
@@ -68,7 +69,7 @@ For support and bug reports please use the ConfigObj `Mailing List`_.
 Downloading
 ===========
 
-The current version is **0.3.2**, dated 24th February 2008. 
+The current version is **1.0.0**, dated 24th February 2008. 
 
 You can get obtain validate in the following ways :
 
@@ -94,21 +95,12 @@ Documentation
 
 * You can view `this document`_ online as the `Validate Homepage`_.
 
-
-Pythonutils
------------
-
-Validate_ is also part of the Pythonutils_ set of modules. This contains 
-various other useful helper modules, and is required by many of the `Voidspace 
-Python Projects`_.
-
 .. _configobj.py: http://www.voidspace.org.uk/cgi-bin/voidspace/downman.py?file=configobj.py
 .. _configobj.zip: http://www.voidspace.org.uk/cgi-bin/voidspace/downman.py?file=configobj-4.5.3.zip
 .. _validate.py: http://www.voidspace.org.uk/cgi-bin/voidspace/downman.py?file=validate.py
-.. _Subversion Repository: http://svn.pythonutils.python-hosting.com/trunk/pythonutils/
+.. _Subversion Repository: http://code.google.com/p/configobj/
 .. _Sourceforge: http://sourceforge.net/projects/configobj
 .. _pythonutils: http://www.voidspace.org.uk/python/pythonutils.html
-.. _Voidspace Python Projects: http://www.voidspace.org.uk/python
 .. _validate: http://www.voidspace.org.uk/python/validate.html
 
 
@@ -161,6 +153,11 @@ The full set of standard checks are :
 :'list': matches any list. Takes optional keyword args 'min', and 'max' to
          specify min and max sizes of the list. The list checks always 
          return a list.
+         
+:force_list: matches any list, but if a single value is passed in will
+             coerce it into a list containing that value. Useful for
+             configobj if the user forgot the trailing comma to turn
+             a single value into a list.
          
 :'tuple': matches any list. This check returns a tuple rather than a list.
 
@@ -576,7 +573,7 @@ If you are only using validate from ConfigObj then the error type (*TooBig*,
     the value.
 
 If you are using validate in another circumstance you may want to create your 
-own subclasses of ``ValidateError``, that convey more specific information.
+own subclasses of ``ValidateError`` which convey more specific information.
 
 
 Known Issues
