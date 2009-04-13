@@ -2195,19 +2195,6 @@ Here is an example of how you could present this information to the user.
     {-coloring}
 
 
-ConfigObj 3
-===========
-
-ConfigObj 3 is now deprecated in favour of ConfigObj 4. I can fix bugs in
-ConfigObj 3 if needed, though.
-
-For anyone who still needs it, you can download it here: `ConfigObj 3.3.1`_
-
-You can read the old docs at : `ConfigObj 3 Docs`_
-
-.. _ConfigObj 3.3.1: http://www.voidspace.org.uk/cgi-bin/voidspace/downman.py?file=configobj3.zip
-.. _ConfigObj 3 Docs: http://www.voidspace.org.uk/python/configobj3.html
-
 
 CREDITS
 =======
@@ -2220,7 +2207,7 @@ validation system and the doctests.
 
 *validate.py* was originally written by Michael Foord and Mark Andrews.
 
-Thanks to others for input and bugfixes.
+Thanks to many others for input, patches and bugfixes.
 
 
 LICENSE
@@ -2276,7 +2263,7 @@ Better support for configuration from multiple files, including tracking
 *where* the original file came from and writing changes to the correct
 file.
 
-Make ``newline`` an option (as well as an attribute) ?
+Make ``newline`` a keyword argument (as well as an attribute) ?
 
 ``UTF16`` encoded files, when returned as a list of lines, will have the
 BOM at the start of every line. Should this be removed from all but the
@@ -2305,6 +2292,12 @@ ISSUES
     `Mailing List`_.
 
 There is currently no way to specify the encoding of a configspec file.
+
+As a consequence of the changes to configspec handling in version 4.6.0, when you create a ConfigObj instance and provide a configspec, the configspec attribute is only set on the ConfigObj instance - it isn't set on the sections until you validate. You also can't set the configspec attribute to be a dictionary. This wasn't documented but did work previously.
+
+In order to fix the problem with hashes in configspecs I had to turn off the parsing of inline comments in configspecs. This will only affect you if you are using ``copy=True`` when validating and expecting inline comments to be copied from the configspec into the ConfigObj instance (all other comments will be copied as usual).
+    
+If you *create* the configspec by passing in a ConfigObj instance (usual way is to pass in a filename or list of lines) then you should pass in ``_inspec=True`` to the constructor to allow hashes in values. This is the magic that switches off inline comment parsing.
 
 When using ``copy`` mode for validation, it won't copy ``DEFAULT``
 sections. This is so that you *can* use interpolation in configspec
