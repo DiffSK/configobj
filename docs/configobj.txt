@@ -2344,22 +2344,20 @@ From version 4 it lists all releases and changes.
 2009/04/13 - Version 4.6.0
 --------------------------
 
-* Pickling of ConfigObj instances now supported
+* Pickling of ConfigObj instances now supported (thanks to Christian Heimes)
 * Hashes in confgspecs are now allowed (see note below)
 * Replaced use of hasattr (which can swallow exceptions) with getattr
-* __many__ in configspecs can refer to scalars (ordinary values) as well as sections.
+* __many__ in configspecs can refer to scalars (ordinary values) as well as sections
 * You can use ___many___ (three underscores!) where you want to use __many__ as well
 * You can now have normal sections inside configspec sections that use __many__
-* You can now create an empty ConfigObj with a configspec, programmatically set values and then validate.
-* A repeated section that was supplied as a value in the actual config file would cause an exception (it is still an error but is now handled gracefully)
+* You can now create an empty ConfigObj with a configspec, programmatically set values and then validate
+* A section that was supplied as a value (or vice-versa) in the actual config file would cause an exception during validation (the config file is still broken of course, but it is now handled gracefully)
 
 As a consequence of the changes to configspec handling, when you create a ConfigObj instance and provide a configspec, the configspec attribute is only set on the ConfigObj instance - it isn't set on the sections until you validate. You also can't set the configspec attribute to be a dictionary. This wasn't documented but did work previously.
 
-.. note::
-
-    In order to fix the problem with hashes in configspecs I had to turn off the parsing of inline comments in configspecs. This will only affect you if you are using ``copy=True`` when validating and expecting inline comments to be copied from the configspec into the ConfigObj instance (all other comments will be copied as usual).
+In order to fix the problem with hashes in configspecs I had to turn off the parsing of inline comments in configspecs. This will only affect you if you are using ``copy=True`` when validating and expecting inline comments to be copied from the configspec into the ConfigObj instance (all other comments will be copied as usual).
     
-    If you *create* the configspec by passing in a ConfigObj instance (usual way is to pass in a filename or list of lines) then you should pass in ``_inspec=True`` to the constructor to allow hashes in values. This is the magic that switches off inline comment parsing.
+If you *create* the configspec by passing in a ConfigObj instance (usual way is to pass in a filename or list of lines) then you should pass in ``_inspec=True`` to the constructor to allow hashes in values. This is the magic that switches off inline comment parsing.
 
     
 2008/06/27 - Version 4.5.3
