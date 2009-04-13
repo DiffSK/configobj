@@ -7,7 +7,7 @@
 ----------------------------------------
 
 :Authors: Michael Foord, Nicola Larosa
-:Version: ConfigObj 4.5.3
+:Version: ConfigObj 4.6.0
 :Date: 2008/06/27
 :Homepage: `ConfigObj Homepage`_
 :Sourceforge: Sourceforge_
@@ -2232,7 +2232,7 @@ free software: test it, break it, just don't blame us if it eats your data !
 Of course if it does, let us know and we'll fix the problem so it doesn't
 happen to anyone else {sm;:-)}. ::
 
-    Copyright (c) 2004 - 2008, Michael Foord & Nicola Larosa
+    Copyright (c) 2004 - 2009, Michael Foord & Nicola Larosa
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -2339,6 +2339,12 @@ CHANGELOG
 This is an abbreviated changelog showing the major releases up to version 4.
 From version 4 it lists all releases and changes.
 
+
+
+2009/04/13 - Version 4.6.0
+--------------------------
+
+* Replaced use of hasattr (which can swallow exceptions) with getattr
 
 2008/06/27 - Version 4.5.3
 --------------------------
