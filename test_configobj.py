@@ -1984,6 +1984,20 @@ def _test_pickle():
     >>> new.validate(v)
     1
     """
+
+def _test_as_list():
+    """
+    >>> a = ConfigObj()
+    >>> a['a'] = 1
+    >>> a.as_list('a')
+    [1]
+    >>> a['a'] = (1,)
+    >>> a.as_list('a')
+    [1]
+    >>> a['a'] = [1]
+    >>> a.as_list('a')
+    [1]
+    """
     
 #       drop support for Python 2.2 ?
 
@@ -2080,6 +2094,9 @@ if __name__ == '__main__':
         'oneTabCfg': oneTabCfg, 'twoTabsCfg': twoTabsCfg,
         'tabsAndSpacesCfg': tabsAndSpacesCfg})
     doctest.testmod(m, globs=globs)
+    
+    import configobj
+    doctest.testmod(configobj, globs=globs)
 
 
 # Man alive I prefer unittest ;-)

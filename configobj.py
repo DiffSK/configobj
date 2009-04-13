@@ -30,7 +30,6 @@ except ImportError:
     # for IronPython
     pass
 
-from warnings import warn
 
 try:
     from codecs import BOM_UTF8, BOM_UTF16, BOM_UTF16_BE, BOM_UTF16_LE
@@ -816,7 +815,7 @@ class Section(dict):
         >>> c2 = ConfigObj(a)
         >>> c2.merge(c1)
         >>> c2
-        {'section1': {'option1': 'False', 'subsection': {'more_options': 'False'}}}
+        ConfigObj({'section1': {'option1': 'False', 'subsection': {'more_options': 'False'}}})
         """
         for key, val in indict.items():
             if (key in self and isinstance(self[key], dict) and
@@ -888,7 +887,7 @@ class Section(dict):
         ... XXXXkey = XXXXvalue'''.splitlines()
         >>> cfg = ConfigObj(config)
         >>> cfg
-        {'XXXXsection': {'XXXXkey': 'XXXXvalue'}}
+        ConfigObj({'XXXXsection': {'XXXXkey': 'XXXXvalue'}})
         >>> def transform(section, key):
         ...     val = section[key]
         ...     newkey = key.replace('XXXX', 'CLIENT1')
@@ -901,7 +900,7 @@ class Section(dict):
         >>> cfg.walk(transform, call_on_sections=True)
         {'CLIENT1section': {'CLIENT1key': None}}
         >>> cfg
-        {'CLIENT1section': {'CLIENT1key': 'CLIENT1value'}}
+        ConfigObj({'CLIENT1section': {'CLIENT1key': 'CLIENT1value'}})
         """
         out = {}
         # scalars first
@@ -939,83 +938,6 @@ class Section(dict):
                 call_on_sections=call_on_sections,
                 **keywargs)
         return out
-
-
-    def decode(self, encoding):
-        """
-        Decode all strings and values to unicode, using the specified encoding.
-        
-        Works with subsections and list values.
-        
-        Uses the ``walk`` method.
-        
-        Testing ``encode`` and ``decode``.
-        >>> m = ConfigObj(a)
-        >>> m.decode('ascii')
-        >>> def testuni(val):
-        ...     for entry in val:
-        ...         if not isinstance(entry, unicode):
-        ...             print >> sys.stderr, type(entry)
-        ...             raise AssertionError, 'decode failed.'
-        ...         if isinstance(val[entry], dict):
-        ...             testuni(val[entry])
-        ...         elif not isinstance(val[entry], unicode):
-        ...             raise AssertionError, 'decode failed.'
-        >>> testuni(m)
-        >>> m.encode('ascii')
-        >>> a == m
-        1
-        """
-        warn('use of ``decode`` is deprecated.', DeprecationWarning)
-        def decode(section, key, encoding=encoding, warn=True):
-            """ """
-            val = section[key]
-            if isinstance(val, (list, tuple)):
-                newval = []
-                for entry in val:
-                    newval.append(entry.decode(encoding))
-            elif isinstance(val, dict):
-                newval = val
-            else:
-                newval = val.decode(encoding)
-            newkey = key.decode(encoding)
-            section.rename(key, newkey)
-            section[newkey] = newval
-        # using ``call_on_sections`` allows us to modify section names
-        self.walk(decode, call_on_sections=True)
-
-
-    def encode(self, encoding):
-        """
-        Encode all strings and values from unicode,
-        using the specified encoding.
-        
-        Works with subsections and list values.
-        Uses the ``walk`` method.
-        """
-        warn('use of ``encode`` is deprecated.', DeprecationWarning)
-        def encode(section, key, encoding=encoding):
-            """ """
-            val = section[key]
-            if isinstance(val, (list, tuple)):
-                newval = []
-                for entry in val:
-                    newval.append(entry.encode(encoding))
-            elif isinstance(val, dict):
-                newval = val
-            else:
-                newval = val.encode(encoding)
-            newkey = key.encode(encoding)
-            section.rename(key, newkey)
-            section[newkey] = newval
-        self.walk(encode, call_on_sections=True)
-
-
-    def istrue(self, key):
-        """A deprecated version of ``as_bool``."""
-        warn('use of ``istrue`` is deprecated. Use ``as_bool`` method '
-                'instead.', DeprecationWarning)
-        return self.as_bool(key)
 
 
     def as_bool(self, key):
@@ -1073,14 +995,14 @@ class Section(dict):
         >>> a['a'] = 'fish'
         >>> a.as_int('a')
         Traceback (most recent call last):
-        ValueError: invalid literal for int(): fish
+        ValueError: invalid literal for int() with base 10: 'fish'
         >>> a['b'] = '1'
         >>> a.as_int('b')
         1
         >>> a['b'] = '3.2'
         >>> a.as_int('b')
         Traceback (most recent call last):
-        ValueError: invalid literal for int(): 3.2
+        ValueError: invalid literal for int() with base 10: '3.2'
         """
         return int(self[key])
 
@@ -1105,7 +1027,29 @@ class Section(dict):
         3.2000000000000002
         """
         return float(self[key])
-
+    
+    
+    def as_list(self, key):
+        """
+        A convenience method which fetches the specified value, guaranteeing
+        that it is a list.
+        
+        >>> a = ConfigObj()
+        >>> a['a'] = 1
+        >>> a.as_list('a')
+        [1]
+        >>> a['a'] = (1,)
+        >>> a.as_list('a')
+        [1]
+        >>> a['a'] = [1]
+        >>> a.as_list('a')
+        [1]
+        """
+        result = self[key]
+        if isinstance(result, (tuple, list)):
+            return list(result)
+        return [result]
+        
 
     def restore_default(self, key):
         """

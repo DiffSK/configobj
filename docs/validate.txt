@@ -8,7 +8,7 @@
 
 
 :Authors: `Michael Foord`_, `Nicola Larosa`_, `Mark Andrews`_
-:Version: Validate 0.3.2
+:Version: Validate 1.0.0
 :Date: 2008/02/24
 :Homepage: `Validate Homepage`_
 :License: `BSD License`_
@@ -613,6 +613,14 @@ to specify arguments for 'mixed_lists'.
 
 CHANGELOG
 =========
+
+2009/04/13 - Version 1.0.0
+--------------------------
+
+BUGFIX: can now handle multiline strings.
+
+As there are no known bugs or outstanding feature requests I am marking this 1.0.
+
 
 2008/02/24 - Version 0.3.2
 --------------------------

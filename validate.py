@@ -167,13 +167,7 @@ __all__ = (
 )
 
 
-import sys
-INTP_VER = sys.version_info[:2]
-if INTP_VER < (2, 2):
-    raise RuntimeError("Python v.2.2 or later needed")
-
 import re
-StringTypes = (str, unicode)
 
 
 _list_arg = re.compile(r'''
@@ -197,7 +191,7 @@ _list_arg = re.compile(r'''
             )
         \)
     )
-''', re.VERBOSE)    # two groups
+''', re.VERBOSE | re.DOTALL)    # two groups
 
 _list_members = re.compile(r'''
     (
@@ -208,7 +202,7 @@ _list_members = re.compile(r'''
     (?:
     (?:\s*,\s*)|(?:\s*$)            # comma
     )
-''', re.VERBOSE)    # one group
+''', re.VERBOSE | re.DOTALL)    # one group
 
 _paramstring = r'''
     (?:
@@ -475,9 +469,9 @@ class Validator(object):
     ...     # check that value is of the correct type.
     ...     # possible valid inputs are integers or strings
     ...     # that represent integers
-    ...     if not isinstance(value, (int, long, StringTypes)):
+    ...     if not isinstance(value, (int, long, basestring)):
     ...         raise VdtTypeError(value)
-    ...     elif isinstance(value, StringTypes):
+    ...     elif isinstance(value, basestring):
     ...         # if we are given a string
     ...         # attempt to convert to an integer
     ...         try:
@@ -525,10 +519,10 @@ class Validator(object):
     """
 
     # this regex does the initial parsing of the checks
-    _func_re = re.compile(r'(.+?)\((.*)\)')
+    _func_re = re.compile(r'(.+?)\((.*)\)', re.DOTALL)
 
     # this regex takes apart keyword arguments
-    _key_arg = re.compile(r'^([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*(.*)$')
+    _key_arg = re.compile(r'^([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*(.*)$',  re.DOTALL)
 
 
     # this regex finds keyword=list(....) type values
@@ -539,8 +533,8 @@ class Validator(object):
 
     # These regexes check a set of arguments for validity
     # and then pull the members out
-    _paramfinder = re.compile(_paramstring, re.VERBOSE)
-    _matchfinder = re.compile(_matchstring, re.VERBOSE)
+    _paramfinder = re.compile(_paramstring, re.VERBOSE | re.DOTALL)
+    _matchfinder = re.compile(_matchstring, re.VERBOSE | re.DOTALL)
 
 
     def __init__(self, functions=None):
@@ -756,7 +750,7 @@ def _is_num_param(names, values, to_float=False):
     for (name, val) in zip(names, values):
         if val is None:
             out_params.append(val)
-        elif isinstance(val, (int, long, float, StringTypes)):
+        elif isinstance(val, (int, long, float, basestring)):
             try:
                 out_params.append(fun(val))
             except ValueError, e:
@@ -813,9 +807,9 @@ def is_integer(value, min=None, max=None):
     0
     """
     (min_val, max_val) = _is_num_param(('min', 'max'), (min, max))
-    if not isinstance(value, (int, long, StringTypes)):
+    if not isinstance(value, (int, long, basestring)):
         raise VdtTypeError(value)
-    if isinstance(value, StringTypes):
+    if isinstance(value, basestring):
         # if it's a string - does it represent an integer ?
         try:
             value = int(value)
@@ -865,7 +859,7 @@ def is_float(value, min=None, max=None):
     """
     (min_val, max_val) = _is_num_param(
         ('min', 'max'), (min, max), to_float=True)
-    if not isinstance(value, (int, long, float, StringTypes)):
+    if not isinstance(value, (int, long, float, basestring)):
         raise VdtTypeError(value)
     if not isinstance(value, float):
         # if it's a string - does it represent a float ?
@@ -930,7 +924,7 @@ def is_boolean(value):
     VdtTypeError: the value "up" is of the wrong type.
     
     """
-    if isinstance(value, StringTypes):
+    if isinstance(value, basestring):
         try:
             return bool_dict[value.lower()]
         except KeyError:
@@ -973,7 +967,7 @@ def is_ip_addr(value):
     Traceback (most recent call last):
     VdtTypeError: the value "0" is of the wrong type.
     """
-    if not isinstance(value, StringTypes):
+    if not isinstance(value, basestring):
         raise VdtTypeError(value)
     value = value.strip()
     try:
@@ -1015,7 +1009,7 @@ def is_list(value, min=None, max=None):
     VdtTypeError: the value "12" is of the wrong type.
     """
     (min_len, max_len) = _is_num_param(('min', 'max'), (min, max))
-    if isinstance(value, StringTypes):
+    if isinstance(value, basestring):
         raise VdtTypeError(value)
     try:
         num_members = len(value)
@@ -1084,7 +1078,7 @@ def is_string(value, min=None, max=None):
     Traceback (most recent call last):
     VdtValueTooLongError: the value "1234" is too long.
     """
-    if not isinstance(value, StringTypes):
+    if not isinstance(value, basestring):
         raise VdtTypeError(value)
     (min_len, max_len) = _is_num_param(('min', 'max'), (min, max))
     try:
@@ -1190,7 +1184,7 @@ def is_string_list(value, min=None, max=None):
     Traceback (most recent call last):
     VdtTypeError: the value "hello" is of the wrong type.
     """
-    if isinstance(value, StringTypes):
+    if isinstance(value, basestring):
         raise VdtTypeError(value)
     return [is_string(mem) for mem in is_list(value, min, max)]
 
@@ -1272,10 +1266,7 @@ def is_mixed_list(value, *args):
     ...     'yoda',
     ...     '" for parameter "mixed_list".',
     ... )
-    >>> if INTP_VER == (2, 2):
-    ...     res_str = "".join(res_seq)
-    ... else:
-    ...     res_str = "'".join(res_seq)
+    >>> res_str = "'".join(res_seq)
     >>> try:
     ...     vtor.check('mixed_list("yoda")', ('a'))
     ... except VdtParamError, err:
@@ -1309,7 +1300,7 @@ def is_option(value, *options):
     Traceback (most recent call last):
     VdtTypeError: the value "0" is of the wrong type.
     """
-    if not isinstance(value, StringTypes):
+    if not isinstance(value, basestring):
         raise VdtTypeError(value)
     if not value in options:
         raise VdtValueError(value)
@@ -1410,14 +1401,41 @@ def _test2():
     3
     """
 
+def _test3():
+    r"""
+    >>> vtor.check('string(default="")', '', missing=True)
+    ''
+    >>> vtor.check('string(default="\n")', '', missing=True)
+    '\n'
+    >>> print vtor.check('string(default="\n")', '', missing=True),
+    <BLANKLINE>
+    >>> vtor.check('string()', '\n')
+    '\n'
+    >>> vtor.check('string(default="\n\n\n")', '', missing=True)
+    '\n\n\n'
+    >>> vtor.check('string()', 'random \n text goes here\n\n')
+    'random \n text goes here\n\n'
+    >>> vtor.check('string(default=" \nrandom text\ngoes \n here\n\n ")',
+    ... '', missing=True)
+    ' \nrandom text\ngoes \n here\n\n '
+    >>> vtor.check("string(default='\n\n\n')", '', missing=True)
+    '\n\n\n'
+    >>> vtor.check("option('\n','a','b',default='\n')", '', missing=True)
+    '\n'
+    >>> vtor.check("string_list()", ['foo', '\n', 'bar'])
+    ['foo', '\n', 'bar']
+    >>> vtor.check("string_list(default=list('\n'))", '', missing=True)
+    ['\n']
+    """
+    
     
 if __name__ == '__main__':
     # run the code tests in doctest format
+    import sys
     import doctest
     m = sys.modules.get('__main__')
     globs = m.__dict__.copy()
     globs.update({
-        'INTP_VER': INTP_VER,
         'vtor': Validator(),
     })
     doctest.testmod(m, globs=globs)

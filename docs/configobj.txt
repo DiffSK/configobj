@@ -1274,9 +1274,6 @@ Section Methods
 
     This method renames a key, without affecting its position in the sequence.
 
-    It is mainly implemented for the ``encode`` and ``decode`` methods, which
-    provide some Unicode support.
-
 * **merge**
 
     ``merge(indict)``
@@ -1315,24 +1312,6 @@ Section Methods
     This method can be used to transform values and names. See `walking a
     section`_ for examples and explanation.
 
-* **decode**
-
-    ``decode(encoding)``
-
-    This method decodes names and values into Unicode objects, using the
-    supplied encoding.
-
-* **encode**
-
-    ``encode(encoding)``
-
-    This method is the opposite of ``decode`` {sm;:!:}.
-
-    It encodes names and values using the supplied encoding. If any of your
-    names/values are strings rather than Unicode, Python will have to do an
-    implicit decode first. (This method uses ``sys.defaultencoding`` for
-    implicit decodes.)
-
 * **as_bool**
 
     ``as_bool(key)``
@@ -1353,11 +1332,6 @@ Section Methods
     
         false, no, off, 0
     
-    .. note::
-    
-        In ConfigObj 4.1.0, this method was called ``istrue``. That method is
-        now deprecated and will issue a warning when used. It will go away
-        in a future release.
         
 * **as_int**
 
@@ -1367,6 +1341,7 @@ Section Methods
     
     It raises a ``ValueError`` if the conversion can't be done.
 
+    
 * **as_float**
 
     ``as_float(key)``
@@ -1375,6 +1350,17 @@ Section Methods
     
     It raises a ``ValueError`` if the conversion can't be done.
     
+    
+* **as_list**
+
+    ``as_list(key)``
+    
+    This returns the value contained in the specified key as a list.
+    
+    If it isn't a list it will be wrapped as a list so that you can 
+    guarantee the returned value will be a list.
+    
+
 * **restore_default**
 
     ``restore_default(key)``
@@ -1451,13 +1437,6 @@ note that walk discards the return value when it calls your function.
 Examples
 --------
 
-Examples that use the walk method are the ``encode`` and ``decode`` methods.
-They both define a function and pass it to walk. Because these functions
-transform names as well as values (from byte strings to Unicode) they set
-``call_on_sections=True``.
-
-To see how they do it, *read the source Luke* {sm;:cool:}.
-
 You can use this for transforming all values in your ConfigObj. For example
 you might like the nested lists from ConfigObj 3. This was provided by the
 listquote_ module. You could switch off the parsing for list values
@@ -1533,7 +1512,6 @@ change the values if appropriate.
     # Because ``walk`` doesn't recognise the ``encode`` argument
     # it passes it to our function.
     config.walk(string_escape, encode=True)
-
     {-coloring}
 
 Here's a simple example of using ``walk`` to transform names and values. One
@@ -2345,6 +2323,9 @@ From version 4 it lists all releases and changes.
 * You can now have normal sections inside configspec sections that use __many__
 * You can now create an empty ConfigObj with a configspec, programmatically set values and then validate
 * A section that was supplied as a value (or vice-versa) in the actual config file would cause an exception during validation (the config file is still broken of course, but it is now handled gracefully)
+* Added ``as_list`` method
+* Removed the deprecated ``istrue``, ``encode`` and ``decode`` methods
+* Running test_configobj now also runs the doctests in the configobj module
 
 As a consequence of the changes to configspec handling, when you create a ConfigObj instance and provide a configspec, the configspec attribute is only set on the ConfigObj instance - it isn't set on the sections until you validate. You also can't set the configspec attribute to be a dictionary. This wasn't documented but did work previously.
 
