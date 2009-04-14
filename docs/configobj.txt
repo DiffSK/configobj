@@ -508,6 +508,7 @@ In addition, the following `Section Methods`_ may be useful :
 * 'as_bool'
 * 'as_float'
 * 'as_int'
+* 'as_list'
 
 Read about Sections_ for details of all the methods.
 
@@ -608,10 +609,10 @@ details.
 .. hint::
 
     The system of configspecs can seem confusing at first, but is actually
-    quite simple and powerful. For a concrete example of how to use it, you may
-    find this blog entry helpful :
-    `Transforming Values with ConfigObj <http://www.voidspace.org.uk/python/weblog/arch_d7_2006_03_04.shtml#e257>`_.
-
+    quite simple and powerful. The best guide to them is this article on
+    ConfigObj:
+    
+    * `Introduction to ConfigObj`_
 
 The ``copy`` parameter fills in missing values from the configspec (default
 values), *without* marking the values as defaults. It also causes comments to
@@ -641,7 +642,7 @@ Return Value
 ############
 
 By default, the validate method either returns ``True`` (everything passed) 
-or a dictionary of ``True``/``False`` representing pass/fail. The dictionary 
+or a dictionary of ``True`` / ``False`` representing pass/fail. The dictionary 
 follows the structure of the ConfigObj.
 
 If a whole section passes then it is replaced with the value ``True``. If a 
@@ -1406,7 +1407,7 @@ Walking a Section
     {+coloring}
 
         walk(function, raise_errors=True,
-            call_on_sections=False, **keywargs):
+             call_on_sections=False, **keywargs):
 
     {-coloring}
 
@@ -1597,7 +1598,7 @@ because of bugs).
     create circular references (recursion).
 
 Number 5 (which is actually two different types of exceptions) is documented
-    in `String Interpolation`_.
+in `String Interpolation`_.
 
 *This* section is about errors raised during parsing.
 
@@ -1731,7 +1732,7 @@ The basic datatypes that an un-extended Validator can test for are :
 It can also handle lists of these types and restrict a value to being one from
 a set of options.
 
-An example configspec is going to look something like : ::
+An example configspec is going to look something like::
 
     port = integer(0, 100)
     user = string(max=25)
@@ -1754,14 +1755,15 @@ documentation`_.
 
 If you need to specify the encoding of your configspec, then you can pass in a
 ConfigObj instance as your configspec. When you read your configspec file, you
-*must* specify ``list_values=False``.
+*must* specify ``list_values=False``. If you need to support hashes in
+configspec values then you must also pass in ``_inspec=True``.
 
 .. raw:: html
 
     {+coloring}
     from configobj import ConfigObj
     configspec = ConfigObj(configspecfilename, encoding='UTF8',
-        list_values=False)
+			   list_values=False, _inspec=True)
     config = ConfigObj(filename, configspec=configspec)
     {-coloring}
 
@@ -1828,7 +1830,7 @@ Repeated Sections
 -----------------
 
 Repeated sections are a way of specifying a configspec for a section that
-should be applied to *all* subsections in the same section.
+should be applied to all unspecified subsections in the same section.
 
 The easiest way of explaining this is to give an example. Suppose you have a
 config file that describes a dog. That dog has various attributes, but it can
@@ -1853,11 +1855,21 @@ defining a single section called ``__many__``. ::
 
 Every flea on our dog will now be validated using the ``__many__`` configspec.
 
-If you define another sub-section in a section *as well as* a ``__many__`` then
-you will get an error.
-
 ``__many__`` sections can have sub-sections, including their own ``__many__``
 sub-sections. Defaults work in the normal way in repeated sections.
+
+
+Repeated Values
+---------------
+
+As well as using ``__many__`` to validate unspecified sections you can use it to validate values. For
+example, to specify that all values in a section should be integers::
+
+    [section]
+	__many__ = integer
+	
+If you want to use repeated values alongside repeated sections you can call one ``__many__`` and the
+other ``___many___`` (with three underscores).
 
 
 Copy Mode
@@ -1884,6 +1896,12 @@ will be copied into your ConfigObj instance.
     config.validate(vdt, copy=True)
     config.write()
     {-coloring}
+    
+If you need to support hashes in the configspec values then you must create
+it with ``_inspec=True``. This has the side effect of switching off the parsing
+of inline comments, meaning that they won't be copied into the new config file.
+(ConfigObj syntax is slightly different from configspec syntax and the parser
+can't support both inline comments and hashes in configspec values.)
 
 
 Validation and Interpolation
