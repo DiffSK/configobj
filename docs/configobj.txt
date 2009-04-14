@@ -8,15 +8,15 @@
 
 :Authors: Michael Foord, Nicola Larosa
 :Version: ConfigObj 4.6.0
-:Date: 2008/06/27
+:Date: 2009/04/13
 :Homepage: `ConfigObj Homepage`_
-:Sourceforge: Sourceforge_
-:Development: `SVN Repository`_
+:PyPI Entry: `ConfigObj on PyPI <http://pypi.python.org/pypi/ConfigObj/>`_
+:Development: `Google Code Homepage`_
 :License: `BSD License`_
 :Support: `Mailing List`_
 
 .. _Mailing List: http://lists.sourceforge.net/lists/listinfo/configobj-develop
-.. _SVN Repository: http://svn.pythonutils.python-hosting.com
+.. _Google Code Homepage: http://code.google.com/p/configobj/
 
 .. meta::
    :description: ConfigObj - a Python module for easy reading and writing of 
@@ -27,6 +27,13 @@
 
 .. contents:: ConfigObj Manual
 .. sectnum::
+
+.. note::
+
+    The best introduction to working with ConfigObj, including the powerful configuration validation system,
+    is the article:
+    
+    * `An Introduction to ConfigObj <http://www.voidspace.org.uk/python/articles/configobj.shtml>`_
 
 
 Introduction
@@ -52,20 +59,18 @@ It has lots of other features though :
 * Full Unicode support
 
 
-For support and bug reports please use the ConfigObj `Mailing List`_.
+For support and bug reports please use the ConfigObj `Mailing List`_ or the issue tracker on the 
+`Google Code Homepage`_.
 
 
 Downloading
 ===========
 
-The current version is **4.5.3**, dated 27th June 2008. ConfigObj 4 is
+The current version is **4.6.0**, dated 13th April 2008. ConfigObj 4 is
 stable and mature. We still expect to pick up a few bugs along the way though [#]_.
 {sm;:-)}
 
 You can get ConfigObj in the following ways :
-
-Files
------
 
 * configobj.py_ from Voidspace
 
@@ -76,12 +81,21 @@ Files
 
     This also contains validate.py_  and `this document`_.
 
-* The latest development version can be obtained from the `Subversion
-  Repository`_.
-
 * validate.py_ from Voidspace
 
-* You can also download *configobj.zip* from Sourceforge_
+
+Installing
+----------
+
+ConfigObj has a source distribution `on PyPI <http://pypi.python.org/pypi/ConfigObj/>`_. If you unzip
+the archive you can install it with::
+
+    setup.py install
+    
+Alternatively, you can install with easy install or pip::
+
+    easy_install configobj
+
 
 Documentation
 -------------
@@ -91,28 +105,17 @@ Documentation
 * You can view `this document`_ online at the `ConfigObj Homepage`_.
 
 
-Pythonutils
------------
-
-ConfigObj is also part of the Pythonutils_ set of modules. This contains
-various other useful modules, and is required by many of the `Voidspace Python
-Projects`_.
-
-
 Development Version
 -------------------
 
 It is sometimes possible to get the latest *development version* of ConfigObj
-from the `Subversion Repository <http://svn.pythonutils.python-hosting.com/trunk/pythonutils/>`_.
+from the Subversion Repository maintained on the `Google Code Homepage`_.
 
-.. _configobj.py: http://www.voidspace.org.uk/cgi-bin/voidspace/downman.py?file=configobj.py
-.. _configobj.zip: http://www.voidspace.org.uk/cgi-bin/voidspace/downman.py?file=configobj-4.5.3.zip
-.. _validate.py: http://www.voidspace.org.uk/cgi-bin/voidspace/downman.py?file=validate.py
+.. _configobj.py: http://www.voidspace.org.uk/downloads/configobj.py
+.. _configobj.zip: http://www.voidspace.org.uk/downloads/configobj-4.6.0.zip
+.. _validate.py: http://www.voidspace.org.uk/downloads/validate.py
 .. _this document:
 .. _configobj homepage: http://www.voidspace.org.uk/python/configobj.html
-.. _Sourceforge: http://sourceforge.net/projects/configobj
-.. _pythonutils: http://www.voidspace.org.uk/python/pythonutils.html
-.. _Voidspace Python Projects: http://www.voidspace.org.uk/python/index.shtml
 
 
 
@@ -125,10 +128,6 @@ ConfigObj in the Real World
 
     Bazaar is a Python distributed {acro;VCS;Version Control System}.
     ConfigObj is used to read ``bazaar.conf`` and ``branches.conf``.
-
-* `Turbogears <http://www.turbogears.org/>`_
-
-    Turbogears is a web application framework.
 
 * `Chandler <http://chandler.osafoundation.org/>`_
 
@@ -147,6 +146,8 @@ ConfigObj in the Real World
 * `Elisa - the Fluendo Mediacenter <http://elisa.fluendo.com/>`_    
     
     Elisa is an open source cross-platform media center solution designed to be simple for people not particularly familiar with computers.
+
+Version 4.5.3 was downloaded over 25 000 times from PyPI alone.
 
 
 Getting Started
@@ -621,14 +622,17 @@ written out by the ``write`` method.)
 As of ConfigObj 4.3.0 you can also pass in a ConfigObj instance as your
 configspec. This is especially useful if you need to specify the encoding of
 your configspec file. When you read your configspec file, you *must* specify
-``list_values=False``.
+``list_values=False``. If you need to support hashes inside the configspec
+values then you must also pass in ``_inspec=True``. This is because configspec
+files actually use a different syntax to config files and inline comment support
+must be switched off to correctly read configspec files with hashes in the values.
 
 .. raw:: html
 
     {+coloring}
     from configobj import ConfigObj
     configspec = ConfigObj(configspecfilename, encoding='UTF8',
-                           list_values=False)
+                           list_values=False, _inspec=True)
     config = ConfigObj(filename, configspec=configspec)
     {-coloring}
     
@@ -704,8 +708,8 @@ Writing invalid default values is a *guaranteed* way of confusing your users.
 Default values **must** pass the check.
 
 
-Mentioning Repeated Sections
-############################
+Mentioning Repeated Sections and Values
+#######################################
 
 In the configspec it is possible to cause *every* sub-section in a section to
 be validated using the same configspec. You do this with a section in the
@@ -713,12 +717,17 @@ configspec  called ``__many__``. Every sub-section in that section has the
 ``__many__`` configspec applied to it (without you having to explicitly name
 them in advance).
 
-If you define a ``__many__`` type section it must the only sub-section in that
-section. Having a ``__many__`` *and* other sub-sections defined in the same
-section will raise a ``RepeatSectionError``.
-
 Your ``__many__`` section can have nested subsections, which can also include
 ``__many__`` type sections.
+
+You can also specify that all values should be validated using the same configspec,
+by having a member with the name ``__many__``. If you want to use repeated values
+along with repeated sections then you can call one of them ``___many___`` (triple
+underscores).
+
+Sections with repeated sections or values can also have specifically named sub-sections
+or values. The ``__many__`` configspec will only be used to validate entries that don't 
+have an explicit configspec.
 
 See `Repeated Sections`_ for examples.
 
@@ -1587,13 +1596,8 @@ because of bugs).
 5) In string interpolation you can specify a value that doesn't exist, or
     create circular references (recursion).
 
-6) If you have a ``__many__`` repeated section with other section definitions
-    (in a configspec), a ``RepeatSectionError`` will be raised.
-
 Number 5 (which is actually two different types of exceptions) is documented
     in `String Interpolation`_.
-
-Number 6 is explained in the validation_ section.
 
 *This* section is about errors raised during parsing.
 
@@ -1678,10 +1682,11 @@ Validation
 .. hint::
 
     The system of configspecs can seem confusing at first, but is actually
-    quite simple and powerful. For a concrete example of how to use it, you may
-    find this blog entry helpful :
-    `Transforming Values with ConfigObj <http://www.voidspace.org.uk/python/weblog/arch_d7_2006_03_04.shtml#e257>`_.
-
+    quite simple and powerful. The best reference is my article on ConfigObj:
+    
+    * `An Introduction to ConfigObj`_
+    
+    
 Validation is done through a combination of the configspec_ and a ``Validator``
 object. For this you need *validate.py* [#]_. See downloading_ if you don't
 have a copy.
@@ -2327,11 +2332,19 @@ From version 4 it lists all releases and changes.
 * Removed the deprecated ``istrue``, ``encode`` and ``decode`` methods
 * Running test_configobj.py now also runs the doctests in the configobj module
 
-As a consequence of the changes to configspec handling, when you create a ConfigObj instance and provide a configspec, the configspec attribute is only set on the ConfigObj instance - it isn't set on the sections until you validate. You also can't set the configspec attribute to be a dictionary. This wasn't documented but did work previously.
+As a consequence of the changes to configspec handling, when you create a ConfigObj instance and provide 
+a configspec, the configspec attribute is only set on the ConfigObj instance - it isn't set on the 
+sections until you validate. You also can't set the configspec attribute to be a dictionary. This wasn't 
+documented but did work previously.
 
-In order to fix the problem with hashes in configspecs I had to turn off the parsing of inline comments in configspecs. This will only affect you if you are using ``copy=True`` when validating and expecting inline comments to be copied from the configspec into the ConfigObj instance (all other comments will be copied as usual).
+In order to fix the problem with hashes in configspecs I had to turn off the parsing of inline comments 
+in configspecs. This will only affect you if you are using ``copy=True`` when validating and expecting 
+inline comments to be copied from the configspec into the ConfigObj instance (all other comments will be 
+copied as usual).
     
-If you *create* the configspec by passing in a ConfigObj instance (usual way is to pass in a filename or list of lines) then you should pass in ``_inspec=True`` to the constructor to allow hashes in values. This is the magic that switches off inline comment parsing.
+If you *create* the configspec by passing in a ConfigObj instance (usual way is to pass in a filename or 
+list of lines) then you should pass in ``_inspec=True`` to the constructor to allow hashes in values. 
+This is the magic that switches off inline comment parsing.
 
     
 2008/06/27 - Version 4.5.3
@@ -2818,39 +2831,6 @@ Footnotes
     access to the *rename* method of the section.
 
 .. [#] Minimum required version of *validate.py* 0.2.0 .
-
-
-.. note::
-
-    Rendering this document with docutils also needs the
-    textmacros module and the PySrc CSS stuff. See
-    http://www.voidspace.org.uk/python/firedrop2/textmacros.shtml
-
-
-.. raw:: html
-
-    <div align="center">
-        <p>
-            <a href="http://www.python.org">
-                <img src="images/new_python.gif" width="100" height="103" border="0" 
-                    alt="Powered by Python" />
-            </a>
-            <a href="http://sourceforge.net">
-                <img src="http://sourceforge.net/sflogo.php?group_id=123265&amp;type=1" width="88" height="31" border="0" alt="SourceForge.net Logo" />
-            </a>
-            <a href="http://www.opensource.org">
-                <img src="images/osi-certified-120x100.gif" width="120" height="100" border="0"
-                    alt="Certified Open Source"/>
-            </a>
-        </p>
-        <p>
-            <a href="http://www.voidspace.org.uk/python/index.shtml">
-                <img src="images/pythonbanner.gif" width="468" height="60" 
-                alt="Python on Voidspace" border="0" />
-            </a>
-        </p>
-
-    </div>
 
 .. _listquote: http://www.voidspace.org.uk/python/modules.shtml#listquote
 .. _Michael Foord: http://www.voidspace.org.uk/python/weblog/index.shtml
