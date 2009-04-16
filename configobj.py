@@ -117,7 +117,7 @@ __version__ = '4.6.0'
 
 __revision__ = '$Id: configobj.py 156 2006-01-31 14:57:08Z fuzzyman $'
 
-__docformat__ = "restructuredtext en"
+__docformat__ = "restructuredtext en" 
 
 __all__ = (
     '__version__',

@@ -612,7 +612,7 @@ details.
     quite simple and powerful. The best guide to them is this article on
     ConfigObj:
     
-    * `Introduction to ConfigObj`_
+    * `An Introduction to ConfigObj`_
 
 The ``copy`` parameter fills in missing values from the configspec (default
 values), *without* marking the values as defaults. It also causes comments to

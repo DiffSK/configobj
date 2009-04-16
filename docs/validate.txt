@@ -12,6 +12,7 @@
 :Date: 2009/04/13
 :Homepage: `Validate Homepage`_
 :Repository: `Google code homepage <http://code.google.com/p/configobj/>`_
+:PyPI Entry: `Validate on Python Packaging Index <http://pypi.python.org/pypi/validate>`_
 :License: `BSD License`_
 :Support: `Mailing List`_
 
@@ -95,12 +96,11 @@ Documentation
 
 * You can view `this document`_ online as the `Validate Homepage`_.
 
-.. _configobj.py: http://www.voidspace.org.uk/cgi-bin/voidspace/downman.py?file=configobj.py
-.. _configobj.zip: http://www.voidspace.org.uk/cgi-bin/voidspace/downman.py?file=configobj-4.5.3.zip
-.. _validate.py: http://www.voidspace.org.uk/cgi-bin/voidspace/downman.py?file=validate.py
+.. _configobj.py: http://www.voidspace.org.uk/cgi-bin/voidspace/download/configobj.py
+.. _configobj.zip: http://www.voidspace.org.uk/cgi-bin/voidspace/download/configobj-4.6.0.zip
+.. _validate.py: http://www.voidspace.org.uk/cgi-bin/voidspace/download/validate.py
 .. _Subversion Repository: http://code.google.com/p/configobj/
 .. _Sourceforge: http://sourceforge.net/projects/configobj
-.. _pythonutils: http://www.voidspace.org.uk/python/pythonutils.html
 .. _validate: http://www.voidspace.org.uk/python/validate.html
 
 
@@ -617,7 +617,7 @@ CHANGELOG
 * BUGFIX: can now handle multiline strings.
 * Addition of 'force_list' validation option.
 
-As there are no known bugs or outstanding feature requests I am marking this 1.0.
+As the API is stable and there are no known bugs or outstanding feature requests I am marking this 1.0.
 
 
 2008/02/24 - Version 0.3.2
@@ -708,34 +708,4 @@ Does type conversion as well.
 Initial version developed by `Michael Foord`_
 and Mark Andrews.
 
-.. note::
-
-    Rendering this document with docutils also needs the
-    textmacros module and the PySrc CSS stuff. See
-    http://www.voidspace.org.uk/python/firedrop2/textmacros.shtml
-
-
-.. raw:: html
-
-    <div align="center">
-        <p>
-            <a href="http://www.python.org">
-                <img src="images/new_python.gif" width="100" height="103" border="0" 
-                    alt="Powered by Python" />
-            </a>
-            <a href="http://sourceforge.net">
-                <img src="http://sourceforge.net/sflogo.php?group_id=123265&amp;type=1" width="88" height="31" border="0" alt="SourceForge.net Logo" />
-            </a>
-            <a href="http://www.opensource.org">
-                <img src="images/osi-certified-120x100.gif" width="120" height="100" border="0"
-                    alt="Certified Open Source"/>
-            </a>
-        </p>
-        <p>
-            <a href="http://www.voidspace.org.uk/python/index.shtml">
-                <img src="images/pythonbanner.gif" width="468" height="60" 
-                alt="Python on Voidspace" border="0" />
-            </a>
-        </p>
-    </div>
 
