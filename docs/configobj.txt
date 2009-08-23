@@ -10,7 +10,7 @@
 :Version: ConfigObj 4.6.0
 :Date: 2009/04/13
 :Homepage: `ConfigObj Homepage`_
-:PyPI Entry: `ConfigObj on PyPI <http://pypi.python.org/pypi/ConfigObj/>`_
+:PyPI Entry: `ConfigObj on PyPI <http://pypi.python.org/pypi/configobj/>`_
 :Development: `Google Code Homepage`_
 :License: `BSD License`_
 :Support: `Mailing List`_
@@ -87,7 +87,7 @@ You can get ConfigObj in the following ways :
 Installing
 ----------
 
-ConfigObj has a source distribution `on PyPI <http://pypi.python.org/pypi/ConfigObj/>`_. If you unzip
+ConfigObj has a source distribution `on PyPI <http://pypi.python.org/pypi/configobj/>`_. If you unzip
 the archive you can install it with::
 
     setup.py install

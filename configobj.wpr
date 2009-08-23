@@ -11,3 +11,5 @@ proj.directory-list = [{'dirloc': loc('.'),
                         'recursive': True,
                         'watch_for_changes': True}]
 proj.file-type = 'shared'
+testing.test-framework = {loc('test_configobj.py'): ':internal doctest',
+                          loc('validate.py'): ':internal doctest'}
