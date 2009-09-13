@@ -115,9 +115,6 @@ MISSING = object()
 
 __version__ = '4.7.0'
 
-__revision__ = '$Id: configobj.py 156 2006-01-31 14:57:08Z fuzzyman $'
-
-__docformat__ = "restructuredtext en" 
 
 __all__ = (
     '__version__',
@@ -137,7 +134,6 @@ __all__ = (
     'ReloadError',
     'UnreprError',
     'UnknownType',
-    '__docformat__',
     'flatten_errors',
 )
 

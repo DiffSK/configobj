@@ -2339,6 +2339,7 @@ From version 4 it lists all releases and changes.
 
 * Minimum supported version of Python is now 2.3
 * ~25% performance improvement thanks to Christian Heimes
+* Removed __revision__ and __docformat__.
 
 2009/04/13 - Version 4.6.0
 --------------------------
