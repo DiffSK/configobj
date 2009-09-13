@@ -113,7 +113,7 @@ except NameError:
 # Sentinel for use in getattr calls to replace hasattr
 MISSING = object()
 
-__version__ = '4.6.0'
+__version__ = '4.7.0'
 
 __revision__ = '$Id: configobj.py 156 2006-01-31 14:57:08Z fuzzyman $'
 

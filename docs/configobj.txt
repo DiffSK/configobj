@@ -2334,6 +2334,11 @@ This is an abbreviated changelog showing the major releases up to version 4.
 From version 4 it lists all releases and changes.
 
 
+2009/09/XX - Version 4.7.0
+--------------------------
+
+* Minimum supported version of Python is now 2.3
+* ~25% performance improvement thanks to Christian Heimes
 
 2009/04/13 - Version 4.6.0
 --------------------------
