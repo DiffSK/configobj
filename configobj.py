@@ -331,6 +331,7 @@ class InterpolationEngine(object):
 
     # compiled regexp to use in self.interpolate()
     _KEYCRE = re.compile(r"%\(([^)]*)\)s")
+    _cookie = '%'
 
     def __init__(self, section):
         # the Section instance that "owns" this engine
@@ -338,6 +339,10 @@ class InterpolationEngine(object):
 
 
     def interpolate(self, key, value):
+        # short-cut
+        if not self._cookie in value:
+            return value
+        
         def recursive_interpolate(key, value, section, backtrail):
             """The function that does the actual work.
 
@@ -349,7 +354,7 @@ class InterpolationEngine(object):
             This is similar to a depth-first-search algorithm.
             """
             # Have we been here already?
-            if backtrail.has_key((key, section.name)):
+            if (key, section.name) in backtrail:
                 # Yes - infinite loop detected
                 raise InterpolationLoopError(key)
             # Place a marker on our backtrail so we won't come back here again
@@ -442,6 +447,7 @@ class InterpolationEngine(object):
 
 class ConfigParserInterpolation(InterpolationEngine):
     """Behaves like ConfigParser."""
+    _cookie = '%'
     _KEYCRE = re.compile(r"%\(([^)]*)\)s")
 
     def _parse_match(self, match):
@@ -453,6 +459,7 @@ class ConfigParserInterpolation(InterpolationEngine):
 
 class TemplateInterpolation(InterpolationEngine):
     """Behaves like string.Template."""
+    _cookie = '$'
     _delimiter = '$'
     _KEYCRE = re.compile(r"""
         \$(?:
@@ -604,7 +611,7 @@ class Section(dict):
             raise ValueError('The key "%s" is not a string.' % key)
         
         # add the comment
-        if not self.comments.has_key(key):
+        if key not in self.comments:
             self.comments[key] = []
             self.inline_comments[key] = ''
         # remove the entry from defaults
@@ -612,13 +619,13 @@ class Section(dict):
             self.defaults.remove(key)
         #
         if isinstance(value, Section):
-            if not self.has_key(key):
+            if key not in self:
                 self.sections.append(key)
             dict.__setitem__(self, key, value)
         elif isinstance(value, dict) and not unrepr:
             # First create the new depth level,
             # then create the section
-            if not self.has_key(key):
+            if key not in self:
                 self.sections.append(key)
             new_depth = self.depth + 1
             dict.__setitem__(
@@ -631,7 +638,7 @@ class Section(dict):
                     indict=value,
                     name=key))
         else:
-            if not self.has_key(key):
+            if key not in self:
                 self.scalars.append(key)
             if not self.main.stringify:
                 if isinstance(value, basestring):
@@ -1560,7 +1567,7 @@ class ConfigObj(Section):
                                        NestingError, infile, cur_index)
                     
                 sect_name = self._unquote(sect_name)
-                if parent.has_key(sect_name):
+                if sect_name in parent:
                     self._handle_error('Duplicate section name at line %s.',
                                        DuplicateError, infile, cur_index)
                     continue
@@ -1638,7 +1645,7 @@ class ConfigObj(Section):
                             continue
                 #
                 key = self._unquote(key)
-                if this_section.has_key(key):
+                if key in this_section:
                     self._handle_error(
                         'Duplicate keyword name at line %s.',
                         DuplicateError, infile, cur_index)
