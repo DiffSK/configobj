@@ -702,6 +702,8 @@ class Section(dict):
         self.comments = {}
         self.inline_comments = {}
         self.configspec = None
+        self.defaults = []
+        self.extra_values = []
 
 
     def setdefault(self, key, default=None):

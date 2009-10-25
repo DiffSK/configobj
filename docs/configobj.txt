@@ -2341,13 +2341,12 @@ From version 4 it lists all releases and changes.
 * ~25% performance improvement thanks to Christian Heimes
 * Removed __revision__ and __docformat__
 * BUGFIX: Checks that failed validation would not populate 'default_values' and
-  'restore_default_value' wouldn't work.
-* String interpolation now works in list values.
+  'restore_default_value' wouldn't work
+* String interpolation now works in list values
 * After validation any additional entries not in the configspec are listed in
-  the 'extra_values' section member.
-
-XXX clear should also clear defaults and extras but not default_values
-    reset should clear all
+  the 'extra_values' section member
+* BUGFIX: clear() clears 'defaults'
+  
 
 2009/04/13 - Version 4.6.0
 --------------------------

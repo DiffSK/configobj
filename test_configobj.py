@@ -2039,6 +2039,30 @@ def _test_extra_values():
     []
     """
 
+def _test_reset_and_clear_more():
+    """
+    >>> c = ConfigObj()
+    >>> c.extra_values = ['foo']
+    >>> c.defaults = ['bar']
+    >>> c.default_values = {'bar': 'baz'}
+    >>> c.clear()
+    >>> c.defaults
+    []
+    >>> c.extra_values
+    []
+    >>> c.default_values
+    {'bar': 'baz'}
+    >>> c.extra_values = ['foo']
+    >>> c.defaults = ['bar']
+    >>> c.reset()
+    >>> c.defaults
+    []
+    >>> c.extra_values
+    []
+    >>> c.default_values
+    {}
+    """
+
 # TODO: Test BOM handling
 # TODO: Test error code for badly built multiline values
 # TODO: Test handling of StringIO
