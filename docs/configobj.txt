@@ -8,7 +8,7 @@
 
 :Authors: Michael Foord, Nicola Larosa
 :Version: ConfigObj 4.7.0
-:Date: 2009/09/XX
+:Date: 2009/10/XX
 :Homepage: `ConfigObj Homepage`_
 :PyPI Entry: `ConfigObj on PyPI <http://pypi.python.org/pypi/configobj/>`_
 :Development: `Google Code Homepage`_
@@ -137,7 +137,7 @@ ConfigObj in the Real World
  
 * `matplotlib <http://matplotlib.sourceforge.net/>`_
 
-	A 2D plotting library.
+    A 2D plotting library.
 
 * `IPython <http://ipython.scipy.org/moin/>`_
 
@@ -162,14 +162,10 @@ Reading a Config File
 
 The normal way to read a config file, is to give ConfigObj the filename :
 
-.. raw:: html
-
-    {+coloring}
+.. code-block:: python
 
     from configobj import ConfigObj
     config = ConfigObj(filename)
-
-    {-coloring}
 
 You can also pass the config file in as a list of lines, or a ``StringIO``
 instance, so it doesn't matter where your config data comes from.
@@ -177,9 +173,7 @@ instance, so it doesn't matter where your config data comes from.
 You can then access members of your config file as a dictionary. Subsections
 will also be dictionaries.
 
-.. raw:: html
-
-    {+coloring}
+.. code-block:: python
 
     from configobj import ConfigObj
     config = ConfigObj(filename)
@@ -195,8 +189,6 @@ will also be dictionaries.
     value3 = config['section1']['keyword3']
     value4 = config['section1']['keyword4']
 
-    {-coloring}
-
 
 Writing a Config File
 ---------------------
@@ -210,9 +202,8 @@ lines instead of writing to file. See the write_ method for more details.
 Here we show creating an empty ConfigObj, setting a filename and some values,
 and then writing to file :
 
-.. raw:: html
 
-    {+coloring}
+.. code-block:: python
 
     from configobj import ConfigObj
     config = ConfigObj()
@@ -240,8 +231,7 @@ and then writing to file :
     #
     config.write()
 
-    {-coloring}
-
+    
 .. caution::
 
     Keywords and section names can only be strings [#]_. Attempting to set
@@ -301,13 +291,9 @@ to illustrate : ::
 ConfigObj specifications
 ========================
 
-.. raw:: html
-
-    {+coloring}
+.. code-block:: python
 
     config = ConfigObj(infile=None, options=None, **keywargs)
-
-    {-coloring}
 
 
 infile
@@ -359,9 +345,9 @@ ConfigObj has the following options (with the default values shown) :
 
     If ``True`` (the default) then list values are possible. If ``False``, the
     values are not parsed for lists.
-	
-	If ``list_values = False`` then single line values are not quoted or
-	unquoted when reading and writing.
+
+    If ``list_values = False`` then single line values are not quoted or
+    unquoted when reading and writing.
 
     Changing this value affects whether single line values will be quoted or 
     not when writing.
@@ -569,9 +555,7 @@ validate
 
     validate(validator, preserve_errors=False, copy=False)
 
-.. raw:: html
-
-    {+coloring}
+.. code-block:: python
 
     # filename is the config file
     # filename2 is the configspec
@@ -583,7 +567,6 @@ validate
     test = config.validate(val)
     if test == True:
         print 'Succeeded.'
-    {-coloring}
 
 The validate method uses the `validate 
 <http://www.voidspace.org.uk/python/validate.html>`__ module to do the
@@ -628,15 +611,14 @@ values then you must also pass in ``_inspec=True``. This is because configspec
 files actually use a different syntax to config files and inline comment support
 must be switched off to correctly read configspec files with hashes in the values.
 
-.. raw:: html
 
-    {+coloring}
+.. code-block:: python
+
     from configobj import ConfigObj
     configspec = ConfigObj(configspecfilename, encoding='UTF8',
                            list_values=False, _inspec=True)
     config = ConfigObj(filename, configspec=configspec)
-    {-coloring}
-    
+
 
 Return Value
 ############
@@ -743,16 +725,12 @@ are missing.
 Write a configspec that has all the members you want to check for, but set
 every section to ``''``.
 
-.. raw:: html
-
-    {+coloring}
+.. code-block:: python
 
     val = SimpleVal()
     test = config.validate(val)
     if test is True:
         print 'Succeeded.'
-
-    {-coloring}
 
 
 Mentioning copy Mode
@@ -1069,9 +1047,8 @@ Otherwise they will belong to the sub-section immediately before them. ::
 
 When parsed, the above config file produces the following data structure :
 
-.. raw:: html
 
-    {+coloring}
+.. code-block:: python
 
     ConfigObj({
         'keyword1': 'value1',
@@ -1098,8 +1075,7 @@ When parsed, the above config file produces the following data structure :
         },
     })
 
-    {-coloring}
-
+    
 Sections are ordered: note how the structure of the resulting ConfigObj is in
 the same order as the original file.
 
@@ -1137,10 +1113,8 @@ and ``clear`` sections.
     
     Note the following.
 
-    .. raw:: html
-    
-        {+coloring}
-        
+    .. code-block:: python
+
         config = ConfigObj()
         vals = {'key1': 'value 1', 
                 'key2': 'value 2'
@@ -1150,8 +1124,6 @@ and ``clear`` sections.
         True
         config['vals'] is vals
         False
-        
-        {-coloring}
      
     If you now change ``vals``, the changes won't be reflected in ``config['vals']``.
 
@@ -1297,10 +1269,8 @@ Section Methods
     
     For example :
     
-    .. raw:: html
-    
-        {+coloring}
-        
+    .. code-block:: python
+
         # def_cfg contains your default config settings
         # user_cfg contains the user settings
         cfg = ConfigObj(def_cfg)
@@ -1314,8 +1284,6 @@ Section Methods
         
         The user settings will have overwritten any of the default ones.
         """
-    
-        {-coloring}
     
 * **walk**
 
@@ -1402,14 +1370,11 @@ Walking a Section
 
     The walk method allows you to call a function on every member/name.
 
-.. raw:: html
+.. code-block:: python
 
-    {+coloring}
+    walk(function, raise_errors=True,
+         call_on_sections=False, **keywargs)
 
-        walk(function, raise_errors=True,
-             call_on_sections=False, **keywargs):
-
-    {-coloring}
 
 ``walk`` is a method of the ``Section`` object. This means it is also a method
 of ConfigObj.
@@ -1473,9 +1438,8 @@ treat tuples as lists as well).
 We're not using the return values, so it doesn't need to return anything, just
 change the values if appropriate.
 
-.. raw:: html
 
-    {+coloring}
+.. code-block:: python
 
     def string_escape(section, key, encode=False):
         """
@@ -1522,16 +1486,14 @@ change the values if appropriate.
     # Because ``walk`` doesn't recognise the ``encode`` argument
     # it passes it to our function.
     config.walk(string_escape, encode=True)
-    {-coloring}
+
 
 Here's a simple example of using ``walk`` to transform names and values. One
 usecase of this would be to create a *standard* config file with placeholders
 for section and keynames. You can then use walk to create new config files
 and change values and member names :
 
-.. raw:: html
-
-    {+coloring}
+.. code-block:: python
 
     # We use 'XXXX' as a placeholder
     config = '''
@@ -1573,8 +1535,6 @@ and change values and member names :
         'CLIENT1key2': 'CLIENT1value2', 'CLIENT1key3': 'CLIENT1value3', 
         'CLIENT1section1': {'CLIENT1key1': 'CLIENT1value1', 
             'CLIENT1key2': 'CLIENT1value2', 'CLIENT1key3': 'CLIENT1value3'}}})
-            
-    {-coloring}
 
 
 Exceptions
@@ -1758,14 +1718,12 @@ ConfigObj instance as your configspec. When you read your configspec file, you
 *must* specify ``list_values=False``. If you need to support hashes in
 configspec values then you must also pass in ``_inspec=True``.
 
-.. raw:: html
+.. code-block:: python
 
-    {+coloring}
     from configobj import ConfigObj
     configspec = ConfigObj(configspecfilename, encoding='UTF8',
-			   list_values=False, _inspec=True)
+                           list_values=False, _inspec=True)
     config = ConfigObj(filename, configspec=configspec)
-    {-coloring}
 
 .. _validate.py documentation: http://www.voidspace.org.uk/python/validate.html
 
@@ -1885,9 +1843,9 @@ To do this, you need to specify ``copy=True`` when you call validate. As well
 as not marking values as default, all the comments in the configspec file
 will be copied into your ConfigObj instance.
 
-.. raw:: html
 
-    {+coloring}
+.. code-block:: python
+
     from configobj import ConfigObj
     from validate import Validator
     vdt = Validator()
@@ -1895,7 +1853,6 @@ will be copied into your ConfigObj instance.
     config.filename = 'new_default.ini'
     config.validate(vdt, copy=True)
     config.write()
-    {-coloring}
     
 If you need to support hashes in the configspec values then you must create
 it with ``_inspec=True``. This has the side effect of switching off the parsing
@@ -1935,7 +1892,7 @@ To use it, you still need to pass in a valid configspec when you create the
 ConfigObj, but just set all the values to ``''``. Then create an instance of
 ``SimpleVal`` and pass it to the ``validate`` method.
 
-As a trivial example if you had the following config file : ::
+As a trivial example if you had the following config file::
 
     # config file for an application
     port = 80
@@ -1943,16 +1900,15 @@ As a trivial example if you had the following config file : ::
     domain = voidspace
     top_level_domain = org.uk
 
-You would write the following configspec : ::
+You would write the following configspec::
 
     port = ''
     protocol = ''
     domain = ''
     top_level_domain = ''
 
-.. raw:: html
 
-    {+coloring}
+.. code-block:: python
 
     config = Configobj(filename, configspec=configspec)
     val = SimpleVal()
@@ -1966,8 +1922,6 @@ You would write the following configspec : ::
             if test[entry] == False:
                 print '"%s" missing.' % entry
 
-    {-coloring}
-
 
 Empty values
 ============
@@ -1978,9 +1932,8 @@ Many config files from other applications allow empty values. As of version
 A new option/attribute has been added (``write_empty_values``) to allow
 ConfigObj to write empty strings as empty values.
 
-.. raw:: html
+.. code-block:: python
 
-    {+coloring}
     from configobj import ConfigObj
     cfg = '''
         key =
@@ -1996,7 +1949,6 @@ ConfigObj to write empty strings as empty values.
     
     key = 
     key2 =     # a comment
-    {-coloring}
 
 
 unrepr mode
@@ -2173,10 +2125,9 @@ The output from ``flatten_errors`` is a list of tuples.
 
 Here is an example of how you could present this information to the user.
 
-.. raw:: html
 
-    {+coloring}
-    
+.. code-block:: python
+
     vtor = validate.Validator()
     # ini is your config file - cs is the configspec
     cfg = ConfigObj(ini, configspec=cs)
@@ -2192,9 +2143,6 @@ Here is an example of how you could present this information to the user.
         if error == False:
             error = 'Missing value or section.'
         print section_string, ' = ', error
-
-    {-coloring}
-
 
 
 CREDITS
@@ -2294,7 +2242,9 @@ ISSUES
 
 There is currently no way to specify the encoding of a configspec file.
 
-As a consequence of the changes to configspec handling in version 4.6.0, when you create a ConfigObj instance and provide a configspec, the configspec attribute is only set on the ConfigObj instance - it isn't set on the sections until you validate. You also can't set the configspec attribute to be a dictionary. This wasn't documented but did work previously.
+As a consequence of the changes to configspec handling in version 4.6.0, when
+you create a ConfigObj instance and provide a configspec, the configspec
+attribute is only set on the ConfigObj instance - it isn't set on the sections until you validate. You also can't set the configspec attribute to be a dictionary. This wasn't documented but did work previously.
 
 In order to fix the problem with hashes in configspecs I had to turn off the parsing of inline comments in configspecs. This will only affect you if you are using ``copy=True`` when validating and expecting inline comments to be copied from the configspec into the ConfigObj instance (all other comments will be copied as usual).
     
@@ -2831,15 +2781,11 @@ Footnotes
 
 .. [#] A side effect of this is that it enables you to copy a ConfigObj :
 
-    .. raw:: html
-    
-        {+coloring}
-    
+    .. code-block:: python
+
         # only copies members
         # not attributes/comments
         config2 = ConfigObj(config1)
-    
-        {-coloring}
 
     The order of values and sections will not be preserved, though.
 

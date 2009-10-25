@@ -1582,7 +1582,7 @@ class ConfigObj(Section):
                 # check for a multiline value
                 if value[:3] in ['"""', "'''"]:
                     try:
-                        (value, comment, cur_index) = self._multiline(
+                        value, comment, cur_index = self._multiline(
                             value, infile, cur_index, maxline)
                     except SyntaxError:
                         self._handle_error(
