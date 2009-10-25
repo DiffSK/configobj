@@ -559,8 +559,15 @@ class Section(dict):
     def __getitem__(self, key):
         """Fetch the item and do string interpolation."""
         val = dict.__getitem__(self, key)
-        if self.main.interpolation and isinstance(val, basestring):
-            return self._interpolate(key, val)
+        if self.main.interpolation: 
+            if isinstance(val, basestring):
+                return self._interpolate(key, val)
+            if isinstance(val, list):
+                def _check(entry):
+                    if isinstance(entry, basestring):
+                        return self._interpolate(key, entry)
+                    return entry
+                return [_check(entry) for entry in val]
         return val
 
 

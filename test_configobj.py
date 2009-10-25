@@ -2011,11 +2011,17 @@ def _test_as_list():
     >>> a.as_list('a')
     [1]
     """
-    
-#       drop support for Python 2.2 ?
 
-    
-    
+def _test_list_interpolation():
+    """
+    >>> c = ConfigObj()
+    >>> c['x'] = 'foo'
+    >>> c['list'] = ['%(x)s', 3]
+    >>> c['list']
+    ['foo', 3]
+    """
+
+
 # TODO: Test BOM handling
 # TODO: Test error code for badly built multiline values
 # TODO: Test handling of StringIO

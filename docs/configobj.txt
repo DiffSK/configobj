@@ -2342,6 +2342,7 @@ From version 4 it lists all releases and changes.
 * Removed __revision__ and __docformat__
 * BUGFIX: Checks that failed validation would not populate 'default_values' and
   'restore_default_value' wouldn't work.
+* String interpolation now works in list values.
 
 2009/04/13 - Version 4.6.0
 --------------------------
