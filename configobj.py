@@ -531,6 +531,7 @@ class Section(dict):
         # for defaults
         self.defaults = []
         self.default_values = {}
+        self.extra_values = []
 
 
     def _interpolate(self, key, value):
@@ -2109,6 +2110,7 @@ class ConfigObj(Section):
                 section.indent_type = section.configspec.indent_type
             
         #
+        # section.default_values.clear() #??
         configspec = section.configspec
         self._set_configspec(section, copy)
 
@@ -2201,6 +2203,7 @@ class ConfigObj(Section):
                 val = section[entry]
                 ret_true, ret_false = validate_entry(entry, many, val, False,
                                                      ret_true, ret_false)
+            unvalidated = []
 
         for entry in incorrect_scalars:
             ret_true = False
@@ -2226,6 +2229,7 @@ class ConfigObj(Section):
             if section is self and entry == 'DEFAULT':
                 continue
             if section[entry].configspec is None:
+                unvalidated.append(entry)
                 continue
             if copy:
                 section.comments[entry] = configspec.comments.get(entry, [])
@@ -2239,6 +2243,8 @@ class ConfigObj(Section):
             else:
                 ret_true = False
                 ret_false = False
+        
+        section.extra_values = unvalidated
         #
         if ret_true:
             return True

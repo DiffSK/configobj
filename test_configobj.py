@@ -2021,6 +2021,23 @@ def _test_list_interpolation():
     ['foo', 3]
     """
 
+def _test_extra_values():
+    """
+    >>> spec = ['[section]']
+    >>> infile = ['bar = 3', '[something]', 'foo = fish', '[section]', 'foo=boo']
+    >>> c = ConfigObj(infile, configspec=spec)
+    >>> c.extra_values
+    []
+    >>> c.extra_values = ['bar', 'gosh', 'what']
+    >>> c.validate(Validator())
+    1
+    >>> c.extra_values
+    ['bar', 'something']
+    >>> c['section'].extra_values
+    ['foo']
+    >>> c['something'].extra_values
+    []
+    """
 
 # TODO: Test BOM handling
 # TODO: Test error code for badly built multiline values
