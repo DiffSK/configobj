@@ -1197,7 +1197,20 @@ def _test_validate():
     ...             'test4': 6.0
     ... }}}
     1
-    
+    >>> a = ['foo = fish']
+    >>> b = ['foo = integer(default=3)']
+    >>> c = ConfigObj(a, configspec=b)
+    >>> c
+    ConfigObj({'foo': 'fish'})
+    >>> from validate import Validator
+    >>> v = Validator()
+    >>> c.validate(v)
+    0
+    >>> c.default_values
+    {'foo': 3}
+    >>> c.restore_default('foo')
+    3
+
     Now testing with repeated sections : BIG TEST
     
     >>> repeated_1 = '''

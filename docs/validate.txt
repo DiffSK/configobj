@@ -611,6 +611,11 @@ to specify arguments for 'mixed_lists'.
 CHANGELOG
 =========
 
+2009/10/25 - Version 1.0.1
+--------------------------
+
+* BUGFIX: Fixed compatibility with Python 2.3.
+
 2009/04/13 - Version 1.0.0
 --------------------------
 

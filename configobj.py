@@ -31,22 +31,7 @@ except ImportError:
     pass
 
 
-try:
-    from codecs import BOM_UTF8, BOM_UTF16, BOM_UTF16_BE, BOM_UTF16_LE
-except ImportError:
-    # Python 2.2 does not have these
-    # UTF-8
-    BOM_UTF8 = '\xef\xbb\xbf'
-    # UTF-16, little endian
-    BOM_UTF16_LE = '\xff\xfe'
-    # UTF-16, big endian
-    BOM_UTF16_BE = '\xfe\xff'
-    if sys.byteorder == 'little':
-        # UTF-16, native endianness
-        BOM_UTF16 = BOM_UTF16_LE
-    else:
-        # UTF-16, native endianness
-        BOM_UTF16 = BOM_UTF16_BE
+from codecs import BOM_UTF8, BOM_UTF16, BOM_UTF16_BE, BOM_UTF16_LE
 
 # A dictionary mapping BOM to
 # the encoding to decode with, and what to set the
@@ -99,16 +84,6 @@ noquot = "%s"
 wspace_plus = ' \r\n\v\t\'"'
 tsquot = '"""%s"""'
 tdquot = "'''%s'''"
-
-try:
-    enumerate
-except NameError:
-    def enumerate(obj):
-        """enumerate for Python 2.2."""
-        i = -1
-        for item in obj:
-            i += 1
-            yield i, item
 
 # Sentinel for use in getattr calls to replace hasattr
 MISSING = object()
@@ -2129,8 +2104,18 @@ class ConfigObj(Section):
         #
         configspec = section.configspec
         self._set_configspec(section, copy)
+
         
         def validate_entry(entry, spec, val, missing, ret_true, ret_false):
+            section.default_values.pop(entry, None)
+                
+            try:
+                section.default_values[entry] = validator.get_default_value(configspec[entry])
+            except (KeyError, AttributeError, validator.baseErrorClass):
+                # No default, bad default or validator has no 'get_default_value'
+                # (e.g. SimpleVal)
+                pass
+            
             try:
                 check = validator.check(spec,
                                         val,
@@ -2145,21 +2130,6 @@ class ConfigObj(Section):
                     ret_false = False
                 ret_true = False
             else:
-                try: 
-                    section.default_values.pop(entry, None)
-                except AttributeError: 
-                    # For Python 2.2 compatibility
-                    try:
-                        del section.default_values[entry]
-                    except KeyError:
-                        pass
-                    
-                try: 
-                    section.default_values[entry] = validator.get_default_value(configspec[entry])
-                except (KeyError, AttributeError):
-                    # No default or validator has no 'get_default_value' (e.g. SimpleVal)
-                    pass
-                    
                 ret_false = False
                 out[entry] = True
                 if self.stringify or missing:

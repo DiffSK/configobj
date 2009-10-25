@@ -5,7 +5,9 @@
 ##################################################################
 [project attributes]
 proj.directory-list = [{'dirloc': loc('.'),
-                        'excludes': (),
+                        'excludes': [u'configobj.py.orig',
+                                     u'configobj.py.rej',
+                                     u'configobj_speedup.patch'],
                         'filter': '*',
                         'include_hidden': False,
                         'recursive': True,
