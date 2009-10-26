@@ -2172,13 +2172,12 @@ class ConfigObj(Section):
             if entry in ('__many__', '___many___'):
                 # reserved names
                 continue
-            
             if (not entry in section.scalars) or (entry in section.defaults):
                 # missing entries
                 # or entries from defaults
                 missing = True
                 val = None
-                if copy and not entry in section.scalars:
+                if copy and entry not in section.scalars:
                     # copy comments
                     section.comments[entry] = (
                         configspec.comments.get(entry, []))
@@ -2188,7 +2187,7 @@ class ConfigObj(Section):
             else:
                 missing = False
                 val = section[entry]
-                
+            
             ret_true, ret_false = validate_entry(entry, configspec[entry], val, 
                                                  missing, ret_true, ret_false)
         
@@ -2242,13 +2241,12 @@ class ConfigObj(Section):
                 ret_false = False
             else:
                 ret_true = False
-                ret_false = False
         
         section.extra_values = unvalidated
         #
         if ret_true:
             return True
-        elif ret_false:
+        elif ret_false and not preserve_errors:
             return False
         return out
 
@@ -2391,32 +2389,29 @@ def flatten_errors(cfg, res, levels=None, results=None):
     >>> for entry in flatten_errors(cfg, res):
     ...     section_list, key, error = entry
     ...     section_list.insert(0, '[root]')
-    ...     if key is not None:
-    ...        section_list.append(key)
-    ...     else:
-    ...         section_list.append('[missing]')
+    ...     section_list.append(key)
     ...     section_string = ', '.join(section_list)
-    ...     errors.append((section_string, ' = ', error))
+    ...     errors.append((section_string, ' = ', error or 'missing'))
     >>> errors.sort()
     >>> for entry in errors:
-    ...     print entry[0], entry[1], (entry[2] or 0)
-    [root], option2  =  0
+    ...     print entry[0], entry[1], entry[2]
+    [root], option2  =  missing
     [root], option3  =  the value "Bad_value" is of the wrong type.
-    [root], section1, option2  =  0
+    [root], section1, option2  =  missing
     [root], section1, option3  =  the value "Bad_value" is of the wrong type.
     [root], section2, another_option  =  the value "Probably" is of the wrong type.
-    [root], section3, section3b, section3b-sub, [missing]  =  0
+    [root], section3, section3b, section3b-sub, value  =  missing
     [root], section3, section3b, value2  =  the value "a" is of the wrong type.
     [root], section3, section3b, value3  =  the value "11" is too big.
-    [root], section4, [missing]  =  0
+    [root], section4, another_option  =  missing
     """
     if levels is None:
         # first time called
         levels = []
         results = []
-    if res is True:
+    if res == True:
         return results
-    if res is False or isinstance(res, Exception):
+    if res == False or isinstance(res, Exception):
         results.append((levels[:], None, res))
         if levels:
             levels.pop()

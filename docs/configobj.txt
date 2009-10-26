@@ -2298,7 +2298,10 @@ From version 4 it lists all releases and changes.
 * BUGFIX: clear() clears 'defaults'
 * BUGFIX: empty values in list values were accidentally valid syntax. They now
   raise a ParseError. e.g. "value = 1, , 2"
-  
+* If a section specified in a configspec is missing, or all the values in a
+  section are missing, will have False for all the values in the result
+  returned by by ``ConfigObj.validate``.
+
 
 2009/04/13 - Version 4.6.0
 --------------------------
