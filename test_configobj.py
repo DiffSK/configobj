@@ -2109,6 +2109,9 @@ def _test_validation_with_preserve_errors():
     >>> v = Validator()
     >>> spec = ['[section]', 'foo = integer']
     >>> c = ConfigObj(configspec=spec)
+    >>> c.validate(v, preserve_errors=True)
+    False
+    >>> c = ConfigObj(['[section]'], configspec=spec)
     >>> c.validate(v)
     False
     >>> c.validate(v, preserve_errors=True)
