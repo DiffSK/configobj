@@ -2296,6 +2296,8 @@ From version 4 it lists all releases and changes.
 * After validation any additional entries not in the configspec are listed in
   the 'extra_values' section member
 * BUGFIX: clear() clears 'defaults'
+* BUGFIX: empty values in list values were accidentally valid syntax. They now
+  raise a ParseError. e.g. "value = 1, , 2"
   
 
 2009/04/13 - Version 4.6.0

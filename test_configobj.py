@@ -2063,6 +2063,46 @@ def _test_reset_and_clear_more():
     {}
     """
 
+def _test_invalid_lists():
+    """
+    >>> v = ['string = val, val2, , val3']
+    >>> c = ConfigObj(v)
+    Traceback (most recent call last):
+    ParseError: Parse error in value at line 1.
+    >>> v = ['string = val, val2,, val3']
+    >>> c = ConfigObj(v)
+    Traceback (most recent call last):
+    ParseError: Parse error in value at line 1.
+    >>> v = ['string = val, val2,,']
+    >>> c = ConfigObj(v)
+    Traceback (most recent call last):
+    ParseError: Parse error in value at line 1.
+    >>> v = ['string = val, ,']
+    >>> c = ConfigObj(v)
+    Traceback (most recent call last):
+    ParseError: Parse error in value at line 1.
+    >>> v = ['string = val, ,  ']
+    >>> c = ConfigObj(v)
+    Traceback (most recent call last):
+    ParseError: Parse error in value at line 1.
+    >>> v = ['string = ,,']
+    >>> c = ConfigObj(v)
+    Traceback (most recent call last):
+    ParseError: Parse error in value at line 1.
+    >>> v = ['string = ,, ']
+    >>> c = ConfigObj(v)
+    Traceback (most recent call last):
+    ParseError: Parse error in value at line 1.
+    >>> v = ['string = ,foo']
+    >>> c = ConfigObj(v)
+    Traceback (most recent call last):
+    ParseError: Parse error in value at line 1.
+    >>> v = ['string = foo, ']
+    >>> c = ConfigObj(v)
+    >>> c['string']
+    ['foo']
+    """
+
 # TODO: Test BOM handling
 # TODO: Test error code for badly built multiline values
 # TODO: Test handling of StringIO

@@ -19,19 +19,15 @@
 
 from __future__ import generators
 
-import sys
 import os
 import re
-
-compiler = None
-try:
-    import compiler
-except ImportError:
-    # for IronPython
-    pass
-
+import sys
 
 from codecs import BOM_UTF8, BOM_UTF16, BOM_UTF16_BE, BOM_UTF16_LE
+
+
+# imported lazily to avoid startup performance hit if it isn't used
+compiler = None
 
 # A dictionary mapping BOM to
 # the encoding to decode with, and what to set the
@@ -135,9 +131,10 @@ OPTION_DEFAULTS = {
 
 
 def getObj(s):
-    s = "a=" + s
+    global compiler
     if compiler is None:
-        raise ImportError('compiler module not available')
+        import compiler
+    s = "a=" + s
     p = compiler.parse(s)
     return p.getChildren()[1].getChildren()[0].getChildren()[1]
 
@@ -280,11 +277,9 @@ class RepeatSectionError(ConfigObjError):
 
 class MissingInterpolationOption(InterpolationError):
     """A value specified for interpolation was missing."""
-
     def __init__(self, option):
-        InterpolationError.__init__(
-            self,
-            'missing option "%s" in interpolation.' % option)
+        msg = 'missing option "%s" in interpolation.' % option
+        InterpolationError.__init__(self, msg)
 
 
 class UnreprError(ConfigObjError):
@@ -1136,7 +1131,7 @@ class ConfigObj(Section):
         (
             (?:".*?")|          # double quotes
             (?:'.*?')|          # single quotes
-            (?:[^'",\#].*?)       # unquoted
+            (?:[^'",\#]?.*?)       # unquoted
         )
         \s*,\s*                 # comma
         ''',
@@ -1691,6 +1686,9 @@ class ConfigObj(Section):
 
     def _unquote(self, value):
         """Return an unquoted version of a value"""
+        if not value:
+            # should only happen during parsing of lists
+            raise SyntaxError
         if (value[0] == value[-1]) and (value[0] in ('"', "'")):
             value = value[1:-1]
         return value
