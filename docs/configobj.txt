@@ -2284,23 +2284,24 @@ This is an abbreviated changelog showing the major releases up to version 4.
 From version 4 it lists all releases and changes.
 
 
-2009/09/XX - Version 4.7.0
+2009/10/XX - Version 4.7.0
 --------------------------
 
 * Minimum supported version of Python is now 2.3
 * ~25% performance improvement thanks to Christian Heimes
-* Removed __revision__ and __docformat__
-* BUGFIX: Checks that failed validation would not populate 'default_values' and
-  'restore_default_value' wouldn't work
 * String interpolation now works in list values
 * After validation any additional entries not in the configspec are listed in
   the 'extra_values' section member
+* BUGFIX: Checks that failed validation would not populate 'default_values' and
+  'restore_default_value' wouldn't work for those entries
 * BUGFIX: clear() clears 'defaults'
 * BUGFIX: empty values in list values were accidentally valid syntax. They now
   raise a ParseError. e.g. "value = 1, , 2"
 * If a section specified in a configspec is missing, or all the values in a
   section are missing, will have False for all the values in the result
-  returned by by ``ConfigObj.validate``.
+  returned by by ``ConfigObj.validate``
+* Distribution includes version 1.0.1 of validate.py
+* Removed __revision__ and __docformat__
 
 
 2009/04/13 - Version 4.6.0

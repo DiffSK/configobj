@@ -527,6 +527,7 @@ class Section(dict):
         self.defaults = []
         self.default_values = {}
         self.extra_values = []
+        self._created = False
 
 
     def _interpolate(self, key, value):
@@ -1905,6 +1906,7 @@ class ConfigObj(Section):
                 continue
             if entry not in section:
                 section[entry] = {}
+                section[entry]._created = True
                 if copy:
                     # copy comments
                     section.comments[entry] = configspec.comments.get(entry, [])
@@ -2243,10 +2245,12 @@ class ConfigObj(Section):
                 ret_true = False
         
         section.extra_values = unvalidated
+        if preserve_errors and section._created:
+            ret_false = False
         #
         if ret_true:
             return True
-        elif ret_false and not preserve_errors:
+        elif ret_false:
             return False
         return out
 
