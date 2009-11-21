@@ -2246,6 +2246,7 @@ class ConfigObj(Section):
         
         section.extra_values = unvalidated
         if preserve_errors and section._created:
+            print 'b00m!'
             ret_false = False
         #
         if ret_true:
