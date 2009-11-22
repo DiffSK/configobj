@@ -2293,7 +2293,8 @@ From version 4 it lists all releases and changes.
 * After validation any additional entries not in the configspec are listed in
   the ``extra_values`` section member
 * Deprecated the use of the ``options`` dictionary in the ConfigObj constructor
-  and added explicit keyword arguments instead
+  and added explicit keyword arguments instead. Use **options if you want
+  to initialise a ConfigObj instance from a dictionary
 * BUGFIX: Checks that failed validation would not populate 'default_values' and
   'restore_default_value' wouldn't work for those entries
 * BUGFIX: clear() clears 'defaults'
