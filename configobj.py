@@ -2355,7 +2355,6 @@ class SimpleVal(object):
         return member
 
 
-# Check / processing functions for options
 def flatten_errors(cfg, res, levels=None, results=None):
     """
     An example function that will turn a nested dictionary of results
@@ -2387,67 +2386,6 @@ def flatten_errors(cfg, res, levels=None, results=None):
     object returned. You can use this as a string that describes the failure.
     
     For example *The value "3" is of the wrong type*.
-    
-    >>> import validate
-    >>> vtor = validate.Validator()
-    >>> my_ini = '''
-    ...     option1 = True
-    ...     [section1]
-    ...     option1 = True
-    ...     [section2]
-    ...     another_option = Probably
-    ...     [section3]
-    ...     another_option = True
-    ...     [[section3b]]
-    ...     value = 3
-    ...     value2 = a
-    ...     value3 = 11
-    ...     '''
-    >>> my_cfg = '''
-    ...     option1 = boolean()
-    ...     option2 = boolean()
-    ...     option3 = boolean(default=Bad_value)
-    ...     [section1]
-    ...     option1 = boolean()
-    ...     option2 = boolean()
-    ...     option3 = boolean(default=Bad_value)
-    ...     [section2]
-    ...     another_option = boolean()
-    ...     [section3]
-    ...     another_option = boolean()
-    ...     [[section3b]]
-    ...     value = integer
-    ...     value2 = integer
-    ...     value3 = integer(0, 10)
-    ...         [[[section3b-sub]]]
-    ...         value = string
-    ...     [section4]
-    ...     another_option = boolean()
-    ...     '''
-    >>> cs = my_cfg.split('\\n')
-    >>> ini = my_ini.split('\\n')
-    >>> cfg = ConfigObj(ini, configspec=cs)
-    >>> res = cfg.validate(vtor, preserve_errors=True)
-    >>> errors = []
-    >>> for entry in flatten_errors(cfg, res):
-    ...     section_list, key, error = entry
-    ...     section_list.insert(0, '[root]')
-    ...     if key is not None:
-    ...         section_list.append(key)
-    ...     section_string = ', '.join(section_list)
-    ...     errors.append('%s%s%s' % (section_string, ' = ', error or 'missing'))
-    >>> errors.sort()
-    >>> for entry in errors:
-    ...     print entry
-    [root], option2 = missing
-    [root], option3 = the value "Bad_value" is of the wrong type.
-    [root], section1, option2 = missing
-    [root], section1, option3 = the value "Bad_value" is of the wrong type.
-    [root], section2, another_option = the value "Probably" is of the wrong type.
-    [root], section3, section3b, section3b-sub = missing
-    [root], section3, section3b, value2 = the value "a" is of the wrong type.
-    [root], section3, section3b, value3 = the value "11" is too big.
-    [root], section4 = missing
     """
     if levels is None:
         # first time called
@@ -2477,20 +2415,21 @@ def flatten_errors(cfg, res, levels=None, results=None):
     return results
 
 
-def get_extra_values(conf, _prepend=None):
+def get_extra_values(conf, _prepend=()):
     """
     Find all the values and sections not in the configspec from a validated
     ConfigObj.
     
-    It returns a list of tuples where each tuple
+    ``get_extra_values`` returns a list of tuples where each tuple represents
+    either an extra section, or an extra value.
+    
+    The tuple contains the parent sections of the missing entry, plus the name
+    of the missing entry, similar to the tuples returned by ``flatten_errors``.
     
     NOTE: If you call ``get_extra_values`` on a ConfigObj instance that hasn't
     been validated it will return an empty list.
     """
     out = []
-    
-    if _prepend is None:
-        _prepend = ()
     
     out.extend(_prepend + (name,) for name in conf.extra_values)
     for name in conf.sections:
