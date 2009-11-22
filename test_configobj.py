@@ -1535,21 +1535,22 @@ def _test_validate():
     >>> for entry in flatten_errors(cfg, res):
     ...     section_list, key, error = entry
     ...     section_list.insert(0, '[root]')
-    ...     section_list.append(key)
+    ...     if key is not None:
+    ...         section_list.append(key)
     ...     section_string = ', '.join(section_list)
-    ...     errors.append((section_string, ' = ', error or 'missing'))
+    ...     errors.append('%s%s%s' % (section_string, ' = ', error or 'missing'))
     >>> errors.sort()
     >>> for entry in errors:
-    ...     print entry[0], entry[1], entry[2]
-    [root], option2  =  missing
-    [root], option3  =  the value "Bad_value" is of the wrong type.
-    [root], section1, option2  =  missing
-    [root], section1, option3  =  the value "Bad_value" is of the wrong type.
-    [root], section2, another_option  =  the value "Probably" is of the wrong type.
-    [root], section3, section3b, section3b-sub, value  =  missing
-    [root], section3, section3b, value2  =  the value "a" is of the wrong type.
-    [root], section3, section3b, value3  =  the value "11" is too big.
-    [root], section4, another_option  =  missing
+    ...     print entry
+    [root], option2 = missing
+    [root], option3 = the value "Bad_value" is of the wrong type.
+    [root], section1, option2 = missing
+    [root], section1, option3 = the value "Bad_value" is of the wrong type.
+    [root], section2, another_option = the value "Probably" is of the wrong type.
+    [root], section3, section3b, section3b-sub = missing
+    [root], section3, section3b, value2 = the value "a" is of the wrong type.
+    [root], section3, section3b, value3 = the value "11" is too big.
+    [root], section4 = missing
     """
 
 
@@ -2110,7 +2111,7 @@ def _test_validation_with_preserve_errors():
     >>> spec = ['[section]', 'foo = integer']
     >>> c = ConfigObj(configspec=spec)
     >>> c.validate(v, preserve_errors=True)
-    False
+    {'section': False}
     >>> c = ConfigObj(['[section]'], configspec=spec)
     >>> c.validate(v)
     False
