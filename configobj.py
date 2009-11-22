@@ -2260,6 +2260,10 @@ class ConfigObj(Section):
             ret_false = False
         #
         if ret_false and preserve_errors and out:
+            # If we are preserving errors, but all
+            # the failures are from missing sections / values
+            # then we can return False. Otherwise there is a
+            # real failure that we need to preserve.
             ret_false = not any(out.values())
         if ret_true:
             return True
