@@ -2292,6 +2292,8 @@ From version 4 it lists all releases and changes.
 * String interpolation now works in list value members
 * After validation any additional entries not in the configspec are listed in
   the ``extra_values`` section member
+* Addition of the ``get_extra_values`` function for finding all extra values
+  in a validated ConfigObj instance
 * Deprecated the use of the ``options`` dictionary in the ConfigObj constructor
   and added explicit keyword arguments instead. Use **options if you want
   to initialise a ConfigObj instance from a dictionary

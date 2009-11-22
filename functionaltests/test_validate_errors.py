@@ -1,6 +1,6 @@
 import os
 import unittest
-from configobj import ConfigObj
+from configobj import ConfigObj, get_extra_values
 from validate import Validator
 
 thisdir = os.path.dirname(os.path.join(os.getcwd(), __file__))
@@ -43,7 +43,20 @@ class TestValidateErrors(unittest.TestCase):
         self.assertEqual(conf['section']['sub-section'].extra_values,
                          ['extra'])
         
+    
+    def test_get_extra_values(self):
+        conf = ConfigObj(inipath, configspec=specpath)
         
+        conf.validate(Validator(), preserve_errors=True)
+        extra_values = get_extra_values(conf)
+        
+        expected = sorted([
+            ('extra',),
+            ('extra-section',),
+            ('section', 'sub-section', 'extra'),
+            ('section', 'extra-sub-section'),
+        ])
+        self.assertEqual(sorted(extra_values), expected)
 
     
     

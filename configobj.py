@@ -115,6 +115,7 @@ __all__ = (
     'UnreprError',
     'UnknownType',
     'flatten_errors',
+    'get_extra_values'
 )
 
 DEFAULT_INTERPOLATION = 'configparser'
@@ -2366,9 +2367,7 @@ def flatten_errors(cfg, res, levels=None, results=None):
     (This is a recursive function, so you shouldn't use the ``levels`` or
     ``results`` arguments - they are used by the function.)
     
-    Returns a list of keys that failed. Each member of the list is a tuple :
-    
-    ::
+    Returns a list of keys that failed. Each member of the list is a tuple::
     
         ([list of sections...], key, result)
     
@@ -2476,6 +2475,28 @@ def flatten_errors(cfg, res, levels=None, results=None):
         levels.pop()
     #
     return results
+
+
+def get_extra_values(conf, _prepend=None):
+    """
+    Find all the values and sections not in the configspec from a validated
+    ConfigObj.
+    
+    It returns a list of tuples where each tuple
+    
+    NOTE: If you call ``get_extra_values`` on a ConfigObj instance that hasn't
+    been validated it will return an empty list.
+    """
+    out = []
+    
+    if _prepend is None:
+        _prepend = ()
+    
+    out.extend(_prepend + (name,) for name in conf.extra_values)
+    for name in conf.sections:
+        if name not in conf.extra_values:
+            out.extend(get_extra_values(conf[name], _prepend + (name,)))
+    return out
 
 
 """*A programming language is a medium of expression.* - Paul Graham"""
