@@ -86,6 +86,15 @@ MISSING = object()
 
 __version__ = '4.7.0'
 
+try:
+    any
+except NameError:
+    def any(iterable):
+        for entry in iterable:
+            if entry:
+                return True
+        return False
+
 
 __all__ = (
     '__version__',
@@ -2246,6 +2255,8 @@ class ConfigObj(Section):
         
         section.extra_values = unvalidated
         if preserve_errors and not section._created:
+            # If the section wasn't created (i.e. it wasn't missing)
+            # then we can't return False, we need to preserve errors
             ret_false = False
         #
         if ret_false and preserve_errors and out:
