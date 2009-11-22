@@ -1180,21 +1180,44 @@ class ConfigObj(Section):
         }
 
 
-    def __init__(self, infile=None, options=None, _inspec=False, **kwargs):
+    def __init__(self, infile=None, options=None, configspec=None, encoding=None,
+                 interpolation=True, raise_errors=False, list_values=True,
+                 create_empty=False, file_error=False, stringify=True,
+                 indent_type=None, default_encoding=None, unrepr=False,
+                 write_empty_values=False, _inspec=False):
         """
         Parse a config file or create a config file object.
         
-        ``ConfigObj(infile=None, options=None, **kwargs)``
+        ``ConfigObj(infile=None, configspec=None, encoding=None,
+                    interpolation=True, raise_errors=False, list_values=True,
+                    create_empty=False, file_error=False, stringify=True,
+                    indent_type=None, default_encoding=None, unrepr=False,
+                    write_empty_values=False, _inspec=False)``
         """
         self._inspec = _inspec
         # init the superclass
         Section.__init__(self, self, 0, self)
         
         infile = infile or []
+        if options is not None:
+            import warnings
+            warnings.warn('Passing in an options dictionary to ConfigObj() is ',
+                          'deprecated. Use **options instead.',
+                          DeprecationWarning, stacklevel=2)
+        
+        _options = {'configspec': configspec,
+                    'encoding': encoding, 'interpolation': interpolation,
+                    'raise_errors': raise_errors, 'list_values': list_values,
+                    'create_empty': create_empty, 'file_error': file_error,
+                    'stringify': stringify, 'indent_type': indent_type,
+                    'default_encoding': default_encoding, 'unrepr': unrepr,
+                    'write_empty_values': write_empty_values}
+
         options = dict(options or {})
-            
-        # keyword arguments take precedence over an options dictionary
-        options.update(kwargs)
+        options.update(_options)
+        
+        # XXXX this ignores an explicit list_values = True in combination
+        # with _inspec. The user should *never* do that anyway, but still...
         if _inspec:
             options['list_values'] = False
         
