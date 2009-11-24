@@ -2299,7 +2299,7 @@ From version 4 it lists all releases and changes.
   to initialise a ConfigObj instance from a dictionary
 * BUGFIX: Checks that failed validation would not populate 'default_values' and
   'restore_default_value' wouldn't work for those entries
-* BUGFIX: clear() clears 'defaults'
+* BUGFIX: clear() now clears 'defaults'
 * BUGFIX: empty values in list values were accidentally valid syntax. They now
   raise a ``ParseError``. e.g. "value = 1, , 2"
 * BUGFIX: Change to the result of a call to ``validate`` when ``preserve_errors``
@@ -2351,7 +2351,7 @@ BUGFIX: fixed a problem with ``copy=True`` when validating with configspecs that
 --------------------------
 
 Distribution updated to include version 0.3.2 of validate_. This means that
-``None`` as a default value win configspecs works.
+``None`` as a default value in configspecs works.
 
 
 2008/02/05 - Version 4.5.1
