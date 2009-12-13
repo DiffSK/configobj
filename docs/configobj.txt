@@ -2284,7 +2284,7 @@ This is an abbreviated changelog showing the major releases up to version 4.
 From version 4 it lists all releases and changes.
 
 
-2009/10/XX - Version 4.7.0
+2009/12/XX - Version 4.7.0
 --------------------------
 
 * Minimum supported version of Python is now 2.3
@@ -2297,6 +2297,8 @@ From version 4 it lists all releases and changes.
 * Deprecated the use of the ``options`` dictionary in the ConfigObj constructor
   and added explicit keyword arguments instead. Use **options if you want
   to initialise a ConfigObj instance from a dictionary
+* Constructing a ConfigObj from an existing ConfigObj instance now preserves
+  the order of values and sections from the original instance in the new one
 * BUGFIX: Checks that failed validation would not populate 'default_values' and
   'restore_default_value' wouldn't work for those entries
 * BUGFIX: clear() now clears 'defaults'
