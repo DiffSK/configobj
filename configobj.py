@@ -1264,10 +1264,17 @@ class ConfigObj(Section):
             # the Section class handles creating subsections
             if isinstance(infile, ConfigObj):
                 # get a copy of our ConfigObj
-                infile = infile.dict()
+                def set_section(in_section, this_section):
+                    for entry in in_section.scalars:
+                        this_section[entry] = in_section[entry]
+                    for section in in_section.sections:
+                        this_section[section] = {}
+                        set_section(in_section[section], this_section[section])
+                set_section(infile, self)
                 
-            for entry in infile:
-                self[entry] = infile[entry]
+            else:
+                for entry in infile:
+                    self[entry] = infile[entry]
             del self._errors
             
             if configspec is not None:

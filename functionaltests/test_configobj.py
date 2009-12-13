@@ -23,4 +23,7 @@ class TestConfigObj(unittest.TestCase):
         self.assertEqual(c2.scalars, ['a', 'b', 'c'])
         self.assertEqual(c2.sections, ['section', 'section2', 'section3'])
         self.assertEqual(c2['section'].scalars, ['a', 'b', 'c'])
-        self.assertEqual(c2['section'].c.sections, ['section', 'section2', 'section3'])
+        self.assertEqual(c2['section'].sections, ['section', 'section2', 'section3'])
+        
+        self.assertFalse(c['section'] is c2['section'])
+        self.assertFalse(c['section']['section'] is c2['section']['section'])
