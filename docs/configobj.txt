@@ -255,7 +255,7 @@ You can have list values by separating items with a comma, and values spanning
 multiple lines by using triple quotes (single or double).
 
 For full details on all these see `the config file format`_. Here's an example
-to illustrate : ::
+to illustrate::
 
     # This is the 'initial_comment'
     # Which may be several lines
@@ -522,7 +522,7 @@ The public methods available on ConfigObj are :
 write
 ~~~~~
 
-::
+.. code-block:: python
 
     write(file_object=None)
 
@@ -551,7 +551,8 @@ key/value.
 validate
 ~~~~~~~~
 
-::
+
+.. code-block:: python
 
     validate(validator, preserve_errors=False, copy=False)
 
@@ -941,7 +942,7 @@ The Config File Format
 You saw an example config file in the `Config Files`_ section. Here is a fuller
 specification of the config files used and created by ConfigObj.
 
-The basic pattern for keywords is : ::
+The basic pattern for keywords is::
 
     # comment line
     # comment line
@@ -958,7 +959,7 @@ or comma, then it should be surrounded by quotes. Quotes are not necessary if
 whitespace is surrounded by non-whitespace.
 
 Values can also be lists. Lists are comma separated. You indicate a single
-member list by a trailing comma. An empty list is shown by a single comma : ::
+member list by a trailing comma. An empty list is shown by a single comma::
 
     keyword1 = value1, value2, value3
     keyword2 = value1, # a single member list
@@ -966,7 +967,7 @@ member list by a trailing comma. An empty list is shown by a single comma : ::
 
 Values that contain line breaks (multi-line values) can be surrounded by triple
 quotes. These can also be used if a value contains both types of quotes. List
-members cannot be surrounded by triple quotes : ::
+members cannot be surrounded by triple quotes::
 
     keyword1 = ''' A multi line value
     on several
@@ -988,7 +989,7 @@ A line that starts with a '#', possibly preceded by whitespace, is a comment.
 New sections are indicated by a section marker line. That is the section name
 in square brackets. Whitespace around the section name is ignored. The name can
 be quoted with single or double quotes. The marker can have comments before it
-and an inline comment after it : ::
+and an inline comment after it::
 
     # The First Section
     [ section name 1 ] # first section
@@ -1013,7 +1014,7 @@ brackets in a section marker is not the same, or if a sub-section's nesting
 level is greater than the nesting level of it parent plus one.
 
 In the outer section, single values can only appear before any sub-section.
-Otherwise they will belong to the sub-section immediately before them. ::
+Otherwise they will belong to the sub-section immediately before them::
 
     # initial comment
     keyword1 = value1
@@ -1045,7 +1046,7 @@ Otherwise they will belong to the sub-section immediately before them. ::
 
     # final comment
 
-When parsed, the above config file produces the following data structure :
+When parsed, the above config file produces the following data structure:
 
 
 .. code-block:: python
@@ -1302,11 +1303,11 @@ Section Methods
 
     Raises a ``ValueError`` if the key contains anything else.
     
-    Strings that represent ``True`` are (not case sensitive) : ::
+    Strings that represent ``True`` are (not case sensitive)::
     
         true, yes, on, 1
         
-    Strings that represent ``False`` are : ::
+    Strings that represent ``False`` are::
     
         false, no, off, 0
     
@@ -1788,7 +1789,7 @@ List Values
 It's possible that you will want to specify a list as a default value. To avoid
 confusing syntax with commas and quotes you use a list constructor to specify 
 that keyword arguments are lists. This includes the ``default`` value. This 
-makes checks look something like : ::
+makes checks look something like::
 
     checkname(default=list('val1', 'val2', 'val3'))
 
@@ -2059,6 +2060,10 @@ validation overwrites values - and so may erase the interpolation references.
 See `Validation and Interpolation`_. (This can only happen if validation
 has to *change* the value).
 
+New in ConfigObj 4.7.0: String interpolation is now done in members of list
+values.
+
+
 
 Comments
 ========
@@ -2089,7 +2094,7 @@ These comments are all written back out by the ``write`` method.
 flatten_errors
 ==============
 
-::
+.. code-block:: python
 
     flatten_errors(cfg, res)
 
@@ -2106,7 +2111,7 @@ a flat list, that only contains values that *failed*.
 ``cfg`` is the ConfigObj instance being checked, ``res`` is the results
 dictionary returned by ``validate``.
 
-It returns a list of keys that failed. Each member of the list is a tuple : ::
+It returns a list of keys that failed. Each member of the list is a tuple::
 
     ([list of sections...], key, result)
 
@@ -2156,6 +2161,13 @@ Here is an example of how you could present this information to the user.
         print section_string, ' = ', error
 
 
+extra_values
+============
+
+::
+
+    
+
 CREDITS
 =======
 
@@ -2179,7 +2191,7 @@ free software: test it, break it, just don't blame us if it eats your data !
 Of course if it does, let us know and we'll fix the problem so it doesn't
 happen to anyone else {sm;:-)}. ::
 
-    Copyright (c) 2004 - 2009, Michael Foord & Nicola Larosa
+    Copyright (c) 2004 - 2010, Michael Foord & Nicola Larosa
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
