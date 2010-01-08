@@ -8,7 +8,7 @@
 
 :Authors: Michael Foord, Nicola Larosa
 :Version: ConfigObj 4.7.0
-:Date: 2009/10/XX
+:Date: 2010/01/09
 :Homepage: `ConfigObj Homepage`_
 :PyPI Entry: `ConfigObj on PyPI <http://pypi.python.org/pypi/configobj/>`_
 :Development: `Google Code Homepage`_
@@ -66,7 +66,7 @@ For support and bug reports please use the ConfigObj `Mailing List`_ or the issu
 Downloading
 ===========
 
-The current version is **4.7.0**, dated XXth April 2009. ConfigObj 4 is
+The current version is **4.7.0**, dated 9th January 2010. ConfigObj 4 is
 stable and mature. We still expect to pick up a few bugs along the way though [#]_.
 {sm;:-)}
 
@@ -146,8 +146,6 @@ ConfigObj in the Real World
 * `Elisa - the Fluendo Mediacenter <http://elisa.fluendo.com/>`_    
     
     Elisa is an open source cross-platform media center solution designed to be simple for people not particularly familiar with computers.
-
-Version 4.5.3 was downloaded over 25 000 times from PyPI alone.
 
 
 Getting Started
@@ -293,44 +291,38 @@ ConfigObj specifications
 
 .. code-block:: python
 
-    config = ConfigObj(infile=None, options=None, **keywargs)
+    config = ConfigObj(infile=None, options=None, configspec=None, encoding=None,
+                       interpolation=True, raise_errors=False, list_values=True,
+                       create_empty=False, file_error=False, stringify=True,
+                       indent_type=None, default_encoding=None, unrepr=False,
+                       write_empty_values=False, _inspec=False)
 
-
-infile
-------
-
-You don't need to specify an infile. If you omit it, an empty ConfigObj will be
-created. ``infile`` *can* be :
-
-* Nothing. In which case the ``filename`` attribute of your ConfigObj will be
-  ``None``. You can set a filename at any time.
-
-* A filename. What happens if the file doesn't already exist is determined by
-  the options_ ``file_error`` and ``create_empty``. The filename will be
-  preserved as the ``filename`` attribute. This can be changed at any time.
-
-* A list of lines. Any trailing newlines will be removed from the lines. The
-  ``filename`` attribute of your ConfigObj will be ``None``.
-
-* A ``StringIO`` instance or file object, or any object with a ``read`` method.
-  The ``filename`` attribute of your ConfigObj will be ``None`` [#]_.
-
-* A dictionary. You can initialise a ConfigObj from a dictionary [#]_. The
-  ``filename`` attribute of your ConfigObj will be ``None``. All keys must be
-  strings. In this case, the order of values and sections is arbitrary.
-
-
-options
--------
-
-There are various options that control the way ConfigObj behaves. They can be
-passed in as a dictionary of options, or as keyword arguments. Explicit keyword
-arguments override the dictionary.
-
-All of the options are available as attributes after the config file has been
+Many of the keyword arguments are available as attributes after the config file has been
 parsed.
 
-ConfigObj has the following options (with the default values shown) :
+ConfigObj has the following arguments (with the default values shown) :
+
+* infile: ``None``
+
+    You don't need to specify an infile. If you omit it, an empty ConfigObj will be
+    created. ``infile`` *can* be :
+
+    * Nothing. In which case the ``filename`` attribute of your ConfigObj will be
+      ``None``. You can set a filename at any time.
+
+    * A filename. What happens if the file doesn't already exist is determined by
+      the options_ ``file_error`` and ``create_empty``. The filename will be
+      preserved as the ``filename`` attribute. This can be changed at any time.
+
+    * A list of lines. Any trailing newlines will be removed from the lines. The
+      ``filename`` attribute of your ConfigObj will be ``None``.
+
+    * A ``StringIO`` instance or file object, or any object with a ``read`` method.
+      The ``filename`` attribute of your ConfigObj will be ``None`` [#]_.
+
+    * A dictionary. You can initialise a ConfigObj from a dictionary [#]_. The
+      ``filename`` attribute of your ConfigObj will be ``None``. All keys must be
+      strings. In this case, the order of values and sections is arbitrary.
 
 * 'raise_errors': ``False``
 
@@ -374,6 +366,8 @@ ConfigObj has the following options (with the default values shown) :
 
     You can set this attribute to change whether string interpolation is done
     when values are fetched. See the `String Interpolation`_ section for more details.
+    
+    New in ConfigObj 4.7.0: Interpolation will also be done in list values.
 
 * 'configspec': ``None``
 
@@ -475,6 +469,12 @@ ConfigObj has the following options (with the default values shown) :
 
     If ``write_empty_values`` is ``True``, empty strings are written as
     empty values. See `Empty Values`_ for more details.
+
+* '_inspec': ``False``
+
+    Used internally by ConfigObj when parsing configspec files. If you are
+    creating a ConfigObj instance from a configspec file you must pass True
+    for this argument as well as ``list_values=False``.
 
 
 Methods
@@ -1712,6 +1712,17 @@ documentation`_.
     
     In order to allow this, checks in the 'DEFAULT' section (of the root level
     of your configspec) are *not* used.
+    
+    If you want to use a configspec *without* interpolation being done in it
+    you can create your configspec manually and switch off interpolation:
+    
+    .. code-block::
+    
+        from configobj import ConfigObj
+        
+        configspec = ConfigObj(spec_filename, interpolation=False, list_values=False,
+                               _inspec=True)
+        conf = ConfigObj(config_filename, configspec=configspec)
 
 If you need to specify the encoding of your configspec, then you can pass in a
 ConfigObj instance as your configspec. When you read your configspec file, you
@@ -2284,7 +2295,7 @@ This is an abbreviated changelog showing the major releases up to version 4.
 From version 4 it lists all releases and changes.
 
 
-2009/12/XX - Version 4.7.0
+20010/01/09 - Version 4.7.0
 --------------------------
 
 * Minimum supported version of Python is now 2.3
