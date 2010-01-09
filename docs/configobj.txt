@@ -321,7 +321,7 @@ ConfigObj takes the following arguments (with the default values shown) :
       ``None``. You can set a filename at any time.
 
     * A filename. What happens if the file doesn't already exist is determined by
-      the options_ ``file_error`` and ``create_empty``. The filename will be
+      the options ``file_error`` and ``create_empty``. The filename will be
       preserved as the ``filename`` attribute. This can be changed at any time.
 
     * A list of lines. Any trailing newlines will be removed from the lines. The
@@ -807,7 +807,7 @@ A ConfigObj has the following attributes :
     *configspec*. These are actually attributes of Sections_.
 
 It also has the following attributes as a result of parsing. They correspond to
-options_ when the ConfigObj was created, but changing them has no effect.
+options when the ConfigObj was created, but changing them has no effect.
 
 * raise_errors
 * create_empty
@@ -1736,7 +1736,7 @@ documentation`_.
     If you want to use a configspec *without* interpolation being done in it
     you can create your configspec manually and switch off interpolation:
     
-    .. code-block::
+    .. code-block:: python
     
         from configobj import ConfigObj
         
@@ -2401,7 +2401,7 @@ From version 4 it lists all releases and changes.
 
 
 20010/01/09 - Version 4.7.0
---------------------------
+---------------------------
 
 * Minimum supported version of Python is now 2.3
 * ~25% performance improvement thanks to Christian Heimes
@@ -2411,7 +2411,7 @@ From version 4 it lists all releases and changes.
 * Addition of the ``get_extra_values`` function for finding all extra values
   in a validated ConfigObj instance
 * Deprecated the use of the ``options`` dictionary in the ConfigObj constructor
-  and added explicit keyword arguments instead. Use **options if you want
+  and added explicit keyword arguments instead. Use \*\*options if you want
   to initialise a ConfigObj instance from a dictionary
 * Constructing a ConfigObj from an existing ConfigObj instance now preserves
   the order of values and sections from the original instance in the new one
@@ -2898,7 +2898,7 @@ Footnotes
 .. [#] And if you discover any bugs, let us know. We'll fix them quickly.
 
 .. [#] If you specify a filename that doesn't exist, ConfigObj will assume you
-    are creating a new one. See the *create_empty* and *file_error* options_.
+    are creating a new one. See the *create_empty* and *file_error* options.
 
 .. [#] They can be byte strings (*ordinary* strings) or Unicode.
 
