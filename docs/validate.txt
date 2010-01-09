@@ -8,8 +8,8 @@
 
 
 :Authors: `Michael Foord`_, `Nicola Larosa`_, `Mark Andrews`_
-:Version: Validate 1.0.0
-:Date: 2009/04/13
+:Version: Validate 1.0.1
+:Date: 2010/01/09
 :Homepage: `Validate Homepage`_
 :Repository: `Google code homepage <http://code.google.com/p/configobj/>`_
 :PyPI Entry: `Validate on Python Packaging Index <http://pypi.python.org/pypi/validate>`_
@@ -70,7 +70,7 @@ For support and bug reports please use the ConfigObj `Mailing List`_.
 Downloading
 ===========
 
-The current version is **1.0.0**, dated 24th February 2008. 
+The current version is **1.0.1**, dated 9th January 2010. 
 
 You can get obtain validate in the following ways :
 
@@ -97,7 +97,7 @@ Documentation
 * You can view `this document`_ online as the `Validate Homepage`_.
 
 .. _configobj.py: http://www.voidspace.org.uk/cgi-bin/voidspace/download/configobj.py
-.. _configobj.zip: http://www.voidspace.org.uk/cgi-bin/voidspace/download/configobj-4.6.0.zip
+.. _configobj.zip: http://www.voidspace.org.uk/cgi-bin/voidspace/download/configobj-4.7.0.zip
 .. _validate.py: http://www.voidspace.org.uk/cgi-bin/voidspace/download/validate.py
 .. _Subversion Repository: http://code.google.com/p/configobj/
 .. _Sourceforge: http://sourceforge.net/projects/configobj
@@ -123,7 +123,7 @@ Adding additional checks is done through coding simple functions.
 The full set of standard checks are :
 
 :'integer': matches integer values (including negative). Takes optional 'min'
-            and 'max' arguments : ::
+            and 'max' arguments::
 
                 integer()
                 integer(3, 9)    # any value from 3 to 9
@@ -134,11 +134,11 @@ The full set of standard checks are :
           Has the same parameters as the integer check.
 
 :'boolean': matches boolean values: ``True`` or ``False``.
-            Acceptable string values for True are : ::
+            Acceptable string values for True are::
 
              true, on, yes, 1
 
-         Acceptable string values for False are : ::
+         Acceptable string values for False are::
 
              false, off, no, 0
 
@@ -176,12 +176,12 @@ The full set of standard checks are :
 :'mixed_list': Matches a list with different types in specific positions.
                List size must match the number of arguments.
 
-               Each position can be one of : ::
+               Each position can be one of::
 
                    int, str, boolean, float, ip_addr
 
                So to specify a list with two strings followed by two integers,
-               you write the check as : ::
+               you write the check as::
 
                    mixed_list(str, str, int, int)
 
@@ -189,16 +189,14 @@ The full set of standard checks are :
          also the default if no check is specified.
 
 :'option': matches any from a list of options.
-           You specify this test with : ::
+           You specify this test with::
 
                option('option 1', 'option 2', 'option 3')
 
 The following code will work without you having to specifically add the
 functions yourself.
 
-.. raw:: html
-
-    {+coloring}
+.. code-block:: python
 
     from validate import Validator
     #
@@ -206,8 +204,6 @@ functions yourself.
     newval1 = vtor.check('integer', value1)
     newval2 = vtor.check('boolean', value2)
     # etc ...
-
-    {-coloring}
 
 .. note::
 
@@ -230,20 +226,14 @@ functions`_.
 Instantiate
 -----------
 
-.. raw:: html
-
-    {+coloring}
+.. code-block:: python
 
     from validate import Validator
     vtor = Validator()
 
-    {-coloring}
-
 or even :
 
-.. raw:: html
-
-    {+coloring}
+.. code-block:: python
 
     from validate import Validator
     #
@@ -255,7 +245,6 @@ or even :
     #
     vtor = Validator(fdict)
 
-    {-coloring}
 
 The second method adds a set of your functions as soon as your validator is
 created. They are stored in the ``vtor.functions`` dictionary. The 'key' you
@@ -272,9 +261,7 @@ Adding functions
 The code shown above, for adding functions on instantiation, has exactly the
 same effect as the following code :
 
-.. raw:: html
-
-    {+coloring}
+.. code-block:: python
 
     from validate import Validator
     #
@@ -282,8 +269,6 @@ same effect as the following code :
     vtor.functions['check_name1'] = function1
     vtor.functions['check_name2'] = function2
     vtor.functions['check_name3'] = function3
-
-    {-coloring}
 
 ``vtor.functions`` is just a dictionary that maps names to functions, so we
 could also have called ``vtor.functions.update(fdict)``.
@@ -296,8 +281,7 @@ As we've heard, the checks map to the names in the ``functions`` dictionary.
 You've got a full list of `The standard functions`_ and the arguments they
 take.
 
-If you're using ``Validator`` from ConfigObj, then your checks will look like
-: ::
+If you're using ``Validator`` from ConfigObj, then your checks will look like::
 
     keyword = int_list(max=6)
 
@@ -313,9 +297,7 @@ If you're not using ``Validator`` from ConfigObj, then you'll need to call the
 If the check fails then it will raise an exception, so you'll want to trap
 that. Here's the basic example :
 
-.. raw:: html
-
-    {+coloring}
+.. code-block:: python
 
     from validate import Validator, ValidateError
     #
@@ -329,7 +311,6 @@ that. Here's the basic example :
     else:
         print 'Check passed.'
 
-    {-coloring}
 
 .. caution::
 
@@ -348,9 +329,7 @@ well as a ``default=value`` in the check. (Constructing these checks is done
 automatically by ConfigObj: you only need to know about the ``default=value``
 part) :
 
-.. raw:: html
-
-    {+coloring}
+.. code-block:: python
 
     check1 = 'integer(default=50)'
     check2 = 'option("val 1", "val 2", "val 3", default="val 1")'
@@ -358,7 +337,6 @@ part) :
     assert vtor.check(check1, '', missing=True) == 50
     assert vtor.check(check2, '', missing=True) == "val 1"
 
-    {-coloring}
 
 If you pass in ``missing=True`` to the check method, then the actual value is
 ignored. If no default is specified in the check, a ``ValidateMissingValue``
@@ -386,7 +364,7 @@ them keyword arguments as lists from within the check.
 
 To avoid confusing syntax with commas and quotes you use a list constructor to
 specify that keyword arguments are lists. This includes the ``default`` value.
-This makes checks look something like : ::
+This makes checks look something like::
 
     checkname(default=list('val1', 'val2', 'val3'))
 
@@ -444,15 +422,12 @@ value was supplied.
 Both ``VdtTypeError`` and ``VdtValueError`` are initialised with the
 incorrect value. In other words you raise them like this :
 
-.. raw:: html
-
-    {+coloring}
+.. code-block:: python
 
     raise VdtTypeError(value)
     #
     raise VdtValueError(value)
 
-    {-coloring}
 
 ``VdtValueError`` has the following subclasses, which should be raised if
 they are more appropriate.
@@ -507,9 +482,7 @@ between 0 and 99, or a string representation of an integer between 0 and 99.
 Any other type is a ``VdtTypeError``, any other value is a
 ``VdtValueError`` (either too big, or too small).
 
-.. raw:: html
-
-    {+coloring}
+.. code-block:: python
 
     def special_list(value, length):
         """
@@ -555,8 +528,6 @@ Any other type is a ``VdtTypeError``, any other value is a
         # if we got this far, all is well
         # return the new list
         return out
-
-    {-coloring}
 
 If you are only using validate from ConfigObj then the error type (*TooBig*, 
 *TooSmall*, etc) is lost - so you may only want to raise ``VdtValueError``.
@@ -690,7 +661,7 @@ Konrad Wojas.)
 Fixed bug so we can handle keyword argument values with commas.
 
 We now use a list constructor for passing list values to keyword arguments
-(including ``default``) : ::
+(including ``default``)::
 
     default=list("val", "val", "val")
 
