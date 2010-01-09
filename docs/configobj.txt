@@ -2405,8 +2405,8 @@ From version 4 it lists all releases and changes.
   to initialise a ConfigObj instance from a dictionary
 * Constructing a ConfigObj from an existing ConfigObj instance now preserves
   the order of values and sections from the original instance in the new one
-* BUGFIX: Checks that failed validation would not populate 'default_values' and
-  'restore_default_value' wouldn't work for those entries
+* BUGFIX: Checks that failed validation would not populate ``default_values`` and
+  ``restore_default_value()`` wouldn't work for those entries
 * BUGFIX: clear() now clears 'defaults'
 * BUGFIX: empty values in list values were accidentally valid syntax. They now
   raise a ``ParseError``. e.g. "value = 1, , 2"
