@@ -51,10 +51,10 @@ class TestValidateErrors(unittest.TestCase):
         extra_values = get_extra_values(conf)
         
         expected = sorted([
-            ('extra',),
-            ('extra-section',),
-            ('section', 'sub-section', 'extra'),
-            ('section', 'extra-sub-section'),
+            ((), 'extra'),
+            ((), 'extra-section'),
+            (('section', 'sub-section'), 'extra'),
+            (('section',), 'extra-sub-section'),
         ])
         self.assertEqual(sorted(extra_values), expected)
 
