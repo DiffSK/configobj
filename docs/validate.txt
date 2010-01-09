@@ -1,7 +1,6 @@
 ===================================
  Validation Schema with validate.py
 ===================================
-
 --------------------------
  Using the Validator class
 --------------------------
@@ -665,7 +664,7 @@ We now use a list constructor for passing list values to keyword arguments
 
     default=list("val", "val", "val")
 
-Added the ``_test`` test. {sm;:-)}
+Added the ``_test`` test.
 
 Moved a function call outside a try...except block.
 

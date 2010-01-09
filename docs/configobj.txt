@@ -1,7 +1,6 @@
 ==================================
  Reading and Writing Config Files
 ==================================
-
 ----------------------------------------
  ConfigObj 4 Introduction and Reference
 ----------------------------------------
@@ -68,7 +67,6 @@ Downloading
 
 The current version is **4.7.0**, dated 9th January 2010. ConfigObj 4 is
 stable and mature. We still expect to pick up a few bugs along the way though [#]_.
-{sm;:-)}
 
 You can get ConfigObj in the following ways :
 
@@ -132,7 +130,7 @@ ConfigObj in the Real World
 * `Chandler <http://chandler.osafoundation.org/>`_
 
    A Python and `wxPython <http://www.wxpython.org>`_ 
-   {acro;PIM;Personal Information Manager}, being developed by the 
+   Personal Information Manager, being developed by the 
    `OSAFoundation <http://www.osafoundation.org/>`_.
  
 * `matplotlib <http://matplotlib.sourceforge.net/>`_
@@ -839,7 +837,7 @@ BOM
 ~~~
 
 If the initial config file *started* with the UTF8 Unicode signature (known
-slightly incorrectly as the {acro;BOM;Byte Order Mark}), or the UTF16 BOM, then
+slightly incorrectly as the BOM - Byte Order Mark), or the UTF16 BOM, then
 this attribute is set to ``True``. Otherwise it is ``False``.
 
 If it is set to ``True`` when ``write`` is called then, if ``encoding`` is set
@@ -1100,7 +1098,7 @@ the same order as the original file.
     applications. This is documented under `Empty Values`_.
     
     `unrepr mode`_ introduces *another* syntax variation, used for storing
-    basic Python datatypes in config files. {sm;:-)}
+    basic Python datatypes in config files.
 
 
 Sections
@@ -1654,7 +1652,6 @@ message will be raised.
     One wrongly written line could break the basic structure of your config
     file. This could cause every line after it to flag an error, so having a
     list of all the lines that caused errors may not be as useful as it sounds.
-    {sm;:-(}.
 
 
 Validation
@@ -1903,7 +1900,7 @@ then use the absolute value and the interpolation reference would be lost.
 As a compromise - if the value is unchanged by validation then it is not reset.
 This means strings that pass through validation unmodified will not be 
 overwritten. If validation changes type - the value has to be overwritten, and
-any interpolation references are lost {sm;:-(}.
+any interpolation references are lost.
 
 
 Extra Values
@@ -2282,7 +2279,7 @@ ConfigObj, and related files, are licensed under the BSD license. This is a
 very unrestrictive license, but it comes with the usual disclaimer. This is
 free software: test it, break it, just don't blame us if it eats your data !
 Of course if it does, let us know and we'll fix the problem so it doesn't
-happen to anyone else {sm;:-)}. ::
+happen to anyone else::
 
     Copyright (c) 2004 - 2010, Michael Foord & Nicola Larosa
     All rights reserved.
@@ -2578,7 +2575,7 @@ Philippe Normand for the report.)
 
 As a consequence of this fix, ConfigObj doesn't now keep inline comments in
 ``unrepr`` mode. This is because the parser in the `compiler package`_
-doesn't keep comments. {sm;:-)}
+doesn't keep comments.
 
 Error messages are now more useful. They tell you the number of parsing errors
 and the line number of the first error. (In the case of multiple errors.)
@@ -2792,7 +2789,7 @@ Validation greatly improved. Includes:
 
 Improved error handling.
 
-Plus lots of other improvements. {sm;:grin:}
+Plus lots of other improvements.
 
 
 2004/05/24 - Version 3.0.0
@@ -2858,7 +2855,7 @@ The config object now behaves like a dictionary.
 I've completely broken the interface, but I don't think anyone was really
 using it anyway.
 
-This new version is much more 'classy'. {sm;:wink:}
+This new version is much more 'classy'.
 
 It will also read straight from/to a filename and completely parse a config
 file without you *having* to supply a config spec.
