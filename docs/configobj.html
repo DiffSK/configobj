@@ -816,7 +816,7 @@ instance to a freshly created state.</p>
 <p>A ConfigObj has the following attributes :</p>
 <ul class="simple">
 <li>indent_type</li>
-<li>interpolate</li>
+<li>interpolation</li>
 <li>stringify</li>
 <li>BOM</li>
 <li>initial_comment</li>
@@ -2190,8 +2190,8 @@ and added explicit keyword arguments instead. Use **options if you want
 to initialise a ConfigObj instance from a dictionary</li>
 <li>Constructing a ConfigObj from an existing ConfigObj instance now preserves
 the order of values and sections from the original instance in the new one</li>
-<li>BUGFIX: Checks that failed validation would not populate 'default_values' and
-'restore_default_value' wouldn't work for those entries</li>
+<li>BUGFIX: Checks that failed validation would not populate <tt class="docutils literal">default_values</tt> and
+<tt class="docutils literal">restore_default_value()</tt> wouldn't work for those entries</li>
 <li>BUGFIX: clear() now clears 'defaults'</li>
 <li>BUGFIX: empty values in list values were accidentally valid syntax. They now
 raise a <tt class="docutils literal">ParseError</tt>. e.g. &quot;value = 1, , 2&quot;</li>

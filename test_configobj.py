@@ -1,7 +1,7 @@
 # configobj_test.py
 # doctests for ConfigObj
 # A config file reader/writer that supports nested sections in config files.
-# Copyright (C) 2005-2009 Michael Foord, Nicola Larosa
+# Copyright (C) 2005-2010 Michael Foord, Nicola Larosa
 # E-mail: fuzzyman AT voidspace DOT org DOT uk
 #         nico AT tekNico DOT net
 
