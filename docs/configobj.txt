@@ -300,7 +300,17 @@ ConfigObj specifications
 Many of the keyword arguments are available as attributes after the config file has been
 parsed.
 
-ConfigObj has the following arguments (with the default values shown) :
+.. note::
+
+    New in ConfigObj 4.7.0: It is no longer possible to instantiate ConfigObj with
+    an ``options`` dictionary as in earlier versions. To modify code that used to 
+    do this simply unpack the dictionary in the constructor call:
+    
+    .. code-block:: python
+    
+        config = ConfigObj(filename, **options)
+
+ConfigObj takes the following arguments (with the default values shown) :
 
 * infile: ``None``
 
@@ -1241,6 +1251,15 @@ Section Attributes
 
     See the validation_ section for full details of how to write configspecs.
 
+* extra_values
+
+    By default an empty list. After validation_ this is populated with any members
+    of the section that don't appear in the configspec (i.e. they are additional
+    values). Rather than accessing this directly it may be more convenient to get
+    all the extra values in a config file using the get_extra_values_ function.
+    
+    New in ConfigObj 4.7.0.
+    
 
 Section Methods
 ---------------
@@ -1887,6 +1906,23 @@ overwritten. If validation changes type - the value has to be overwritten, and
 any interpolation references are lost {sm;:-(}.
 
 
+Extra Values
+------------
+
+After validation the ``extra_values`` member of every section that is listed in
+the configspec will be populated with the names of members that are in the
+config file but not in the configspec.
+
+If you are reporting configuration errors to your user this information can be
+useful, for example some missing entries may be due to misspelt entries that
+appear as extra values.
+
+See the get_extra_values_ function
+
+New in ConfigObj 4.7.0.
+
+
+
 SimpleVal
 ---------
 
@@ -2183,6 +2219,9 @@ section the first member will be an empty tuple. For values in the 'foo'
 section the first member will be ``('foo',)``. For members in the 'bar'
 subsection of the 'foo' section the first member will be ``('foo', 'bar')``.
 
+Extra sections will only have one entry. Values and subsections inside
+an extra section aren't listed separately.
+
 NOTE: If you call ``get_extra_values`` on a ConfigObj instance that hasn't
 been validated it will return an empty list.
 
@@ -2207,10 +2246,17 @@ Here is an example of how you could present this information to the user.
         the_section = cfg
         for section in sections:
             the_section = cfg[section]
+            
         # the_value may be a section or a value
         the_value = the_section[name]
         
+        section_or_value = 'value
+        if isinstance(the_value, dict):
+            # Sections are subclasses of dict
+            section_or_value = 'section'
         
+        section_string = ', '.join(sections) or "top level"
+        print 'Extra entry in section: %s. Entry %r is a %s' % (section_string, name, section_or_value)
         
 
 
@@ -2226,6 +2272,7 @@ validation system and the doctests.
 *validate.py* was originally written by Michael Foord and Mark Andrews.
 
 Thanks to many others for input, patches and bugfixes.
+
 
 
 LICENSE
