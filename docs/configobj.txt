@@ -2358,9 +2358,8 @@ If you *create* the configspec by passing in a ConfigObj instance (usual way is 
 
 When using ``copy`` mode for validation, it won't copy ``DEFAULT``
 sections. This is so that you *can* use interpolation in configspec
-files.
-
-``validate`` doesn't report *extra* values or sections.
+files. This is probably true even if interpolation is off in the 
+configspec.
 
 You can't have a keyword with the same name as a section (in the same
 section). They are both dictionary keys - so they would overlap.
