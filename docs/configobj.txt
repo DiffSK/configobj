@@ -787,7 +787,7 @@ Attributes
 A ConfigObj has the following attributes :
 
 * indent_type
-* interpolate
+* interpolation
 * stringify
 * BOM
 * initial_comment
@@ -887,14 +887,7 @@ handled as normal.
 
 .. caution::
 
-    Because values aren't quoted, leading or trailing whitespace can be
-	lost.
-
-    This behaviour was changed in version 4.0.1.
-	
-	Prior to this, single line values might have been quoted; even with
-	``list_values=False``. This means that files written by **ConfigObj**
-	*could* now be incompatible - and need the quotes removing by hand.
+    Because values aren't quoted, leading or trailing whitespace can be lost. This behaviour was changed in version 4.0.1. Prior to this, single line values might have been quoted; even with ``list_values=False``. This means that files written by earlier versions of ConfigObj *could* now be incompatible and need the quotes removing by hand.
 
 
 encoding
