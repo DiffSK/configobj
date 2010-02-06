@@ -1,8 +1,11 @@
+from __future__ import with_statement
+
 import os
 import unittest
 from configobj import ConfigObj
 
 from warnings import catch_warnings
+
 
 class TestConfigObj(unittest.TestCase):
     
