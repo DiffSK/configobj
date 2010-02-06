@@ -83,7 +83,7 @@ tdquot = "'''%s'''"
 # Sentinel for use in getattr calls to replace hasattr
 MISSING = object()
 
-__version__ = '4.7.0'
+__version__ = '4.7.1'
 
 try:
     any
@@ -1201,7 +1201,7 @@ class ConfigObj(Section):
         infile = infile or []
         if options is not None:
             import warnings
-            warnings.warn('Passing in an options dictionary to ConfigObj() is ',
+            warnings.warn('Passing in an options dictionary to ConfigObj() is '
                           'deprecated. Use **options instead.',
                           DeprecationWarning, stacklevel=2)
         

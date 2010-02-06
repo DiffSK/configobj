@@ -2,6 +2,8 @@ import os
 import unittest
 from configobj import ConfigObj
 
+from warnings import catch_warnings
+
 class TestConfigObj(unittest.TestCase):
     
     def test_order_preserved(self):
@@ -27,3 +29,11 @@ class TestConfigObj(unittest.TestCase):
         
         self.assertFalse(c['section'] is c2['section'])
         self.assertFalse(c['section']['section'] is c2['section']['section'])
+    
+    def test_options_deprecation(self):
+        with catch_warnings(record=True) as log:
+            ConfigObj(options={})
+        
+        # unpack the only member of log
+        warning, = log
+        self.assertEqual(warning.category, DeprecationWarning)

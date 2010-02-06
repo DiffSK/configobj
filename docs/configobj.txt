@@ -2388,6 +2388,11 @@ CHANGELOG
 This is an abbreviated changelog showing the major releases up to version 4.
 From version 4 it lists all releases and changes.
 
+2010/02/06 - Version 4.7.1
+--------------------------
+
+* Fix bug in options deprecation warning added in 4.7.0
+
 
 2010/01/09 - Version 4.7.0
 --------------------------
