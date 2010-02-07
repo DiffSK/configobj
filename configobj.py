@@ -1199,11 +1199,6 @@ class ConfigObj(Section):
         Section.__init__(self, self, 0, self)
         
         infile = infile or []
-        if options is not None:
-            import warnings
-            warnings.warn('Passing in an options dictionary to ConfigObj() is '
-                          'deprecated. Use **options instead.',
-                          DeprecationWarning, stacklevel=2)
         
         _options = {'configspec': configspec,
                     'encoding': encoding, 'interpolation': interpolation,
@@ -1213,19 +1208,27 @@ class ConfigObj(Section):
                     'default_encoding': default_encoding, 'unrepr': unrepr,
                     'write_empty_values': write_empty_values}
 
-        options = dict(options or {})
-        options.update(_options)
+        if _options is None:
+            options = _options
+        else:
+            import warnings
+            warnings.warn('Passing in an options dictionary to ConfigObj() is '
+                          'deprecated. Use **options instead.',
+                          DeprecationWarning, stacklevel=2)
+            
+            defaults = OPTION_DEFAULTS.copy()
+            # TODO: check the values too.
+            for entry in options:
+                if entry not in defaults:
+                    raise TypeError('Unrecognised option "%s".' % entry)
+            for entry, value in defaults.items():
+                if entry not in options:
+                    options[entry] = value
         
         # XXXX this ignores an explicit list_values = True in combination
         # with _inspec. The user should *never* do that anyway, but still...
         if _inspec:
             options['list_values'] = False
-        
-        defaults = OPTION_DEFAULTS.copy()
-        # TODO: check the values too.
-        for entry in options:
-            if entry not in defaults:
-                raise TypeError('Unrecognised option "%s".' % entry)
         
         # Add any explicit options to the defaults
         defaults.update(options)

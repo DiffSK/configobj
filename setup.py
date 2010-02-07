@@ -42,8 +42,10 @@ It has lots of other features though :
 * The order of keys/sections is preserved
 * Powerful ``unrepr`` mode for storing/retrieving Python data-types
 
-Release 4.7.0 improves performance adds features for validation and
-fixes some bugs."""
+| Release 4.7.1 fixes a bug with the deprecated options keyword in
+| 4.7.0.
+| Release 4.7.0 improves performance adds features for validation and
+| fixes some bugs."""
 
 CLASSIFIERS = [
     'Development Status :: 6 - Mature',
