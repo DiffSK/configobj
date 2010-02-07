@@ -1208,7 +1208,7 @@ class ConfigObj(Section):
                     'default_encoding': default_encoding, 'unrepr': unrepr,
                     'write_empty_values': write_empty_values}
 
-        if _options is None:
+        if options is None:
             options = _options
         else:
             import warnings
@@ -1216,12 +1216,11 @@ class ConfigObj(Section):
                           'deprecated. Use **options instead.',
                           DeprecationWarning, stacklevel=2)
             
-            defaults = OPTION_DEFAULTS.copy()
             # TODO: check the values too.
             for entry in options:
-                if entry not in defaults:
+                if entry not in OPTION_DEFAULTS:
                     raise TypeError('Unrecognised option "%s".' % entry)
-            for entry, value in defaults.items():
+            for entry, value in OPTION_DEFAULTS.items():
                 if entry not in options:
                     options[entry] = value
         
@@ -1230,10 +1229,8 @@ class ConfigObj(Section):
         if _inspec:
             options['list_values'] = False
         
-        # Add any explicit options to the defaults
-        defaults.update(options)
-        self._initialise(defaults)
-        configspec = defaults['configspec']
+        self._initialise(options)
+        configspec = options['configspec']
         self._original_configspec = configspec
         self._load(infile, configspec)
         
