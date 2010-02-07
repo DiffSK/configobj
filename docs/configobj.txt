@@ -6,8 +6,8 @@
 ----------------------------------------
 
 :Authors: Michael Foord, Nicola Larosa
-:Version: ConfigObj 4.7.0
-:Date: 2010/01/09
+:Version: ConfigObj 4.7.1
+:Date: 2010/02/07
 :Homepage: `ConfigObj Homepage`_
 :PyPI Entry: `ConfigObj on PyPI <http://pypi.python.org/pypi/configobj/>`_
 :Development: `Google Code Homepage`_
@@ -65,7 +65,7 @@ For support and bug reports please use the ConfigObj `Mailing List`_ or the issu
 Downloading
 ===========
 
-The current version is **4.7.0**, dated 9th January 2010. ConfigObj 4 is
+The current version is **4.7.1**, dated 7th February 2010. ConfigObj 4 is
 stable and mature. We still expect to pick up a few bugs along the way though [#]_.
 
 You can get ConfigObj in the following ways :
@@ -110,7 +110,7 @@ It is sometimes possible to get the latest *development version* of ConfigObj
 from the Subversion Repository maintained on the `Google Code Homepage`_.
 
 .. _configobj.py: http://www.voidspace.org.uk/downloads/configobj.py
-.. _configobj.zip: http://www.voidspace.org.uk/downloads/configobj-4.7.0.zip
+.. _configobj.zip: http://www.voidspace.org.uk/downloads/configobj-4.7.1.zip
 .. _validate.py: http://www.voidspace.org.uk/downloads/validate.py
 .. _this document:
 .. _configobj homepage: http://www.voidspace.org.uk/python/configobj.html
