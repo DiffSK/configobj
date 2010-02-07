@@ -2911,7 +2911,8 @@ Footnotes
         # not attributes/comments
         config2 = ConfigObj(config1)
 
-    The order of values and sections will not be preserved, though.
+    Since ConfigObj 4.7.0 the order of members and sections will be
+    preserved when copying a ConfigObj instance.
 
 .. [#] Other than lists of strings.
 
