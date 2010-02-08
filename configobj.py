@@ -1223,6 +1223,9 @@ class ConfigObj(Section):
             for entry, value in OPTION_DEFAULTS.items():
                 if entry not in options:
                     options[entry] = value
+                keyword_value = _options[entry]
+                if value != keyword_value:
+                    options[entry] = keyword_value
         
         # XXXX this ignores an explicit list_values = True in combination
         # with _inspec. The user should *never* do that anyway, but still...
