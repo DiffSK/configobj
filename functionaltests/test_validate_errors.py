@@ -1,5 +1,9 @@
 import os
-import unittest
+try:
+    import unittest2 as unittest
+except ImportError:
+    import unittest
+
 from configobj import ConfigObj, get_extra_values
 from validate import Validator
 
@@ -58,7 +62,5 @@ class TestValidateErrors(unittest.TestCase):
         ])
         self.assertEqual(sorted(extra_values), expected)
 
-    
-    
 if __name__ == '__main__':
     unittest.main()

@@ -1,9 +1,14 @@
 from __future__ import with_statement
 
 import os
-import unittest
+try:
+    import unittest2 as unittest
+except ImportError:
+    import unittest
+
 from configobj import ConfigObj
 
+# Python 2.6 only
 from warnings import catch_warnings
 
 
