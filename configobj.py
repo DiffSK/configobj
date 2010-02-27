@@ -83,7 +83,7 @@ tdquot = "'''%s'''"
 # Sentinel for use in getattr calls to replace hasattr
 MISSING = object()
 
-__version__ = '4.7.1'
+__version__ = '4.7.2'
 
 try:
     any
@@ -665,22 +665,19 @@ class Section(dict):
             self[entry] = indict[entry]
 
 
-    def pop(self, key, *args):
+    def pop(self, key, default=MISSING):
         """
         'D.pop(k[,d]) -> v, remove specified key and return the corresponding value.
         If key is not found, d is returned if given, otherwise KeyError is raised'
         """
-        val = dict.pop(self, key, *args)
-        if key in self.scalars:
-            del self.comments[key]
-            del self.inline_comments[key]
-            self.scalars.remove(key)
-        elif key in self.sections:
-            del self.comments[key]
-            del self.inline_comments[key]
-            self.sections.remove(key)
-        if self.main.interpolation and isinstance(val, basestring):
-            return self._interpolate(key, val)
+        try:
+            val = self[key]
+        except KeyError:
+            if default is MISSING:
+                raise
+            val = default
+        else:
+            del self[key]
         return val
 
 
@@ -2445,7 +2442,7 @@ def get_extra_values(conf, _prepend=()):
     """
     out = []
     
-    out.extend((_prepend, name) for name in conf.extra_values)
+    out.extend([(_prepend, name) for name in conf.extra_values])
     for name in conf.sections:
         if name not in conf.extra_values:
             out.extend(get_extra_values(conf[name], _prepend + (name,)))

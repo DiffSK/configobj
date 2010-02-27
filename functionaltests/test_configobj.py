@@ -53,4 +53,13 @@ class TestConfigObj(unittest.TestCase):
         c['a'].append('%(b)s')
         c['b'] = 'bar'
         self.assertEqual(c.pop('a'), ['bar'])
+    
+    def test_with_default(self):
+        c = ConfigObj()
+        c['a'] = 3
+        
+        self.assertEqual(c.pop('a'), 3)
+        self.assertEqual(c.pop('b', 3), 3)
+        self.assertRaises(KeyError, c.pop, 'c')
+        
         
