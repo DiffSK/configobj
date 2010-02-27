@@ -61,5 +61,23 @@ class TestConfigObj(unittest.TestCase):
         self.assertEqual(c.pop('a'), 3)
         self.assertEqual(c.pop('b', 3), 3)
         self.assertRaises(KeyError, c.pop, 'c')
+    
+    
+    def test_interpolation_with_section_names(self):
+        cfg = """
+item1 = 1234
+[section]
+    [[item1]]
+    foo='bar'
+    [[DEFAULT]]
+        [[[item1]]]
+        why = would you do this?
+    [[other-subsection]]
+    item2 = '$item1'""".splitlines()
+        c = ConfigObj(cfg, interpolation='Template')
         
+        # This raises an exception in 4.7.1 and earlier
+        repr(c)
+        
+
         

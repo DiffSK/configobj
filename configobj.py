@@ -380,11 +380,11 @@ class InterpolationEngine(object):
         while True:
             # try the current section first
             val = current_section.get(key)
-            if val is not None:
+            if val is not None and not isinstance(val, Section):
                 break
             # try "DEFAULT" next
             val = current_section.get('DEFAULT', {}).get(key)
-            if val is not None:
+            if val is not None and not isinstance(val, Section):
                 break
             # move up to parent and try again
             # top-level's parent is itself
