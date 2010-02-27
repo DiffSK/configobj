@@ -2399,6 +2399,8 @@ From version 4 it lists all releases and changes.
 * BUGFIX: ``pop`` now does interpolation in list values as well.
 * BUGFIX: where interpolation matches a section name rather than a value it is
   ignored instead of raising an exception on fetching the item.
+* BUGFIX: values that use interpolation to reference members that don't exist can
+  now be repr'd.
 
 2010/02/06 - Version 4.7.1
 --------------------------

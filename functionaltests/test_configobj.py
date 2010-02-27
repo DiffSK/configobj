@@ -78,6 +78,12 @@ item1 = 1234
         
         # This raises an exception in 4.7.1 and earlier
         repr(c)
+    
+    def test_interoplation_repr(self):
+        c = ConfigObj(['foo = $bar'], interpolation='Template')
+        
+        # This raises an exception in 4.7.1 and earlier
+        repr(c)
         
 
         
