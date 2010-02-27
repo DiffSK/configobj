@@ -753,7 +753,12 @@ class Section(dict):
 
     def __repr__(self):
         """x.__repr__() <==> repr(x)"""
-        return '{%s}' % ', '.join([('%s: %s' % (repr(key), repr(self[key])))
+        def _getval(key):
+            try:
+                return self[key]
+            except MissingInterpolationOption:
+                return dict.__getitem__(self, key)
+        return '{%s}' % ', '.join([('%s: %s' % (repr(key), repr(_getval(key))))
             for key in (self.scalars + self.sections)])
 
     __str__ = __repr__
@@ -1367,8 +1372,13 @@ class ConfigObj(Section):
         
         
     def __repr__(self):
+        def _getval(key):
+            try:
+                return self[key]
+            except MissingInterpolationOption:
+                return dict.__getitem__(self, key)
         return ('ConfigObj({%s})' % 
-                ', '.join([('%s: %s' % (repr(key), repr(self[key]))) 
+                ', '.join([('%s: %s' % (repr(key), repr(_getval(key)))) 
                 for key in (self.scalars + self.sections)]))
     
     

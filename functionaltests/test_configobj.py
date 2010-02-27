@@ -76,13 +76,16 @@ item1 = 1234
     item2 = '$item1'""".splitlines()
         c = ConfigObj(cfg, interpolation='Template')
         
-        # This raises an exception in 4.7.1 and earlier
+        # This raises an exception in 4.7.1 and earlier due to the section
+        # being found as the interpolation value
         repr(c)
     
     def test_interoplation_repr(self):
         c = ConfigObj(['foo = $bar'], interpolation='Template')
+        c['baz'] = {}
+        c['baz']['spam'] = '%(bar)s'
         
-        # This raises an exception in 4.7.1 and earlier
+        # This raises a MissingInterpolationOption exception in 4.7.1 and earlier
         repr(c)
         
 
