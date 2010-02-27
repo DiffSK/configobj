@@ -2401,6 +2401,8 @@ From version 4 it lists all releases and changes.
   ignored instead of raising an exception on fetching the item.
 * BUGFIX: values that use interpolation to reference members that don't exist can
   now be repr'd.
+* BUGFIX: Fix to avoid writing '\r\r\n' on Windows when given a file opened in
+  text write mode ('w').
 
 2010/02/06 - Version 4.7.1
 --------------------------

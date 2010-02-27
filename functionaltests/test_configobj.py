@@ -8,9 +8,13 @@ except ImportError:
 
 from configobj import ConfigObj
 
-# Python 2.6 only
-from warnings import catch_warnings
-
+try:
+    # Python 2.6 only
+    from warnings import catch_warnings
+except ImportError:
+    # this will cause an error, but at least the other tests
+    # will run on Python 2.5
+    catch_warnings = None
 
 class TestConfigObj(unittest.TestCase):
     
@@ -38,13 +42,15 @@ class TestConfigObj(unittest.TestCase):
         self.assertFalse(c['section'] is c2['section'])
         self.assertFalse(c['section']['section'] is c2['section']['section'])
     
-    def test_options_deprecation(self):
-        with catch_warnings(record=True) as log:
-            ConfigObj(options={})
-        
-        # unpack the only member of log
-        warning, = log
-        self.assertEqual(warning.category, DeprecationWarning)
+    if catch_warnings is not None:
+        # poor man's skipTest
+        def test_options_deprecation(self):
+            with catch_warnings(record=True) as log:
+                ConfigObj(options={})
+            
+            # unpack the only member of log
+            warning, = log
+            self.assertEqual(warning.category, DeprecationWarning)
     
     def test_list_members(self):
         c = ConfigObj()
@@ -92,6 +98,4 @@ item1 = 1234
         
         # This raises a MissingInterpolationOption exception in 4.7.1 and earlier
         repr(c)
-        
 
-        

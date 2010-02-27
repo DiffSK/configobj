@@ -2015,6 +2015,8 @@ class ConfigObj(Section):
         >>> a.filename = filename
         >>> a == ConfigObj('test.ini', raise_errors=True)
         1
+        >>> import os
+        >>> os.remove('test.ini')
         """
         if self.indent_type is None:
             # this can be true if initialised from a dictionary
@@ -2090,6 +2092,10 @@ class ConfigObj(Section):
         
         # Turn the list to a string, joined with correct newlines
         newline = self.newlines or os.linesep
+        if (getattr(outfile, 'mode', None) is not None and outfile.mode == 'w'
+            and sys.platform == 'win32' and newline == '\r\n'):
+            # Windows specific hack to avoid writing '\r\r\n'
+            newline = '\n'
         output = self._a_to_u(newline).join(out)
         if self.encoding:
             output = output.encode(self.encoding)
