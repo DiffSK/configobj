@@ -2397,7 +2397,8 @@ From version 4 it lists all releases and changes.
   introduced in 4.7. Lists are now only copies if interpolation changes a list
   member.
 * BUGFIX: ``pop`` now does interpolation in list values as well.
-
+* BUGFIX: where interpolation matches a section name rather than a value it is
+  ignored instead of raising an exception on fetching the item.
 
 2010/02/06 - Version 4.7.1
 --------------------------
