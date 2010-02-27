@@ -573,7 +573,9 @@ class Section(dict):
                     if isinstance(entry, basestring):
                         return self._interpolate(key, entry)
                     return entry
-                return [_check(entry) for entry in val]
+                new = [_check(entry) for entry in val]
+                if new != val:
+                    return new
         return val
 
 

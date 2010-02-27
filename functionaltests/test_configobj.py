@@ -40,3 +40,17 @@ class TestConfigObj(unittest.TestCase):
         # unpack the only member of log
         warning, = log
         self.assertEqual(warning.category, DeprecationWarning)
+    
+    def test_list_members(self):
+        c = ConfigObj()
+        c['a'] = []
+        c['a'].append('foo')
+        self.assertEqual(c['a'], ['foo'])
+    
+    def test_list_interpolation_with_pop(self):
+        c = ConfigObj()
+        c['a'] = []
+        c['a'].append('%(b)s')
+        c['b'] = 'bar'
+        self.assertEqual(c.pop('a'), ['bar'])
+        
