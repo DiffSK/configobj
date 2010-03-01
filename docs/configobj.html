@@ -112,54 +112,57 @@
 </li>
 <li><a class="reference internal" href="#empty-values" id="id78">10&nbsp;&nbsp;&nbsp;Empty values</a></li>
 <li><a class="reference internal" href="#unrepr-mode" id="id79">11&nbsp;&nbsp;&nbsp;unrepr mode</a></li>
-<li><a class="reference internal" href="#string-interpolation" id="id80">12&nbsp;&nbsp;&nbsp;String Interpolation</a></li>
-<li><a class="reference internal" href="#comments" id="id81">13&nbsp;&nbsp;&nbsp;Comments</a></li>
-<li><a class="reference internal" href="#flatten-errors" id="id82">14&nbsp;&nbsp;&nbsp;flatten_errors</a><ul class="auto-toc">
-<li><a class="reference internal" href="#example-usage" id="id83">14.1&nbsp;&nbsp;&nbsp;Example Usage</a></li>
+<li><a class="reference internal" href="#string-interpolation" id="id80">12&nbsp;&nbsp;&nbsp;String Interpolation</a><ul class="auto-toc">
+<li><a class="reference internal" href="#string-interpolation-and-list-values" id="id81">12.1&nbsp;&nbsp;&nbsp;String Interpolation and List Values</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#get-extra-values" id="id84">15&nbsp;&nbsp;&nbsp;get_extra_values</a><ul class="auto-toc">
-<li><a class="reference internal" href="#id14" id="id85">15.1&nbsp;&nbsp;&nbsp;Example Usage</a></li>
+<li><a class="reference internal" href="#comments" id="id82">13&nbsp;&nbsp;&nbsp;Comments</a></li>
+<li><a class="reference internal" href="#flatten-errors" id="id83">14&nbsp;&nbsp;&nbsp;flatten_errors</a><ul class="auto-toc">
+<li><a class="reference internal" href="#example-usage" id="id84">14.1&nbsp;&nbsp;&nbsp;Example Usage</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#credits" id="id86">16&nbsp;&nbsp;&nbsp;CREDITS</a></li>
-<li><a class="reference internal" href="#license" id="id87">17&nbsp;&nbsp;&nbsp;LICENSE</a></li>
-<li><a class="reference internal" href="#todo" id="id88">18&nbsp;&nbsp;&nbsp;TODO</a></li>
-<li><a class="reference internal" href="#issues" id="id89">19&nbsp;&nbsp;&nbsp;ISSUES</a></li>
-<li><a class="reference internal" href="#changelog" id="id90">20&nbsp;&nbsp;&nbsp;CHANGELOG</a><ul class="auto-toc">
-<li><a class="reference internal" href="#version-4-7-2" id="id91">20.1&nbsp;&nbsp;&nbsp;2010/02/27 - Version 4.7.2</a></li>
-<li><a class="reference internal" href="#version-4-7-1" id="id92">20.2&nbsp;&nbsp;&nbsp;2010/02/06 - Version 4.7.1</a></li>
-<li><a class="reference internal" href="#version-4-7-0" id="id93">20.3&nbsp;&nbsp;&nbsp;2010/01/09 - Version 4.7.0</a></li>
-<li><a class="reference internal" href="#version-4-6-0" id="id94">20.4&nbsp;&nbsp;&nbsp;2009/04/13 - Version 4.6.0</a></li>
-<li><a class="reference internal" href="#version-4-5-3" id="id95">20.5&nbsp;&nbsp;&nbsp;2008/06/27 - Version 4.5.3</a></li>
-<li><a class="reference internal" href="#version-4-5-2" id="id96">20.6&nbsp;&nbsp;&nbsp;2008/02/05 - Version 4.5.2</a></li>
-<li><a class="reference internal" href="#version-4-5-1" id="id97">20.7&nbsp;&nbsp;&nbsp;2008/02/05 - Version 4.5.1</a></li>
-<li><a class="reference internal" href="#version-4-5-0" id="id98">20.8&nbsp;&nbsp;&nbsp;2008/02/05 - Version 4.5.0</a></li>
-<li><a class="reference internal" href="#version-4-4-0" id="id99">20.9&nbsp;&nbsp;&nbsp;2007/02/04 - Version 4.4.0</a></li>
-<li><a class="reference internal" href="#version-4-3-3-alpha4" id="id100">20.10&nbsp;&nbsp;&nbsp;2006/12/17 - Version 4.3.3-alpha4</a></li>
-<li><a class="reference internal" href="#version-4-3-3-alpha3" id="id101">20.11&nbsp;&nbsp;&nbsp;2006/12/17 - Version 4.3.3-alpha3</a></li>
-<li><a class="reference internal" href="#version-4-3-3-alpha2" id="id102">20.12&nbsp;&nbsp;&nbsp;2006/12/09 - Version 4.3.3-alpha2</a></li>
-<li><a class="reference internal" href="#version-4-3-3-alpha1" id="id103">20.13&nbsp;&nbsp;&nbsp;2006/12/09 - Version 4.3.3-alpha1</a></li>
-<li><a class="reference internal" href="#version-4-3-2" id="id104">20.14&nbsp;&nbsp;&nbsp;2006/06/04 - Version 4.3.2</a></li>
-<li><a class="reference internal" href="#version-4-3-1" id="id105">20.15&nbsp;&nbsp;&nbsp;2006/04/29 - Version 4.3.1</a></li>
-<li><a class="reference internal" href="#version-4-3-0" id="id106">20.16&nbsp;&nbsp;&nbsp;2006/03/24 - Version 4.3.0</a></li>
-<li><a class="reference internal" href="#version-4-2-0" id="id107">20.17&nbsp;&nbsp;&nbsp;2006/02/16 - Version 4.2.0</a></li>
-<li><a class="reference internal" href="#version-4-1-0" id="id108">20.18&nbsp;&nbsp;&nbsp;2005/12/14 - Version 4.1.0</a></li>
-<li><a class="reference internal" href="#version-4-0-2" id="id109">20.19&nbsp;&nbsp;&nbsp;2005/12/02 - Version 4.0.2</a></li>
-<li><a class="reference internal" href="#version-4-0-1" id="id110">20.20&nbsp;&nbsp;&nbsp;2005/11/05 - Version 4.0.1</a></li>
-<li><a class="reference internal" href="#version-4-0-0" id="id111">20.21&nbsp;&nbsp;&nbsp;2005/10/17 - Version 4.0.0</a></li>
-<li><a class="reference internal" href="#version-4-0-0-beta-5" id="id112">20.22&nbsp;&nbsp;&nbsp;2005/09/09 - Version 4.0.0 beta 5</a></li>
-<li><a class="reference internal" href="#version-4-0-0-beta-4" id="id113">20.23&nbsp;&nbsp;&nbsp;2005/09/07 - Version 4.0.0 beta 4</a></li>
-<li><a class="reference internal" href="#version-4-0-0-beta-3" id="id114">20.24&nbsp;&nbsp;&nbsp;2005/08/28 - Version 4.0.0 beta 3</a></li>
-<li><a class="reference internal" href="#version-4-0-0-beta-2" id="id115">20.25&nbsp;&nbsp;&nbsp;2005/08/25 - Version 4.0.0 beta 2</a></li>
-<li><a class="reference internal" href="#version-4-0-0-beta-1" id="id116">20.26&nbsp;&nbsp;&nbsp;2005/08/21 - Version 4.0.0 beta 1</a></li>
-<li><a class="reference internal" href="#version-3-0-0" id="id117">20.27&nbsp;&nbsp;&nbsp;2004/05/24 - Version 3.0.0</a></li>
-<li><a class="reference internal" href="#version-2-0-0-beta" id="id118">20.28&nbsp;&nbsp;&nbsp;2004/03/14 - Version 2.0.0 beta</a></li>
-<li><a class="reference internal" href="#version-1-0-5" id="id119">20.29&nbsp;&nbsp;&nbsp;2004/01/29 - Version 1.0.5</a></li>
-<li><a class="reference internal" href="#origins" id="id120">20.30&nbsp;&nbsp;&nbsp;Origins</a></li>
+<li><a class="reference internal" href="#get-extra-values" id="id85">15&nbsp;&nbsp;&nbsp;get_extra_values</a><ul class="auto-toc">
+<li><a class="reference internal" href="#id14" id="id86">15.1&nbsp;&nbsp;&nbsp;Example Usage</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#footnotes" id="id121">21&nbsp;&nbsp;&nbsp;Footnotes</a></li>
+<li><a class="reference internal" href="#credits" id="id87">16&nbsp;&nbsp;&nbsp;CREDITS</a></li>
+<li><a class="reference internal" href="#license" id="id88">17&nbsp;&nbsp;&nbsp;LICENSE</a></li>
+<li><a class="reference internal" href="#todo" id="id89">18&nbsp;&nbsp;&nbsp;TODO</a></li>
+<li><a class="reference internal" href="#issues" id="id90">19&nbsp;&nbsp;&nbsp;ISSUES</a></li>
+<li><a class="reference internal" href="#changelog" id="id91">20&nbsp;&nbsp;&nbsp;CHANGELOG</a><ul class="auto-toc">
+<li><a class="reference internal" href="#version-4-7-2" id="id92">20.1&nbsp;&nbsp;&nbsp;2010/02/27 - Version 4.7.2</a></li>
+<li><a class="reference internal" href="#version-4-7-1" id="id93">20.2&nbsp;&nbsp;&nbsp;2010/02/06 - Version 4.7.1</a></li>
+<li><a class="reference internal" href="#version-4-7-0" id="id94">20.3&nbsp;&nbsp;&nbsp;2010/01/09 - Version 4.7.0</a></li>
+<li><a class="reference internal" href="#version-4-6-0" id="id95">20.4&nbsp;&nbsp;&nbsp;2009/04/13 - Version 4.6.0</a></li>
+<li><a class="reference internal" href="#version-4-5-3" id="id96">20.5&nbsp;&nbsp;&nbsp;2008/06/27 - Version 4.5.3</a></li>
+<li><a class="reference internal" href="#version-4-5-2" id="id97">20.6&nbsp;&nbsp;&nbsp;2008/02/05 - Version 4.5.2</a></li>
+<li><a class="reference internal" href="#version-4-5-1" id="id98">20.7&nbsp;&nbsp;&nbsp;2008/02/05 - Version 4.5.1</a></li>
+<li><a class="reference internal" href="#version-4-5-0" id="id99">20.8&nbsp;&nbsp;&nbsp;2008/02/05 - Version 4.5.0</a></li>
+<li><a class="reference internal" href="#version-4-4-0" id="id100">20.9&nbsp;&nbsp;&nbsp;2007/02/04 - Version 4.4.0</a></li>
+<li><a class="reference internal" href="#version-4-3-3-alpha4" id="id101">20.10&nbsp;&nbsp;&nbsp;2006/12/17 - Version 4.3.3-alpha4</a></li>
+<li><a class="reference internal" href="#version-4-3-3-alpha3" id="id102">20.11&nbsp;&nbsp;&nbsp;2006/12/17 - Version 4.3.3-alpha3</a></li>
+<li><a class="reference internal" href="#version-4-3-3-alpha2" id="id103">20.12&nbsp;&nbsp;&nbsp;2006/12/09 - Version 4.3.3-alpha2</a></li>
+<li><a class="reference internal" href="#version-4-3-3-alpha1" id="id104">20.13&nbsp;&nbsp;&nbsp;2006/12/09 - Version 4.3.3-alpha1</a></li>
+<li><a class="reference internal" href="#version-4-3-2" id="id105">20.14&nbsp;&nbsp;&nbsp;2006/06/04 - Version 4.3.2</a></li>
+<li><a class="reference internal" href="#version-4-3-1" id="id106">20.15&nbsp;&nbsp;&nbsp;2006/04/29 - Version 4.3.1</a></li>
+<li><a class="reference internal" href="#version-4-3-0" id="id107">20.16&nbsp;&nbsp;&nbsp;2006/03/24 - Version 4.3.0</a></li>
+<li><a class="reference internal" href="#version-4-2-0" id="id108">20.17&nbsp;&nbsp;&nbsp;2006/02/16 - Version 4.2.0</a></li>
+<li><a class="reference internal" href="#version-4-1-0" id="id109">20.18&nbsp;&nbsp;&nbsp;2005/12/14 - Version 4.1.0</a></li>
+<li><a class="reference internal" href="#version-4-0-2" id="id110">20.19&nbsp;&nbsp;&nbsp;2005/12/02 - Version 4.0.2</a></li>
+<li><a class="reference internal" href="#version-4-0-1" id="id111">20.20&nbsp;&nbsp;&nbsp;2005/11/05 - Version 4.0.1</a></li>
+<li><a class="reference internal" href="#version-4-0-0" id="id112">20.21&nbsp;&nbsp;&nbsp;2005/10/17 - Version 4.0.0</a></li>
+<li><a class="reference internal" href="#version-4-0-0-beta-5" id="id113">20.22&nbsp;&nbsp;&nbsp;2005/09/09 - Version 4.0.0 beta 5</a></li>
+<li><a class="reference internal" href="#version-4-0-0-beta-4" id="id114">20.23&nbsp;&nbsp;&nbsp;2005/09/07 - Version 4.0.0 beta 4</a></li>
+<li><a class="reference internal" href="#version-4-0-0-beta-3" id="id115">20.24&nbsp;&nbsp;&nbsp;2005/08/28 - Version 4.0.0 beta 3</a></li>
+<li><a class="reference internal" href="#version-4-0-0-beta-2" id="id116">20.25&nbsp;&nbsp;&nbsp;2005/08/25 - Version 4.0.0 beta 2</a></li>
+<li><a class="reference internal" href="#version-4-0-0-beta-1" id="id117">20.26&nbsp;&nbsp;&nbsp;2005/08/21 - Version 4.0.0 beta 1</a></li>
+<li><a class="reference internal" href="#version-3-0-0" id="id118">20.27&nbsp;&nbsp;&nbsp;2004/05/24 - Version 3.0.0</a></li>
+<li><a class="reference internal" href="#version-2-0-0-beta" id="id119">20.28&nbsp;&nbsp;&nbsp;2004/03/14 - Version 2.0.0 beta</a></li>
+<li><a class="reference internal" href="#version-1-0-5" id="id120">20.29&nbsp;&nbsp;&nbsp;2004/01/29 - Version 1.0.5</a></li>
+<li><a class="reference internal" href="#origins" id="id121">20.30&nbsp;&nbsp;&nbsp;Origins</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#footnotes" id="id122">21&nbsp;&nbsp;&nbsp;Footnotes</a></li>
 </ul>
 </div>
 <div class="note">
@@ -348,8 +351,10 @@ and then writing to file :</p>
 </pre></div>
 <div class="caution">
 <p class="first admonition-title">Caution!</p>
-<p class="last">Keywords and section names can only be strings <a class="footnote-reference" href="#id17" id="id3">[3]</a>. Attempting to set
+<p>Keywords and section names can only be strings <a class="footnote-reference" href="#id17" id="id3">[3]</a>. Attempting to set
 anything else will raise a <tt class="docutils literal">ValueError</tt>.</p>
+<p class="last">See <a class="reference internal" href="#string-interpolation-and-list-values">String Interpolation and List Values</a> for an important note on
+using lists in combination with <a class="reference internal" href="#string-interpolation">String Interpolation</a>.</p>
 </div>
 </div>
 <div class="section" id="config-files">
@@ -410,8 +415,8 @@ keyword9 = value10     # an inline comment
 parsed.</p>
 <div class="note">
 <p class="first admonition-title">Note</p>
-<p>New in ConfigObj 4.7.0: It is no longer possible to instantiate ConfigObj with
-an <tt class="docutils literal">options</tt> dictionary as in earlier versions. To modify code that used to
+<p>New in ConfigObj 4.7.0: Instantiating ConfigObj with
+an <tt class="docutils literal">options</tt> dictionary is now deprecated. To modify code that used to
 do this simply unpack the dictionary in the constructor call:</p>
 <div class="last"><div class="highlight"><pre><span class="n">config</span> <span class="o">=</span> <span class="n">ConfigObj</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
 </pre></div>
@@ -1912,6 +1917,13 @@ which discards comments.</p>
 </div>
 <div class="section" id="string-interpolation">
 <h1><a class="toc-backref" href="#id80">12&nbsp;&nbsp;&nbsp;String Interpolation</a></h1>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p class="last">String interpolation can slow down (slightly) the fetching of values
+from your config object. If you aren't using interpolation and it
+is performance critical then create your instance with
+<tt class="docutils literal">interpolation=False</tt>.</p>
+</div>
 <p>ConfigObj allows string interpolation <em>similar</em> to the way <tt class="docutils literal">ConfigParser</tt>
 or <tt class="docutils literal">string.Template</tt> work. The value of the <tt class="docutils literal">interpolation</tt> attribute
 determines which style of interpolation you want to use. Valid values are
@@ -1955,9 +1967,28 @@ See <a class="reference internal" href="#validation-and-interpolation">Validatio
 has to <em>change</em> the value).</p>
 <p>New in ConfigObj 4.7.0: String interpolation is now done in members of list
 values.</p>
+<div class="section" id="string-interpolation-and-list-values">
+<h2><a class="toc-backref" href="#id81">12.1&nbsp;&nbsp;&nbsp;String Interpolation and List Values</a></h2>
+<p>Since version 4.7 string interpolation is done on string members of list values.
+If interpolation changes any members of the list then what you get back is a
+<em>copy</em> of the list rather than the original list.</p>
+<p>This makes fetching list values slightly slower when interpolation is on, it
+also means that if you mutate the list changes won't be reflected in the
+original list:</p>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">c</span> <span class="o">=</span> <span class="n">ConfigObj</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">c</span><span class="p">[</span><span class="s">&#39;foo&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;boo&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">c</span><span class="p">[</span><span class="s">&#39;bar&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%(foo)s</span><span class="s">&#39;</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">c</span><span class="p">[</span><span class="s">&#39;bar&#39;</span><span class="p">]</span>
+<span class="p">[</span><span class="s">&#39;boo&#39;</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">c</span><span class="p">[</span><span class="s">&#39;bar&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;fish&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">c</span><span class="p">[</span><span class="s">&#39;bar&#39;</span><span class="p">]</span>
+<span class="p">[</span><span class="s">&#39;boo&#39;</span><span class="p">]</span>
+</pre></div>
+<p>Instead of mutating the list you must create a new list and reassign it.</p>
+</div>
 </div>
 <div class="section" id="comments">
-<h1><a class="toc-backref" href="#id81">13&nbsp;&nbsp;&nbsp;Comments</a></h1>
+<h1><a class="toc-backref" href="#id82">13&nbsp;&nbsp;&nbsp;Comments</a></h1>
 <p>Any line that starts with a '#', possibly preceded by whitespace, is a comment.</p>
 <p>If a config file starts with comments then these are preserved as the
 <a class="reference internal" href="#initial-comment">initial_comment</a>.</p>
@@ -1974,7 +2005,7 @@ section.</p>
 <p>These comments are all written back out by the <tt class="docutils literal">write</tt> method.</p>
 </div>
 <div class="section" id="flatten-errors">
-<h1><a class="toc-backref" href="#id82">14&nbsp;&nbsp;&nbsp;flatten_errors</a></h1>
+<h1><a class="toc-backref" href="#id83">14&nbsp;&nbsp;&nbsp;flatten_errors</a></h1>
 <div class="highlight"><pre><span class="n">flatten_errors</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="n">res</span><span class="p">)</span>
 </pre></div>
 <p><a class="reference internal" href="#validation">Validation</a> is a powerful way of checking that the values supplied by the user
@@ -2003,7 +2034,7 @@ object returned. You can use this as a string that describes the failure.</p>
 <blockquote>
 <em>The value &quot;3&quot; is of the wrong type</em>.</blockquote>
 <div class="section" id="example-usage">
-<h2><a class="toc-backref" href="#id83">14.1&nbsp;&nbsp;&nbsp;Example Usage</a></h2>
+<h2><a class="toc-backref" href="#id84">14.1&nbsp;&nbsp;&nbsp;Example Usage</a></h2>
 <p>The output from <tt class="docutils literal">flatten_errors</tt> is a list of tuples.</p>
 <p>Here is an example of how you could present this information to the user.</p>
 <div class="highlight"><pre><span class="n">vtor</span> <span class="o">=</span> <span class="n">validate</span><span class="o">.</span><span class="n">Validator</span><span class="p">()</span>
@@ -2025,7 +2056,7 @@ object returned. You can use this as a string that describes the failure.</p>
 </div>
 </div>
 <div class="section" id="get-extra-values">
-<h1><a class="toc-backref" href="#id84">15&nbsp;&nbsp;&nbsp;get_extra_values</a></h1>
+<h1><a class="toc-backref" href="#id85">15&nbsp;&nbsp;&nbsp;get_extra_values</a></h1>
 <div class="highlight"><pre><span class="n">get_extra_values</span><span class="p">(</span><span class="n">conf</span><span class="p">)</span>
 </pre></div>
 <p>New in ConfigObj 4.7.0.</p>
@@ -2043,7 +2074,7 @@ an extra section aren't listed separately.</p>
 <p>NOTE: If you call <tt class="docutils literal">get_extra_values</tt> on a ConfigObj instance that hasn't
 been validated it will return an empty list.</p>
 <div class="section" id="id14">
-<h2><a class="toc-backref" href="#id85">15.1&nbsp;&nbsp;&nbsp;Example Usage</a></h2>
+<h2><a class="toc-backref" href="#id86">15.1&nbsp;&nbsp;&nbsp;Example Usage</a></h2>
 <p>The output from <tt class="docutils literal">get_extra_values</tt> is a list of tuples.</p>
 <p>Here is an example of how you could present this information to the user.</p>
 <div class="highlight"><pre><span class="n">vtor</span> <span class="o">=</span> <span class="n">validate</span><span class="o">.</span><span class="n">Validator</span><span class="p">()</span>
@@ -2072,7 +2103,7 @@ been validated it will return an empty list.</p>
 </div>
 </div>
 <div class="section" id="credits">
-<h1><a class="toc-backref" href="#id86">16&nbsp;&nbsp;&nbsp;CREDITS</a></h1>
+<h1><a class="toc-backref" href="#id87">16&nbsp;&nbsp;&nbsp;CREDITS</a></h1>
 <p>ConfigObj 4 is written by (and copyright) <a class="reference external" href="http://www.voidspace.org.uk/python/weblog/index.shtml">Michael Foord</a> and
 <a class="reference external" href="http://www.teknico.net">Nicola Larosa</a>.</p>
 <p>Particularly thanks to Nicola Larosa for help on the config file spec, the
@@ -2081,7 +2112,7 @@ validation system and the doctests.</p>
 <p>Thanks to many others for input, patches and bugfixes.</p>
 </div>
 <div class="section" id="license">
-<h1><a class="toc-backref" href="#id87">17&nbsp;&nbsp;&nbsp;LICENSE</a></h1>
+<h1><a class="toc-backref" href="#id88">17&nbsp;&nbsp;&nbsp;LICENSE</a></h1>
 <p>ConfigObj, and related files, are licensed under the BSD license. This is a
 very unrestrictive license, but it comes with the usual disclaimer. This is
 free software: test it, break it, just don't blame us if it eats your data !
@@ -2123,7 +2154,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <p>You should also be able to find a copy of this license at : <a class="reference external" href="http://www.voidspace.org.uk/python/license.shtml">BSD License</a></p>
 </div>
 <div class="section" id="todo">
-<h1><a class="toc-backref" href="#id88">18&nbsp;&nbsp;&nbsp;TODO</a></h1>
+<h1><a class="toc-backref" href="#id89">18&nbsp;&nbsp;&nbsp;TODO</a></h1>
 <p>Better support for configuration from multiple files, including tracking
 <em>where</em> the original file came from and writing changes to the correct
 file.</p>
@@ -2141,7 +2172,7 @@ newer <tt class="docutils literal">odict</tt> ?</p>
 <p>Preserve line numbers of values (and possibly the original text of each value).</p>
 </div>
 <div class="section" id="issues">
-<h1><a class="toc-backref" href="#id89">19&nbsp;&nbsp;&nbsp;ISSUES</a></h1>
+<h1><a class="toc-backref" href="#id90">19&nbsp;&nbsp;&nbsp;ISSUES</a></h1>
 <div class="note">
 <p class="first admonition-title">Note</p>
 <p class="last">Please file any bug reports to <a class="reference external" href="http://www.voidspace.org.uk/python/weblog/index.shtml">Michael Foord</a> or the <strong>ConfigObj</strong>
@@ -2174,11 +2205,11 @@ If the value is unchanged by validation (it's a string) - but other types
 will be.</p>
 </div>
 <div class="section" id="changelog">
-<h1><a class="toc-backref" href="#id90">20&nbsp;&nbsp;&nbsp;CHANGELOG</a></h1>
+<h1><a class="toc-backref" href="#id91">20&nbsp;&nbsp;&nbsp;CHANGELOG</a></h1>
 <p>This is an abbreviated changelog showing the major releases up to version 4.
 From version 4 it lists all releases and changes.</p>
 <div class="section" id="version-4-7-2">
-<h2><a class="toc-backref" href="#id91">20.1&nbsp;&nbsp;&nbsp;2010/02/27 - Version 4.7.2</a></h2>
+<h2><a class="toc-backref" href="#id92">20.1&nbsp;&nbsp;&nbsp;2010/02/27 - Version 4.7.2</a></h2>
 <ul class="simple">
 <li>BUGFIX: Restore Python 2.3 compatibility</li>
 <li>BUGFIX: Members that were lists were being returned as copies due to interpolation
@@ -2189,18 +2220,19 @@ member.</li>
 ignored instead of raising an exception on fetching the item.</li>
 <li>BUGFIX: values that use interpolation to reference members that don't exist can
 now be repr'd.</li>
-<li>BUGFIX: Fix to avoid writing 'rrn' on Windows when given a file opened in
+<li>BUGFIX: Fix to avoid writing '\r\r\n' on Windows when given a file opened in
 text write mode ('w').</li>
 </ul>
+<p>See <a class="reference internal" href="#string-interpolation-and-list-values">String Interpolation and List Values</a> for information about the problem with lists and interpolation.</p>
 </div>
 <div class="section" id="version-4-7-1">
-<h2><a class="toc-backref" href="#id92">20.2&nbsp;&nbsp;&nbsp;2010/02/06 - Version 4.7.1</a></h2>
+<h2><a class="toc-backref" href="#id93">20.2&nbsp;&nbsp;&nbsp;2010/02/06 - Version 4.7.1</a></h2>
 <ul class="simple">
 <li>Fix bug in options deprecation warning added in 4.7.0</li>
 </ul>
 </div>
 <div class="section" id="version-4-7-0">
-<h2><a class="toc-backref" href="#id93">20.3&nbsp;&nbsp;&nbsp;2010/01/09 - Version 4.7.0</a></h2>
+<h2><a class="toc-backref" href="#id94">20.3&nbsp;&nbsp;&nbsp;2010/01/09 - Version 4.7.0</a></h2>
 <ul class="simple">
 <li>Minimum supported version of Python is now 2.3</li>
 <li>~25% performance improvement thanks to Christian Heimes</li>
@@ -2228,7 +2260,7 @@ now only be returned for a section if it is missing</li>
 </ul>
 </div>
 <div class="section" id="version-4-6-0">
-<h2><a class="toc-backref" href="#id94">20.4&nbsp;&nbsp;&nbsp;2009/04/13 - Version 4.6.0</a></h2>
+<h2><a class="toc-backref" href="#id95">20.4&nbsp;&nbsp;&nbsp;2009/04/13 - Version 4.6.0</a></h2>
 <ul class="simple">
 <li>Pickling of ConfigObj instances now supported (thanks to Christian Heimes)</li>
 <li>Hashes in confgspecs are now allowed (see note below)</li>
@@ -2255,22 +2287,22 @@ list of lines) then you should pass in <tt class="docutils literal">_inspec=True
 This is the magic that switches off inline comment parsing.</p>
 </div>
 <div class="section" id="version-4-5-3">
-<h2><a class="toc-backref" href="#id95">20.5&nbsp;&nbsp;&nbsp;2008/06/27 - Version 4.5.3</a></h2>
+<h2><a class="toc-backref" href="#id96">20.5&nbsp;&nbsp;&nbsp;2008/06/27 - Version 4.5.3</a></h2>
 <p>BUGFIX: fixed a problem with <tt class="docutils literal">copy=True</tt> when validating with configspecs that use
 <tt class="docutils literal">__many__</tt> sections.</p>
 </div>
 <div class="section" id="version-4-5-2">
-<h2><a class="toc-backref" href="#id96">20.6&nbsp;&nbsp;&nbsp;2008/02/05 - Version 4.5.2</a></h2>
+<h2><a class="toc-backref" href="#id97">20.6&nbsp;&nbsp;&nbsp;2008/02/05 - Version 4.5.2</a></h2>
 <p>Distribution updated to include version 0.3.2 of <a class="reference internal" href="#validate">validate</a>. This means that
 <tt class="docutils literal">None</tt> as a default value in configspecs works.</p>
 </div>
 <div class="section" id="version-4-5-1">
-<h2><a class="toc-backref" href="#id97">20.7&nbsp;&nbsp;&nbsp;2008/02/05 - Version 4.5.1</a></h2>
+<h2><a class="toc-backref" href="#id98">20.7&nbsp;&nbsp;&nbsp;2008/02/05 - Version 4.5.1</a></h2>
 <p>Distribution updated to include version 0.3.1 of <a class="reference internal" href="#validate">validate</a>. This means that
 Unicode configspecs now work.</p>
 </div>
 <div class="section" id="version-4-5-0">
-<h2><a class="toc-backref" href="#id98">20.8&nbsp;&nbsp;&nbsp;2008/02/05 - Version 4.5.0</a></h2>
+<h2><a class="toc-backref" href="#id99">20.8&nbsp;&nbsp;&nbsp;2008/02/05 - Version 4.5.0</a></h2>
 <p>ConfigObj will now guarantee that files will be written terminated with a
 newline.</p>
 <p>ConfigObj will no longer attempt to import the <tt class="docutils literal">validate</tt> module, until/unless
@@ -2294,11 +2326,11 @@ attribute is not set then a <tt class="docutils literal">ReloadError</tt> (a new
 <p>Removed old CHANGELOG file.</p>
 </div>
 <div class="section" id="version-4-4-0">
-<h2><a class="toc-backref" href="#id99">20.9&nbsp;&nbsp;&nbsp;2007/02/04 - Version 4.4.0</a></h2>
+<h2><a class="toc-backref" href="#id100">20.9&nbsp;&nbsp;&nbsp;2007/02/04 - Version 4.4.0</a></h2>
 <p>Official release of 4.4.0</p>
 </div>
 <div class="section" id="version-4-3-3-alpha4">
-<h2><a class="toc-backref" href="#id100">20.10&nbsp;&nbsp;&nbsp;2006/12/17 - Version 4.3.3-alpha4</a></h2>
+<h2><a class="toc-backref" href="#id101">20.10&nbsp;&nbsp;&nbsp;2006/12/17 - Version 4.3.3-alpha4</a></h2>
 <p>By Nicola Larosa</p>
 <p>Allowed arbitrary indentation in the <tt class="docutils literal">indent_type</tt> parameter, removed the
 <tt class="docutils literal">NUM_INDENT_SPACES</tt> and <tt class="docutils literal">MAX_INTERPOL_DEPTH</tt> (a leftover) constants,
@@ -2309,26 +2341,26 @@ the documentation.</p>
 with <a class="reference external" href="http://www.codeplex.com/IronPython">IronPython</a>.</p>
 </div>
 <div class="section" id="version-4-3-3-alpha3">
-<h2><a class="toc-backref" href="#id101">20.11&nbsp;&nbsp;&nbsp;2006/12/17 - Version 4.3.3-alpha3</a></h2>
+<h2><a class="toc-backref" href="#id102">20.11&nbsp;&nbsp;&nbsp;2006/12/17 - Version 4.3.3-alpha3</a></h2>
 <p>By Nicola Larosa</p>
 <p>Added a missing <tt class="docutils literal">self.</tt> in the _handle_comment method and a related test,
 per Sourceforge bug #1523975.</p>
 </div>
 <div class="section" id="version-4-3-3-alpha2">
-<h2><a class="toc-backref" href="#id102">20.12&nbsp;&nbsp;&nbsp;2006/12/09 - Version 4.3.3-alpha2</a></h2>
+<h2><a class="toc-backref" href="#id103">20.12&nbsp;&nbsp;&nbsp;2006/12/09 - Version 4.3.3-alpha2</a></h2>
 <p>By Nicola Larosa</p>
 <p>Changed interpolation search strategy, based on this patch by Robin Munn:
 <a class="reference external" href="http://sourceforge.net/mailarchive/message.php?msg_id=17125993">http://sourceforge.net/mailarchive/message.php?msg_id=17125993</a></p>
 </div>
 <div class="section" id="version-4-3-3-alpha1">
-<h2><a class="toc-backref" href="#id103">20.13&nbsp;&nbsp;&nbsp;2006/12/09 - Version 4.3.3-alpha1</a></h2>
+<h2><a class="toc-backref" href="#id104">20.13&nbsp;&nbsp;&nbsp;2006/12/09 - Version 4.3.3-alpha1</a></h2>
 <p>By Nicola Larosa</p>
 <p>Added Template-style interpolation, with tests, based on this patch by
 Robin Munn: <a class="reference external" href="http://sourceforge.net/mailarchive/message.php?msg_id=17125991">http://sourceforge.net/mailarchive/message.php?msg_id=17125991</a>
 (awful archives, bad Sourceforge, bad).</p>
 </div>
 <div class="section" id="version-4-3-2">
-<h2><a class="toc-backref" href="#id104">20.14&nbsp;&nbsp;&nbsp;2006/06/04 - Version 4.3.2</a></h2>
+<h2><a class="toc-backref" href="#id105">20.14&nbsp;&nbsp;&nbsp;2006/06/04 - Version 4.3.2</a></h2>
 <p>Changed error handling, if parsing finds a single error then that error will
 be re-raised. That error will still have an <tt class="docutils literal">errors</tt> and a <tt class="docutils literal">config</tt>
 attribute.</p>
@@ -2345,7 +2377,7 @@ and the line number of the first error. (In the case of multiple errors.)</p>
 The errors stored will be an <tt class="docutils literal">UnreprError</tt>.</p>
 </div>
 <div class="section" id="version-4-3-1">
-<h2><a class="toc-backref" href="#id105">20.15&nbsp;&nbsp;&nbsp;2006/04/29 - Version 4.3.1</a></h2>
+<h2><a class="toc-backref" href="#id106">20.15&nbsp;&nbsp;&nbsp;2006/04/29 - Version 4.3.1</a></h2>
 <p>Added <tt class="docutils literal">validate.py</tt> back into <tt class="docutils literal">configobj.zip</tt>. (Thanks to Stewart
 Midwinter)</p>
 <p>Updated to <a class="reference external" href="http://www.voidspace.org.uk/downloads/validate.py">validate.py</a> 0.2.2.</p>
@@ -2357,7 +2389,7 @@ Midwinter)</p>
 Dangoor.)</p>
 </div>
 <div class="section" id="version-4-3-0">
-<h2><a class="toc-backref" href="#id106">20.16&nbsp;&nbsp;&nbsp;2006/03/24 - Version 4.3.0</a></h2>
+<h2><a class="toc-backref" href="#id107">20.16&nbsp;&nbsp;&nbsp;2006/03/24 - Version 4.3.0</a></h2>
 <p>Moved the tests and the CHANGELOG (etc) into a separate file. This has reduced
 the size of <tt class="docutils literal">configobj.py</tt> by about 40%.</p>
 <p>Added the <tt class="docutils literal">unrepr</tt> mode to reading and writing config files. Thanks to Kevin
@@ -2379,7 +2411,7 @@ the configspec file using <tt class="docutils literal">list_values=False</tt>).<
 <p>Sorted footnotes in the docs.</p>
 </div>
 <div class="section" id="version-4-2-0">
-<h2><a class="toc-backref" href="#id107">20.17&nbsp;&nbsp;&nbsp;2006/02/16 - Version 4.2.0</a></h2>
+<h2><a class="toc-backref" href="#id108">20.17&nbsp;&nbsp;&nbsp;2006/02/16 - Version 4.2.0</a></h2>
 <p>Removed <tt class="docutils literal">BOM_UTF8</tt> from <tt class="docutils literal">__all__</tt>.</p>
 <p>The <tt class="docutils literal">BOM</tt> attribute has become a boolean. (Defaults to <tt class="docutils literal">False</tt>.) It is
 <em>only</em> <tt class="docutils literal">True</tt> for the <tt class="docutils literal">UTF16/UTF8</tt> encodings.</p>
@@ -2403,7 +2435,7 @@ a list of lines.</p>
 <p>Added <tt class="docutils literal">as_int</tt> and <tt class="docutils literal">as_float</tt>.</p>
 </div>
 <div class="section" id="version-4-1-0">
-<h2><a class="toc-backref" href="#id108">20.18&nbsp;&nbsp;&nbsp;2005/12/14 - Version 4.1.0</a></h2>
+<h2><a class="toc-backref" href="#id109">20.18&nbsp;&nbsp;&nbsp;2005/12/14 - Version 4.1.0</a></h2>
 <p>Added <tt class="docutils literal">merge</tt>, a recursive update.</p>
 <p>Added <tt class="docutils literal">preserve_errors</tt> to <tt class="docutils literal">validate</tt> and the <tt class="docutils literal">flatten_errors</tt>
 example function.</p>
@@ -2415,11 +2447,11 @@ This allows interpolation in configspecs.</p>
 <p>Also use the new list syntax in <a class="reference internal" href="#validate">validate</a> 0.2.1. (For configspecs).</p>
 </div>
 <div class="section" id="version-4-0-2">
-<h2><a class="toc-backref" href="#id109">20.19&nbsp;&nbsp;&nbsp;2005/12/02 - Version 4.0.2</a></h2>
+<h2><a class="toc-backref" href="#id110">20.19&nbsp;&nbsp;&nbsp;2005/12/02 - Version 4.0.2</a></h2>
 <p>Fixed bug in <tt class="docutils literal">create_empty</tt>. Thanks to Paul Jimenez for the report.</p>
 </div>
 <div class="section" id="version-4-0-1">
-<h2><a class="toc-backref" href="#id110">20.20&nbsp;&nbsp;&nbsp;2005/11/05 - Version 4.0.1</a></h2>
+<h2><a class="toc-backref" href="#id111">20.20&nbsp;&nbsp;&nbsp;2005/11/05 - Version 4.0.1</a></h2>
 <p>Fixed bug in <tt class="docutils literal">Section.walk</tt> when transforming names as well as values.</p>
 <p>Added the <tt class="docutils literal">istrue</tt> method. (Fetches the boolean equivalent of a string
 value).</p>
@@ -2428,7 +2460,7 @@ are multiline values.</p>
 <p>List values are written as <tt class="docutils literal">item, item</tt> rather than <tt class="docutils literal">item,item</tt>.</p>
 </div>
 <div class="section" id="version-4-0-0">
-<h2><a class="toc-backref" href="#id111">20.21&nbsp;&nbsp;&nbsp;2005/10/17 - Version 4.0.0</a></h2>
+<h2><a class="toc-backref" href="#id112">20.21&nbsp;&nbsp;&nbsp;2005/10/17 - Version 4.0.0</a></h2>
 <p><strong>ConfigObj 4.0.0 Final</strong></p>
 <p>Fixed bug in <tt class="docutils literal">setdefault</tt>. When creating a new section with setdefault the
 reference returned would be to the dictionary passed in <em>not</em> to the new
@@ -2436,20 +2468,20 @@ section. Bug fixed and behaviour documented.</p>
 <p>Obscure typo/bug fixed in <tt class="docutils literal">write</tt>. Wouldn't have affected anyone though.</p>
 </div>
 <div class="section" id="version-4-0-0-beta-5">
-<h2><a class="toc-backref" href="#id112">20.22&nbsp;&nbsp;&nbsp;2005/09/09 - Version 4.0.0 beta 5</a></h2>
+<h2><a class="toc-backref" href="#id113">20.22&nbsp;&nbsp;&nbsp;2005/09/09 - Version 4.0.0 beta 5</a></h2>
 <p>Removed <tt class="docutils literal">PositionError</tt>.</p>
 <p>Allowed quotes around keys as documented.</p>
 <p>Fixed bug with commas in comments. (matched as a list value)</p>
 </div>
 <div class="section" id="version-4-0-0-beta-4">
-<h2><a class="toc-backref" href="#id113">20.23&nbsp;&nbsp;&nbsp;2005/09/07 - Version 4.0.0 beta 4</a></h2>
+<h2><a class="toc-backref" href="#id114">20.23&nbsp;&nbsp;&nbsp;2005/09/07 - Version 4.0.0 beta 4</a></h2>
 <p>Fixed bug in <tt class="docutils literal">__delitem__</tt>. Deleting an item no longer deletes the
 <tt class="docutils literal">inline_comments</tt> attribute.</p>
 <p>Fixed bug in initialising ConfigObj from a ConfigObj.</p>
 <p>Changed the mailing list address.</p>
 </div>
 <div class="section" id="version-4-0-0-beta-3">
-<h2><a class="toc-backref" href="#id114">20.24&nbsp;&nbsp;&nbsp;2005/08/28 - Version 4.0.0 beta 3</a></h2>
+<h2><a class="toc-backref" href="#id115">20.24&nbsp;&nbsp;&nbsp;2005/08/28 - Version 4.0.0 beta 3</a></h2>
 <p>Interpolation is switched off before writing out files.</p>
 <p>Fixed bug in handling <tt class="docutils literal">StringIO</tt> instances. (Thanks to report from
 Gustavo Niemeyer.)</p>
@@ -2457,12 +2489,12 @@ Gustavo Niemeyer.)</p>
 (For the sake of IDE calltips).</p>
 </div>
 <div class="section" id="version-4-0-0-beta-2">
-<h2><a class="toc-backref" href="#id115">20.25&nbsp;&nbsp;&nbsp;2005/08/25 - Version 4.0.0 beta 2</a></h2>
+<h2><a class="toc-backref" href="#id116">20.25&nbsp;&nbsp;&nbsp;2005/08/25 - Version 4.0.0 beta 2</a></h2>
 <p>Amendments to <em>validate.py</em>.</p>
 <p>First public release.</p>
 </div>
 <div class="section" id="version-4-0-0-beta-1">
-<h2><a class="toc-backref" href="#id116">20.26&nbsp;&nbsp;&nbsp;2005/08/21 - Version 4.0.0 beta 1</a></h2>
+<h2><a class="toc-backref" href="#id117">20.26&nbsp;&nbsp;&nbsp;2005/08/21 - Version 4.0.0 beta 1</a></h2>
 <p>Reads nested subsections to any depth.</p>
 <p>Multiline values.</p>
 <p>Simplified options and methods.</p>
@@ -2480,7 +2512,7 @@ Gustavo Niemeyer.)</p>
 <p>Plus lots of other improvements.</p>
 </div>
 <div class="section" id="version-3-0-0">
-<h2><a class="toc-backref" href="#id117">20.27&nbsp;&nbsp;&nbsp;2004/05/24 - Version 3.0.0</a></h2>
+<h2><a class="toc-backref" href="#id118">20.27&nbsp;&nbsp;&nbsp;2004/05/24 - Version 3.0.0</a></h2>
 <p>Several incompatible changes: another major overhaul and change. (Lots of
 improvements though).</p>
 <p>Added support for standard config files with sections. This has an entirely
@@ -2511,7 +2543,7 @@ keyword is unquoted.</p>
 <p>Charmap is now incorporated into ConfigObj.</p>
 </div>
 <div class="section" id="version-2-0-0-beta">
-<h2><a class="toc-backref" href="#id118">20.28&nbsp;&nbsp;&nbsp;2004/03/14 - Version 2.0.0 beta</a></h2>
+<h2><a class="toc-backref" href="#id119">20.28&nbsp;&nbsp;&nbsp;2004/03/14 - Version 2.0.0 beta</a></h2>
 <p>Re-written it to subclass dict. My first forays into inheritance and operator
 overloading.</p>
 <p>The config object now behaves like a dictionary.</p>
@@ -2525,7 +2557,7 @@ file without you <em>having</em> to supply a config spec.</p>
 and delete.</p>
 </div>
 <div class="section" id="version-1-0-5">
-<h2><a class="toc-backref" href="#id119">20.29&nbsp;&nbsp;&nbsp;2004/01/29 - Version 1.0.5</a></h2>
+<h2><a class="toc-backref" href="#id120">20.29&nbsp;&nbsp;&nbsp;2004/01/29 - Version 1.0.5</a></h2>
 <p>Version 1.0.5 has a couple of bugfixes as well as a couple of useful additions
 over previous versions.</p>
 <p>Since 1.0.0 the buildconfig function has been moved into this distribution,
@@ -2533,7 +2565,7 @@ and the methods reset, verify, getval and setval have been added.</p>
 <p>A couple of bugs have been fixed.</p>
 </div>
 <div class="section" id="origins">
-<h2><a class="toc-backref" href="#id120">20.30&nbsp;&nbsp;&nbsp;Origins</a></h2>
+<h2><a class="toc-backref" href="#id121">20.30&nbsp;&nbsp;&nbsp;Origins</a></h2>
 <p>ConfigObj originated in a set of functions for reading config files in the
 <a class="reference external" href="http://www.voidspace.org.uk/atlantibots/">atlantibots</a> project. The original
 functions were written by Rob McNeur.</p>
@@ -2541,7 +2573,7 @@ functions were written by Rob McNeur.</p>
 </div>
 <hr class="docutils" />
 <div class="section" id="footnotes">
-<h1><a class="toc-backref" href="#id121">21&nbsp;&nbsp;&nbsp;Footnotes</a></h1>
+<h1><a class="toc-backref" href="#id122">21&nbsp;&nbsp;&nbsp;Footnotes</a></h1>
 <table class="docutils footnote" frame="void" id="id15" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">

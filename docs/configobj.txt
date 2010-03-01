@@ -232,6 +232,9 @@ and then writing to file :
 
     Keywords and section names can only be strings [#]_. Attempting to set
     anything else will raise a ``ValueError``.
+    
+    See `String Interpolation and List Values`_ for an important note on
+    using lists in combination with `String Interpolation`_.
 
 
 Config Files
@@ -300,8 +303,8 @@ parsed.
 
 .. note::
 
-    New in ConfigObj 4.7.0: It is no longer possible to instantiate ConfigObj with
-    an ``options`` dictionary as in earlier versions. To modify code that used to 
+    New in ConfigObj 4.7.0: Instantiating ConfigObj with
+    an ``options`` dictionary is now deprecated. To modify code that used to 
     do this simply unpack the dictionary in the constructor call:
     
     .. code-block:: python
@@ -2432,8 +2435,11 @@ From version 4 it lists all releases and changes.
   ignored instead of raising an exception on fetching the item.
 * BUGFIX: values that use interpolation to reference members that don't exist can
   now be repr'd.
-* BUGFIX: Fix to avoid writing '\r\r\n' on Windows when given a file opened in
+* BUGFIX: Fix to avoid writing '\\r\\r\\n' on Windows when given a file opened in
   text write mode ('w').
+  
+See `String Interpolation and List Values`_ for information about the problem with lists and interpolation.
+
 
 2010/02/06 - Version 4.7.1
 --------------------------
