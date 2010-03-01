@@ -16,7 +16,7 @@ NAME = 'configobj'
 
 MODULES = 'configobj', 'validate'
 
-DESCRIPTION = 'Config file reading, writing, and validation.'
+DESCRIPTION = 'Config file reading, writing and validation.'
 
 URL = 'http://www.voidspace.org.uk/python/configobj.html'
 

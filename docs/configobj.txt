@@ -2034,6 +2034,13 @@ which discards comments.
 String Interpolation
 ====================
 
+.. note::
+    
+    String interpolation can slow down (slightly) the fetching of values
+    from your config object. If you aren't using interpolation and it
+    is performance critical then create your instance with
+    ``interpolation=False``.
+
 ConfigObj allows string interpolation *similar* to the way ``ConfigParser``
 or ``string.Template`` work. The value of the ``interpolation`` attribute
 determines which style of interpolation you want to use. Valid values are
@@ -2089,6 +2096,30 @@ has to *change* the value).
 New in ConfigObj 4.7.0: String interpolation is now done in members of list
 values.
 
+
+String Interpolation and List Values
+------------------------------------
+
+Since version 4.7 string interpolation is done on string members of list values.
+If interpolation changes any members of the list then what you get back is a
+*copy* of the list rather than the original list.
+
+This makes fetching list values slightly slower when interpolation is on, it
+also means that if you mutate the list changes won't be reflected in the
+original list:
+
+.. code-block:: python
+
+    >>> c = ConfigObj()
+    >>> c['foo'] = 'boo'
+    >>> c['bar'] = ['%(foo)s'] 
+    >>> c['bar']
+    ['boo']
+    >>> c['bar'].append('fish')
+    >>> c['bar']
+    ['boo']
+
+Instead of mutating the list you must create a new list and reassign it.
 
 
 Comments
