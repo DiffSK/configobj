@@ -18,8 +18,8 @@
 # Comments, suggestions and bug reports welcome.
 
 
-from __future__ import generators
-from StringIO import StringIO
+
+from io import StringIO
 
 import os
 import sys
@@ -58,42 +58,42 @@ def _error_test():
     """
     Testing the error classes.
     
-    >>> raise ConfigObjError
+    >>> raise ConfigObjError    #doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
-    ConfigObjError
+    configobj.ConfigObjError:
 
-    >>> raise NestingError
+    >>> raise NestingError      #doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
-    NestingError
+    configobj.NestingError:
     
-    >>> raise ParseError
+    >>> raise ParseError        #doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
-    ParseError
+    configobj.ParseError:
     
-    >>> raise DuplicateError
+    >>> raise DuplicateError    #doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
-    DuplicateError
+    configobj.DuplicateError:
     
-    >>> raise ConfigspecError
+    >>> raise ConfigspecError   #doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
-    ConfigspecError
+    configobj.ConfigspecError:
     
-    >>> raise InterpolationLoopError('yoda')
+    >>> raise InterpolationLoopError('yoda')    #doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
-    InterpolationLoopError: interpolation loop detected in value "yoda".
+    configobj.InterpolationLoopError: interpolation loop detected in value "yoda".
     
-    >>> raise RepeatSectionError
+    >>> raise RepeatSectionError    #doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
-    RepeatSectionError
+    configobj.RepeatSectionError:
     
-    >>> raise MissingInterpolationOption('yoda')
+    >>> raise MissingInterpolationOption('yoda')    #doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
-    MissingInterpolationOption: missing option "yoda" in interpolation.
+    configobj.MissingInterpolationOption: missing option "yoda" in interpolation.
     
     
-    >>> raise ReloadError()
+    >>> raise ReloadError()     #doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
-    ReloadError: reload failed, filename is not set.
+    configobj.ReloadError: reload failed, filename is not set.
     >>> try:
     ...     raise ReloadError()
     ... except IOError:
@@ -218,17 +218,17 @@ def _test_reset():
 def _test_reload():
     """
     >>> c = ConfigObj(StringIO())
-    >>> c.reload()
+    >>> c.reload()  #doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
-    ReloadError: reload failed, filename is not set.
+    configobj.ReloadError: reload failed, filename is not set.
     >>> c = ConfigObj()
-    >>> c.reload()
+    >>> c.reload()  #doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
-    ReloadError: reload failed, filename is not set.
+    configobj.ReloadError: reload failed, filename is not set.
     >>> c = ConfigObj([])
-    >>> c.reload()
+    >>> c.reload()  #doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
-    ReloadError: reload failed, filename is not set.
+    configobj.ReloadError: reload failed, filename is not set.
     
     We need to use a real file as reload is only for files loaded from
     the filesystem.
@@ -254,6 +254,7 @@ def _test_reload():
     ...         test3=3
     ...         test4=5.0
     ... ''')
+    338
     >>> h.close()
     >>> configspec = '''
     ...     test1= integer(30,50)
@@ -415,20 +416,19 @@ def _doctest():
     >>> val = Validator()
     >>> c1 = ConfigObj(config, configspec=configspec)
     >>> res = c1.validate(val)
-    >>> flatten_errors(c1, res) == [([], 'test4', False), (['section', 
-    ...     'sub section'], 'test4', False), (['section'], 'test4', False)]
+    >>> flatten_errors(c1, res) == [([], 'test4', False), (['section'], 'test4', False), (['section', 'sub section'], 'test4', False)]
     True
     >>> res = c1.validate(val, preserve_errors=True)
     >>> check = flatten_errors(c1, res)
     >>> check[0][:2]
     ([], 'test4')
     >>> check[1][:2]
-    (['section', 'sub section'], 'test4')
-    >>> check[2][:2]
     (['section'], 'test4')
+    >>> check[2][:2]
+    (['section', 'sub section'], 'test4')
     >>> for entry in check:
     ...     isinstance(entry[2], VdtValueTooSmallError)
-    ...     print str(entry[2])
+    ...     print(str(entry[2]))
     True
     the value "5.0" is too small.
     True
@@ -464,7 +464,7 @@ def _doctest():
     >>> uc = ConfigObj(u, encoding='utf_8', default_encoding='latin-1')
     >>> uc.BOM
     1
-    >>> isinstance(uc['test1'], unicode)
+    >>> isinstance(uc['test1'], str)
     1
     >>> uc.encoding
     'utf_8'
@@ -474,7 +474,7 @@ def _doctest():
     >>> a_list = uc.write()
     >>> len(a_list)
     15
-    >>> isinstance(a_list[0], str)
+    >>> isinstance(a_list[0], bytes)
     1
     >>> a_list[0].startswith(BOM_UTF8)
     1
@@ -486,6 +486,7 @@ def _doctest():
     >>> file_like = StringIO()
     >>> uc.write(file_like)
     >>> file_like.seek(0)
+    0
     >>> uc2 = ConfigObj(file_like)
     >>> uc2 == uc
     1
@@ -593,7 +594,7 @@ def _doctest():
     >>> a['a'] = 'fish'
     >>> try:
     ...     a.as_int('a') #doctest: +ELLIPSIS
-    ... except ValueError, e:
+    ... except ValueError as e:
     ...     err_mess = str(e)
     >>> err_mess.startswith('invalid literal for int()')
     1
@@ -603,22 +604,22 @@ def _doctest():
     >>> a['b'] = '3.2'
     >>> try:
     ...     a.as_int('b') #doctest: +ELLIPSIS
-    ... except ValueError, e:
+    ... except ValueError as e:
     ...     err_mess = str(e)
     >>> err_mess.startswith('invalid literal for int()')
     1
         
     >>> a = ConfigObj()
     >>> a['a'] = 'fish'
-    >>> a.as_float('a')
+    >>> a.as_float('a')  #doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
     ValueError: invalid literal for float(): fish
     >>> a['b'] = '1'
     >>> a.as_float('b')
     1.0
     >>> a['b'] = '3.2'
-    >>> a.as_float('b')
-    3.2000000000000002
+    >>> a.as_float('b')  #doctest: +ELLIPSIS
+    3.2...
     
      Test # with unrepr
      >>> a = '''
@@ -692,9 +693,9 @@ def _test_configobj():
     ... [ "hello" ]
     ... member = value
     ... '''
-    >>> ConfigObj(c.split('\\n'), raise_errors = True)
+    >>> ConfigObj(c.split('\\n'), raise_errors = True)  #doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
-    DuplicateError: Duplicate section name at line 6.
+    configobj.DuplicateError: Duplicate section name at line 6.
     
     >>> d = '''
     ... [hello]
@@ -706,9 +707,9 @@ def _test_configobj():
     ... [ "and again" ]
     ... member = value
     ... '''
-    >>> ConfigObj(d.split('\\n'), raise_errors = True)
+    >>> ConfigObj(d.split('\\n'), raise_errors = True)  #doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
-    DuplicateError: Duplicate keyword name at line 7.
+    configobj.DuplicateError: Duplicate keyword name at line 7.
 
     Testing ConfigParser-style interpolation
     
@@ -750,12 +751,12 @@ def _test_configobj():
     Testing the interpolation errors.
     
     >>> c.interpolation = True
-    >>> c['section']['d']
+    >>> c['section']['d']   #doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
-    MissingInterpolationOption: missing option "not_here" in interpolation.
-    >>> c['section']['e']
+    configobj.MissingInterpolationOption: missing option "not_here" in interpolation.
+    >>> c['section']['e']   #doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
-    InterpolationLoopError: interpolation loop detected in value "e".
+    configobj.InterpolationLoopError: interpolation loop detected in value "e".
     
     Testing Template-style interpolation
     
@@ -810,17 +811,17 @@ def _test_configobj():
     
     Testing our quoting.
     
-    >>> i._quote('\"""\\'\\'\\'')
+    >>> i._quote('\"""\\'\\'\\'')   #doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
-    ConfigObjError: Value \"\"""'''" cannot be safely quoted.
+    configobj.ConfigObjError: Value \"\"""'''" cannot be safely quoted.
     >>> try:
     ...     i._quote('\\n', multiline=False)
-    ... except ConfigObjError, e:
+    ... except ConfigObjError as e:
     ...    e.msg
     'Value "\\n" cannot be safely quoted.'
-    >>> i._quote(' "\\' ', multiline=False)
+    >>> i._quote(' "\\' ', multiline=False)  #doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
-    ConfigObjError: Value " "' " cannot be safely quoted.
+    configobj.ConfigObjError: Value " "' " cannot be safely quoted.
     
     Testing with "stringify" off.
     >>> c.stringify = False
@@ -915,7 +916,7 @@ def _test_configobj():
     ... '''
     >>> try:
     ...     ConfigObj(testconfig4.split('\\n'))
-    ... except ConfigObjError, e:
+    ... except ConfigObjError as e:
     ...     len(e.errors)
     4
     
@@ -929,7 +930,7 @@ def _test_configobj():
     ... '''
     >>> try:
     ...     ConfigObj(testconfig5.split('\\n'))
-    ... except ConfigObjError, e:
+    ... except ConfigObjError as e:
     ...     len(e.errors)
     4
     
@@ -1019,18 +1020,12 @@ def _test_configobj():
     >>> ConfigObj(cfg).write() == cfg
     1
     >>> cfg = ['[sect]', '    [[sect]]', '        foo = bar']
-    >>> ConfigObj(cfg).write() == cfg
-    1
-    >>> ConfigObj(oneTabCfg).write() == oneTabCfg
-    1
-    >>> ConfigObj(twoTabsCfg).write() == twoTabsCfg
-    1
-    >>> ConfigObj(tabsAndSpacesCfg).write() == tabsAndSpacesCfg
-    1
-    >>> ConfigObj(cfg, indent_type=chr(9)).write() == oneTabCfg
-    1
-    >>> ConfigObj(oneTabCfg, indent_type='    ').write() == cfg
-    1
+    >>> assert ConfigObj(cfg).write() == cfg
+    >>> assert ConfigObj(oneTabCfg).write() == oneTabCfg
+    >>> assert ConfigObj(twoTabsCfg).write() == twoTabsCfg
+    >>> assert ConfigObj(tabsAndSpacesCfg).write() == [s.decode('utf-8') for s in tabsAndSpacesCfg]
+    >>> assert ConfigObj(cfg, indent_type=chr(9)).write() == oneTabCfg
+    >>> assert ConfigObj(oneTabCfg, indent_type='    ').write() == cfg
     """
 
 
@@ -1090,9 +1085,9 @@ def _test_validate():
     ...         },
     ...     }
     1
-    >>> val.check(c1.configspec['test4'], c1['test4'])
+    >>> val.check(c1.configspec['test4'], c1['test4'])  #doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
-    VdtValueTooSmallError: the value "5.0" is too small.
+    validate.VdtValueTooSmallError: the value "5.0" is too small.
     
     >>> val_test_config = '''
     ...     key = 0
@@ -1541,7 +1536,7 @@ def _test_validate():
     ...     errors.append('%s%s%s' % (section_string, ' = ', error or 'missing'))
     >>> errors.sort()
     >>> for entry in errors:
-    ...     print entry
+    ...     print(entry)
     [root], option2 = missing
     [root], option3 = the value "Bad_value" is of the wrong type.
     [root], section1, option2 = missing
@@ -1561,31 +1556,31 @@ def _test_errors():
     ... key = "value"
     ... key2 = "value
     ... '''.splitlines()
-    >>> c = ConfigObj(bad_syntax)
+    >>> c = ConfigObj(bad_syntax)   #doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
-    ParseError: Parse error in value at line 3.
-    >>> c = ConfigObj(bad_syntax, raise_errors=True)
+    configobj.ParseError: Parse error in value at line 3.
+    >>> c = ConfigObj(bad_syntax, raise_errors=True)    #doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
-    ParseError: Parse error in value at line 3.
-    >>> c = ConfigObj(bad_syntax, raise_errors=True, unrepr=True)
+    configobj.ParseError: Parse error in value at line 3.
+    >>> c = ConfigObj(bad_syntax, raise_errors=True, unrepr=True)   #doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
-    UnreprError: Parse error in value at line 3.
+    configobj.UnreprError: Parse error in value at line 3.
     >>> try:
     ...     c = ConfigObj(bad_syntax)
-    ... except Exception, e:
-    ...     pass
+    ... except Exception as exc:
+    ...     e = exc
     >>> assert(isinstance(e, ConfigObjError))
-    >>> print e
+    >>> print(e)
     Parse error in value at line 3.
     >>> len(e.errors) == 1
     1
     >>> try:
     ...     c = ConfigObj(bad_syntax, unrepr=True)
-    ... except Exception, e:
-    ...     pass
+    ... except Exception as exc:
+    ...     e = exc
     >>> assert(isinstance(e, ConfigObjError))
-    >>> print e
-    Parse error in value at line 3.
+    >>> print(e)
+    Parse error from unrepr-ing value at line 3.
     >>> len(e.errors) == 1
     1
     >>> the_error = e.errors[0]
@@ -1598,31 +1593,31 @@ def _test_errors():
     ... '''.splitlines()
     >>> try:
     ...     c = ConfigObj(multiple_bad_syntax)
-    ... except ConfigObjError, e:
+    ... except ConfigObjError as e:
     ...     str(e)
     'Parsing failed with several errors.\\nFirst error at line 3.'
-    >>> c = ConfigObj(multiple_bad_syntax, raise_errors=True)
+    >>> c = ConfigObj(multiple_bad_syntax, raise_errors=True)   #doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
-    ParseError: Parse error in value at line 3.
-    >>> c = ConfigObj(multiple_bad_syntax, raise_errors=True, unrepr=True)
+    configobj.ParseError: Parse error in value at line 3.
+    >>> c = ConfigObj(multiple_bad_syntax, raise_errors=True, unrepr=True)  #doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
-    UnreprError: Parse error in value at line 3.
+    configobj.UnreprError: Parse error in value at line 3.
     >>> try:
     ...     c = ConfigObj(multiple_bad_syntax)
-    ... except Exception, e:
-    ...     pass
+    ... except Exception as exc:
+    ...     e = exc
     >>> assert(isinstance(e, ConfigObjError))
-    >>> print e
+    >>> print(e)
     Parsing failed with several errors.
     First error at line 3.
     >>> len(e.errors) == 2
     1
     >>> try:
     ...     c = ConfigObj(multiple_bad_syntax, unrepr=True)
-    ... except Exception, e:
-    ...     pass
+    ... except Exception as exc:
+    ...     e = exc
     >>> assert(isinstance(e, ConfigObjError))
-    >>> print e
+    >>> print(e)
     Parsing failed with several errors.
     First error at line 3.
     >>> len(e.errors) == 2
@@ -1635,12 +1630,12 @@ def _test_errors():
     ... key2 = value
     ... '''.splitlines()
     >>> c = ConfigObj(unknown_name)
-    >>> c = ConfigObj(unknown_name, unrepr=True)
+    >>> c = ConfigObj(unknown_name, unrepr=True)    #doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
-    UnreprError: Unknown name or type in value at line 3.
-    >>> c = ConfigObj(unknown_name, raise_errors=True, unrepr=True)
+    configobj.UnreprError: Unknown name or type in value at line 3.
+    >>> c = ConfigObj(unknown_name, raise_errors=True, unrepr=True)  #doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
-    UnreprError: Unknown name or type in value at line 3.
+    configobj.UnreprError: Unknown name or type in value at line 3.
     """
 
 
@@ -1711,14 +1706,16 @@ def _test_lineendings():
     NOTE: Need to use a real file because this code is only
           exercised when reading from the filesystem.
           
-    >>> h = open('temp', 'wb')
+    >>> h = open('temp', 'w')
     >>> h.write('\\r\\n')
+    2
     >>> h.close()
     >>> c = ConfigObj('temp')
     >>> c.newlines
     '\\r\\n'
-    >>> h = open('temp', 'wb')
+    >>> h = open('temp', 'w')
     >>> h.write('\\n')
+    1
     >>> h.close()
     >>> c = ConfigObj('temp')
     >>> c.newlines
@@ -1774,9 +1771,9 @@ def _test_many_check():
     >>> c.validate(v)
     1
     >>> type(c['a'])
-    <type 'int'>
+    <class 'int'>
     >>> type(c['b'])
-    <type 'int'>
+    <class 'int'>
     
     
     >>> spec = ['[name]', '__many__ = integer()']
@@ -1786,9 +1783,9 @@ def _test_many_check():
     >>> c.validate(v)
     1
     >>> type(c['name']['a'])
-    <type 'int'>
+    <class 'int'>
     >>> type(c['name']['b'])
-    <type 'int'>
+    <class 'int'>
     
     
     >>> spec = ['[__many__]', '__many__ = integer()']
@@ -1798,9 +1795,9 @@ def _test_many_check():
     >>> c.validate(v)
     1
     >>> type(c['name']['hello'])
-    <type 'int'>
+    <class 'int'>
     >>> type(c['thing']['fish'])
-    <type 'int'>
+    <class 'int'>
     
     
     >>> spec = '''
@@ -1831,25 +1828,25 @@ def _test_many_check():
     >>> c.validate(v)
     1
     >>> type(c['fish'])
-    <type 'int'>
+    <class 'int'>
     >>> type(c['buggle'])
-    <type 'int'>
+    <class 'int'>
     >>> c['hi']['one']
     1
     >>> c['hi']['two']
     0
     >>> type(c['hi']['bye']['odd'])
-    <type 'float'>
+    <class 'float'>
     >>> type(c['hi']['bye']['whoops'])
-    <type 'float'>
+    <class 'float'>
     >>> c['bye']['one']
     1
     >>> c['bye']['two']
     1
     >>> type(c['bye']['lots']['odd'])
-    <type 'float'>
+    <class 'float'>
     >>> type(c['bye']['lots']['whoops'])
-    <type 'float'>
+    <class 'float'>
     
     
     >>> spec = ['___many___ = integer()']
@@ -1859,9 +1856,9 @@ def _test_many_check():
     >>> c.validate(v)
     1
     >>> type(c['a'])
-    <type 'int'>
+    <class 'int'>
     >>> type(c['b'])
-    <type 'int'>
+    <class 'int'>
 
     
     >>> spec = '''
@@ -1884,13 +1881,13 @@ def _test_many_check():
     >>> c.validate(v)
     1
     >>> type(c['hi']['bye']['odd'])
-    <type 'float'>
+    <class 'float'>
     >>> type(c['hi']['bye']['whoops'])
-    <type 'float'>
+    <class 'float'>
     >>> type(c['bye']['lots']['odd'])
-    <type 'float'>
+    <class 'float'>
     >>> type(c['bye']['lots']['whoops'])
-    <type 'float'>
+    <class 'float'>
     
     >>> s = ['[dog]', '[[cow]]', 'something = boolean', '[[__many__]]', 
     ...      'fish = integer']
@@ -1944,7 +1941,7 @@ def _unexpected_validation_errors():
     >>> check = flatten_errors(ini, res)
     >>> for entry in check:
     ...     isinstance(entry[2], ValidateError)
-    ...     print str(entry[2])
+    ...     print(str(entry[2]))
     True
     Section 'cow' was provided as a single value
     
@@ -1962,7 +1959,7 @@ def _unexpected_validation_errors():
     >>> check = flatten_errors(ini, res)
     >>> for entry in check:
     ...     isinstance(entry[2], ValidateError)
-    ...     print str(entry[2])
+    ...     print(str(entry[2]))
     True
     Value 'something' was provided as a section
     
@@ -2064,45 +2061,45 @@ def _test_reset_and_clear_more():
 def _test_invalid_lists():
     """
     >>> v = ['string = val, val2, , val3']
-    >>> c = ConfigObj(v)
+    >>> c = ConfigObj(v)    #doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
-    ParseError: Parse error in value at line 1.
+    configobj.ParseError: Parse error in value at line 1.
     >>> v = ['string = val, val2,, val3']
-    >>> c = ConfigObj(v)
+    >>> c = ConfigObj(v)    #doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
-    ParseError: Parse error in value at line 1.
+    configobj.ParseError: Parse error in value at line 1.
     >>> v = ['string = val, val2,,']
-    >>> c = ConfigObj(v)
+    >>> c = ConfigObj(v)    #doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
-    ParseError: Parse error in value at line 1.
+    configobj.ParseError: Parse error in value at line 1.
     >>> v = ['string = val, ,']
-    >>> c = ConfigObj(v)
+    >>> c = ConfigObj(v)    #doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
-    ParseError: Parse error in value at line 1.
+    configobj.ParseError: Parse error in value at line 1.
     >>> v = ['string = val, ,  ']
-    >>> c = ConfigObj(v)
+    >>> c = ConfigObj(v)    #doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
-    ParseError: Parse error in value at line 1.
+    configobj.ParseError: Parse error in value at line 1.
     >>> v = ['string = ,,']
-    >>> c = ConfigObj(v)
+    >>> c = ConfigObj(v)    #doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
-    ParseError: Parse error in value at line 1.
+    configobj.ParseError: Parse error in value at line 1.
     >>> v = ['string = ,, ']
-    >>> c = ConfigObj(v)
+    >>> c = ConfigObj(v)    #doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
-    ParseError: Parse error in value at line 1.
+    configobj.ParseError: Parse error in value at line 1.
     >>> v = ['string = ,foo']
-    >>> c = ConfigObj(v)
+    >>> c = ConfigObj(v)    #doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
-    ParseError: Parse error in value at line 1.
+    configobj.ParseError: Parse error in value at line 1.
     >>> v = ['string = foo, ']
     >>> c = ConfigObj(v)
     >>> c['string']
     ['foo']
     >>> v = ['string = foo, "']
-    >>> c = ConfigObj(v)
+    >>> c = ConfigObj(v)    #doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
-    ParseError: Parse error in value at line 1.
+    configobj.ParseError: Parse error in value at line 1.
     """
 
 def _test_validation_with_preserve_errors():
@@ -2156,7 +2153,7 @@ if __name__ == '__main__':
             [[[lev3c]]]    # comment 22
             key1 = val    # comment 23"""
     #
-    testconfig2 = """\
+    testconfig2 = b"""\
                         key1 = 'val1'
                         key2 =   "val2"
                         key3 = val3
@@ -2173,7 +2170,7 @@ if __name__ == '__main__':
                             fish = 3
     """
     #
-    testconfig6 = '''
+    testconfig6 = b'''
     name1 = """ a single line value """ # comment
     name2 = \''' another single line value \''' # comment
     name3 = """ a single line value """
@@ -2201,14 +2198,14 @@ if __name__ == '__main__':
     # does a string.expandtabs() on all of them, sigh
     oneTabCfg = ['[sect]', '\t[[sect]]', '\t\tfoo = bar']
     twoTabsCfg = ['[sect]', '\t\t[[sect]]', '\t\t\t\tfoo = bar']
-    tabsAndSpacesCfg = ['[sect]', '\t \t [[sect]]', '\t \t \t \t foo = bar']
+    tabsAndSpacesCfg = [b'[sect]', b'\t \t [[sect]]', b'\t \t \t \t foo = bar']
     #
     import doctest
     m = sys.modules.get('__main__')
     globs = m.__dict__.copy()
     a = ConfigObj(testconfig1.split('\n'), raise_errors=True)
-    b = ConfigObj(testconfig2.split('\n'), raise_errors=True)
-    i = ConfigObj(testconfig6.split('\n'), raise_errors=True)
+    b = ConfigObj(testconfig2.split(b'\n'), raise_errors=True)
+    i = ConfigObj(testconfig6.split(b'\n'), raise_errors=True)
     globs.update({'INTP_VER': INTP_VER, 'a': a, 'b': b, 'i': i,
         'oneTabCfg': oneTabCfg, 'twoTabsCfg': twoTabsCfg,
         'tabsAndSpacesCfg': tabsAndSpacesCfg})
