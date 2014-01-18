@@ -2212,7 +2212,7 @@ if __name__ == '__main__':
     doctest.testmod(m, globs=globs)
     
     import configobj
-    doctest.testmod(configobj, globs=globs)
+    doctest.testmod(configobj, globs=globs, raise_on_error=True)
 
 
 # Man alive I prefer unittest ;-)
