@@ -239,7 +239,7 @@ def _test_reload():
     We need to use a real file as reload is only for files loaded from
     the filesystem.
     >>> h = open('temp', 'w')
-    >>> h.write('''
+    >>> _ = h.write('''
     ...     test1=40
     ...     test2=hello
     ...     test3=3
@@ -260,7 +260,6 @@ def _test_reload():
     ...         test3=3
     ...         test4=5.0
     ... ''')
-    338
     >>> h.close()
     >>> configspec = '''
     ...     test1= integer(30,50)
@@ -491,8 +490,7 @@ def _doctest():
     >>> uc.newlines = '\\r'
     >>> file_like = StringIO()
     >>> uc.write(file_like)
-    >>> file_like.seek(0)
-    0
+    >>> _ = file_like.seek(0)
     >>> uc2 = ConfigObj(file_like)
     >>> uc2 == uc
     1
@@ -1713,15 +1711,13 @@ def _test_lineendings():
           exercised when reading from the filesystem.
           
     >>> h = open('temp', 'w')
-    >>> h.write('\\r\\n')
-    2
+    >>> _ = h.write('\\r\\n')
     >>> h.close()
     >>> c = ConfigObj('temp')
     >>> c.newlines
     '\\r\\n'
     >>> h = open('temp', 'w')
-    >>> h.write('\\n')
-    1
+    >>> _ = h.write('\\n')
     >>> h.close()
     >>> c = ConfigObj('temp')
     >>> c.newlines
