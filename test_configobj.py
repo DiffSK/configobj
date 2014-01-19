@@ -17,9 +17,15 @@
 # http://lists.sourceforge.net/lists/listinfo/configobj-develop
 # Comments, suggestions and bug reports welcome.
 
-
-
-from io import StringIO
+import sys
+# StringIO is used to simulate config files during doctests
+if sys.version_info >= (3,):
+    # Python 3.x case (io does exist in 2.7, but better to use the 2.x case):
+    #http://bugs.python.org/issue8025
+    from io import StringIO
+else:
+    # Python 2.x case, explicitly NOT using cStringIO due to unicode edge cases
+    from StringIO import StringIO
 
 import os
 import sys
@@ -575,8 +581,8 @@ def _doctest():
     Test unrepr with a dictionary
     >>> a = 'k = {"a": 1}'.splitlines()
     >>> c = ConfigObj(a, unrepr=True)
-    >>> type(c['k']) == dict
-    1
+    >>> isinstance(c['k'], dict)
+    True
         
     >>> a = ConfigObj()
     >>> a['a'] = 'fish'
@@ -1770,10 +1776,10 @@ def _test_many_check():
     >>> v = Validator()
     >>> c.validate(v)
     1
-    >>> type(c['a'])
-    <class 'int'>
-    >>> type(c['b'])
-    <class 'int'>
+    >>> isinstance(c['a'], int)
+    True
+    >>> isinstance(c['b'], int)
+    True
     
     
     >>> spec = ['[name]', '__many__ = integer()']
@@ -1782,10 +1788,10 @@ def _test_many_check():
     >>> v = Validator()
     >>> c.validate(v)
     1
-    >>> type(c['name']['a'])
-    <class 'int'>
-    >>> type(c['name']['b'])
-    <class 'int'>
+    >>> isinstance(c['name']['a'], int)
+    True
+    >>> isinstance(c['name']['b'], int)
+    True
     
     
     >>> spec = ['[__many__]', '__many__ = integer()']
@@ -1794,10 +1800,10 @@ def _test_many_check():
     >>> v = Validator()
     >>> c.validate(v)
     1
-    >>> type(c['name']['hello'])
-    <class 'int'>
-    >>> type(c['thing']['fish'])
-    <class 'int'>
+    >>> isinstance(c['name']['hello'], int)
+    True
+    >>> isinstance(c['thing']['fish'], int)
+    True
     
     
     >>> spec = '''
@@ -1827,26 +1833,26 @@ def _test_many_check():
     >>> v = Validator()
     >>> c.validate(v)
     1
-    >>> type(c['fish'])
-    <class 'int'>
-    >>> type(c['buggle'])
-    <class 'int'>
+    >>> isinstance(c['fish'], int)
+    True
+    >>> isinstance(c['buggle'], int)
+    True
     >>> c['hi']['one']
     1
     >>> c['hi']['two']
     0
-    >>> type(c['hi']['bye']['odd'])
-    <class 'float'>
-    >>> type(c['hi']['bye']['whoops'])
-    <class 'float'>
+    >>> isinstance(c['hi']['bye']['odd'], float)
+    True
+    >>> isinstance(c['hi']['bye']['whoops'], float)
+    True
     >>> c['bye']['one']
     1
     >>> c['bye']['two']
     1
-    >>> type(c['bye']['lots']['odd'])
-    <class 'float'>
-    >>> type(c['bye']['lots']['whoops'])
-    <class 'float'>
+    >>> isinstance(c['bye']['lots']['odd'], float)
+    True
+    >>> isinstance(c['bye']['lots']['whoops'], float)
+    True
     
     
     >>> spec = ['___many___ = integer()']
@@ -1855,10 +1861,10 @@ def _test_many_check():
     >>> v = Validator()
     >>> c.validate(v)
     1
-    >>> type(c['a'])
-    <class 'int'>
-    >>> type(c['b'])
-    <class 'int'>
+    >>> isinstance(c['a'], int)
+    True
+    >>> isinstance(c['b'], int)
+    True
 
     
     >>> spec = '''
@@ -1880,14 +1886,14 @@ def _test_many_check():
     >>> v = Validator()
     >>> c.validate(v)
     1
-    >>> type(c['hi']['bye']['odd'])
-    <class 'float'>
-    >>> type(c['hi']['bye']['whoops'])
-    <class 'float'>
-    >>> type(c['bye']['lots']['odd'])
-    <class 'float'>
-    >>> type(c['bye']['lots']['whoops'])
-    <class 'float'>
+    >>> isinstance(c['hi']['bye']['odd'], float)
+    True
+    >>> isinstance(c['hi']['bye']['whoops'], float)
+    True
+    >>> isinstance(c['bye']['lots']['odd'], float)
+    True
+    >>> isinstance(c['bye']['lots']['whoops'], float)
+    True
     
     >>> s = ['[dog]', '[[cow]]', 'something = boolean', '[[__many__]]', 
     ...      'fish = integer']
@@ -2209,10 +2215,14 @@ if __name__ == '__main__':
     globs.update({'INTP_VER': INTP_VER, 'a': a, 'b': b, 'i': i,
         'oneTabCfg': oneTabCfg, 'twoTabsCfg': twoTabsCfg,
         'tabsAndSpacesCfg': tabsAndSpacesCfg})
-    doctest.testmod(m, globs=globs)
-    
+    pre_failures, pre_tests = doctest.testmod(m, globs=globs)
+
     import configobj
-    doctest.testmod(configobj, globs=globs, raise_on_error=True)
+    post_failures, post_tests = doctest.testmod(configobj,
+                                                            globs=globs)
+    assert not (pre_failures or post_failures), (
+        '{} failures out of {} tests'.format(post_failures + pre_failures,
+                                             post_tests + pre_tests))
 
 
 # Man alive I prefer unittest ;-)
