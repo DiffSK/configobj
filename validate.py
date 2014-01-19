@@ -1447,4 +1447,6 @@ if __name__ == '__main__':
     globs.update({
         'vtor': Validator(),
     })
-    doctest.testmod(m, globs=globs)
+
+    failures, tests = doctest.testmod(m, globs=globs)
+    assert not failures, '{} failures out of {} tests'.format(failures, tests)
