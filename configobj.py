@@ -137,6 +137,12 @@ OPTION_DEFAULTS = {
     'write_empty_values': False,
 }
 
+# this could be replaced if six is used for compatibility, or there are no
+# more assertions about items being a string
+if sys.version_info < (3,):
+    string_type = basestring
+else:
+    string_type = str
 
 
 def getObj(s):
@@ -218,10 +224,6 @@ def unrepr(s):
     # this is supposed to be safe
     import ast
     return ast.literal_eval(s)
-    
-    # this is no longer valid
-    return _builder.build(getObj(s))
-
 
 
 class ConfigObjError(SyntaxError):
@@ -572,11 +574,11 @@ class Section(dict):
         """Fetch the item and do string interpolation."""
         val = dict.__getitem__(self, key)
         if self.main.interpolation: 
-            if isinstance(val, str):
+            if isinstance(val, string_type):
                 return self._interpolate(key, val)
             if isinstance(val, list):
                 def _check(entry):
-                    if isinstance(entry, str):
+                    if isinstance(entry, string_type):
                         return self._interpolate(key, entry)
                     return entry
                 new = [_check(entry) for entry in val]
@@ -599,7 +601,7 @@ class Section(dict):
         ``unrepr`` must be set when setting a value to a dictionary, without
         creating a new sub-section.
         """
-        if not isinstance(key, str):
+        if not isinstance(key, string_type):
             raise ValueError('The key "%s" is not a string.' % key)
         
         # add the comment
@@ -633,11 +635,11 @@ class Section(dict):
             if key not in self:
                 self.scalars.append(key)
             if not self.main.stringify:
-                if isinstance(value, str):
+                if isinstance(value, string_type):
                     pass
                 elif isinstance(value, (list, tuple)):
                     for entry in value:
-                        if not isinstance(entry, str):
+                        if not isinstance(entry, string_type):
                             raise TypeError('Value is not a string "%s".' % entry)
                 else:
                     raise TypeError('Value is not a string "%s".' % value)
@@ -978,7 +980,7 @@ class Section(dict):
             return False
         else:
             try:
-                if not isinstance(val, str):
+                if not isinstance(val, string_type):
                     # TODO: Why do we raise a KeyError here?
                     raise KeyError()
                 else:
@@ -1249,7 +1251,7 @@ class ConfigObj(Section):
         
         
     def _load(self, infile, configspec):
-        if isinstance(infile, str):
+        if isinstance(infile, string_type):
             self.filename = infile
             if os.path.isfile(infile):
                 h = open(infile, 'rb')
@@ -1319,7 +1321,7 @@ class ConfigObj(Section):
                         break
                 break
 
-            assert all(isinstance(line, str) for line in infile), repr(infile)
+            assert all(isinstance(line, string_type) for line in infile), repr(infile)
             infile = [line.rstrip('\r\n') for line in infile]
             
         self._parse(infile)
@@ -1504,13 +1506,13 @@ class ConfigObj(Section):
         
         if is a string, it also needs converting to a list.
         """
-        if isinstance(infile, str):
+        if isinstance(infile, string_type):
             return infile.splitlines(True)
         if isinstance(infile, bytes):
             # NOTE: Could raise a ``UnicodeDecodeError``
             return infile.decode(encoding).splitlines(True)
         for i, line in enumerate(infile):
-            if not isinstance(line, str):
+            if not isinstance(line, string_type):
                 # NOTE: The isinstance test here handles mixed lists of unicode/string
                 # NOTE: But the decode will break on any non-string values
                 # NOTE: Or could raise a ``UnicodeDecodeError``
@@ -1532,7 +1534,7 @@ class ConfigObj(Section):
         Used by ``stringify`` within validate, to turn non-string values
         into strings.
         """
-        if not isinstance(value, str):
+        if not isinstance(value, string_type):
             return str(value)
         else:
             return value
@@ -1783,7 +1785,7 @@ class ConfigObj(Section):
                 return self._quote(value[0], multiline=False) + ','
             return ', '.join([self._quote(val, multiline=False)
                 for val in value])
-        if not isinstance(value, str):
+        if not isinstance(value, string_type):
             if self.stringify:
                 value = str(value)
             else:
@@ -2344,7 +2346,7 @@ class ConfigObj(Section):
         This method raises a ``ReloadError`` if the ConfigObj doesn't have
         a filename attribute pointing to a file.
         """
-        if not isinstance(self.filename, str):
+        if not isinstance(self.filename, string_type):
             raise ReloadError()
 
         filename = self.filename
