@@ -276,7 +276,7 @@ def dottedQuadToNum(ip):
     >>> int(dottedQuadToNum('1.2.3.4'))
     16909060
     >>> dottedQuadToNum('255.255.255.255')
-    4294967295L
+    4294967295
     >>> dottedQuadToNum('255.255.255.256')
     Traceback (most recent call last):
     ValueError: Not a good dotted-quad IP: 255.255.255.256
@@ -1273,21 +1273,10 @@ def is_mixed_list(value, *args):
     >>> vtor.check(mix_str, 0)
     Traceback (most recent call last):
     VdtTypeError: the value "0" is of the wrong type.
-    
-    This test requires an elaborate setup, because of a change in error string
-    output from the interpreter between Python 2.2 and 2.3 .
-    
-    >>> res_seq = (
-    ...     'passed an incorrect value "',
-    ...     'yoda',
-    ...     '" for parameter "mixed_list".',
-    ... )
-    >>> res_str = "'".join(res_seq)
-    >>> try:
-    ...     vtor.check('mixed_list("yoda")', ('a'))
-    ... except VdtParamError, err:
-    ...     str(err) == res_str
-    1
+
+    >>> vtor.check('mixed_list("yoda")', ('a'))
+    Traceback (most recent call last):
+    VdtParamError: passed an incorrect value "KeyError('yoda',)" for parameter "'mixed_list'"
     """
     try:
         length = len(value)
@@ -1455,5 +1444,7 @@ if __name__ == '__main__':
         'vtor': Validator(),
     })
 
-    failures, tests = doctest.testmod(m, globs=globs)
+    failures, tests = doctest.testmod(
+        m, globs=globs,
+        optionflags=doctest.IGNORE_EXCEPTION_DETAIL | doctest.ELLIPSIS)
     assert not failures, '{} failures out of {} tests'.format(failures, tests)
