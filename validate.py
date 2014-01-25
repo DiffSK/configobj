@@ -165,7 +165,14 @@ __all__ = (
 
 
 import re
+import sys
 
+# this could be replaced if six is used for compatibility, or there are no
+# more assertions about items being a string
+if sys.version_info < (3,):
+    string_type = basestring
+else:
+    string_type = str
 
 _list_arg = re.compile(r'''
     (?:
@@ -364,7 +371,7 @@ class VdtParamError(SyntaxError):
         Traceback (most recent call last):
         VdtParamError: passed an incorrect value "jedi" for parameter "yoda".
         """
-        SyntaxError.__init__(self, 'passed an incorrect value "%s" for parameter "%s".' % (value, name))
+        SyntaxError.__init__(self, 'passed an incorrect value "%r" for parameter "%r".' % (value, name))
 
 
 class VdtTypeError(ValidateError):
@@ -736,7 +743,7 @@ def _is_num_param(names, values, to_float=False):
     for (name, val) in zip(names, values):
         if val is None:
             out_params.append(val)
-        elif isinstance(val, (int, float, str)):
+        elif isinstance(val, (int, float, string_type)):
             try:
                 out_params.append(fun(val))
             except ValueError as e:
@@ -793,9 +800,9 @@ def is_integer(value, min=None, max=None):
     0
     """
     (min_val, max_val) = _is_num_param(('min', 'max'), (min, max))
-    if not isinstance(value, (int, str)):
+    if not isinstance(value, (int, string_type)):
         raise VdtTypeError(value)
-    if isinstance(value, str):
+    if isinstance(value, string_type):
         # if it's a string - does it represent an integer ?
         try:
             value = int(value)
@@ -845,7 +852,7 @@ def is_float(value, min=None, max=None):
     """
     (min_val, max_val) = _is_num_param(
         ('min', 'max'), (min, max), to_float=True)
-    if not isinstance(value, (int, float, str)):
+    if not isinstance(value, (int, float, string_type)):
         raise VdtTypeError(value)
     if not isinstance(value, float):
         # if it's a string - does it represent a float ?
@@ -910,7 +917,7 @@ def is_boolean(value):
     VdtTypeError: the value "up" is of the wrong type.
     
     """
-    if isinstance(value, str):
+    if isinstance(value, string_type):
         try:
             return bool_dict[value.lower()]
         except KeyError:
@@ -953,7 +960,7 @@ def is_ip_addr(value):
     Traceback (most recent call last):
     VdtTypeError: the value "0" is of the wrong type.
     """
-    if not isinstance(value, str):
+    if not isinstance(value, string_type):
         raise VdtTypeError(value)
     value = value.strip()
     try:
@@ -995,7 +1002,7 @@ def is_list(value, min=None, max=None):
     VdtTypeError: the value "12" is of the wrong type.
     """
     (min_len, max_len) = _is_num_param(('min', 'max'), (min, max))
-    if isinstance(value, str):
+    if isinstance(value, string_type):
         raise VdtTypeError(value)
     try:
         num_members = len(value)
@@ -1064,7 +1071,7 @@ def is_string(value, min=None, max=None):
     Traceback (most recent call last):
     VdtValueTooLongError: the value "1234" is too long.
     """
-    if not isinstance(value, str):
+    if not isinstance(value, string_type):
         raise VdtTypeError(value)
     (min_len, max_len) = _is_num_param(('min', 'max'), (min, max))
     try:
@@ -1170,7 +1177,7 @@ def is_string_list(value, min=None, max=None):
     Traceback (most recent call last):
     VdtTypeError: the value "hello" is of the wrong type.
     """
-    if isinstance(value, str):
+    if isinstance(value, string_type):
         raise VdtTypeError(value)
     return [is_string(mem) for mem in is_list(value, min, max)]
 
@@ -1309,7 +1316,7 @@ def is_option(value, *options):
     Traceback (most recent call last):
     VdtTypeError: the value "0" is of the wrong type.
     """
-    if not isinstance(value, str):
+    if not isinstance(value, string_type):
         raise VdtTypeError(value)
     if not value in options:
         raise VdtValueError(value)
