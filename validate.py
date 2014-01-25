@@ -166,6 +166,7 @@ __all__ = (
 
 import re
 import sys
+from pprint import pprint
 
 # this could be replaced if six is used for compatibility, or there are no
 # more assertions about items being a string
@@ -173,6 +174,14 @@ if sys.version_info < (3,):
     string_type = basestring
 else:
     string_type = str
+    # so tests that care about unicode on 2.x can specify unicode, and the same
+    # tests when run on 3.x won't complain about a undefined name "unicode"
+    # since all strings are unicode on 3.x we just want to pass it through
+    # unchanged
+    unicode = lambda x: x
+    # in python 3, all ints are equivalent to python 2 longs, and they'll
+    # never show "L" in the repr
+    long = int
 
 _list_arg = re.compile(r'''
     (?:
@@ -289,45 +298,58 @@ def dottedQuadToNum(ip):
         return struct.unpack('!L',
             socket.inet_aton(ip.strip()))[0]
     except socket.error:
-        # bug in inet_aton, corrected in Python 2.4
-        if ip.strip() == '255.255.255.255':
-            return 0xFFFFFFFF
-        else:
-            raise ValueError('Not a good dotted-quad IP: %s' % ip)
+        raise ValueError('Not a good dotted-quad IP: %s' % ip)
     return
 
 
 def numToDottedQuad(num):
     """
-    Convert long int to dotted quad string
+    Convert int or long int to dotted quad string
     
-    >>> numToDottedQuad(-1L)
+    >>> numToDottedQuad(long(-1))
     Traceback (most recent call last):
     ValueError: Not a good numeric IP: -1
-    >>> numToDottedQuad(1L)
+    >>> numToDottedQuad(long(1))
     '0.0.0.1'
-    >>> numToDottedQuad(16777218L)
+    >>> numToDottedQuad(long(16777218))
     '1.0.0.2'
-    >>> numToDottedQuad(16908291L)
+    >>> numToDottedQuad(long(16908291))
     '1.2.0.3'
-    >>> numToDottedQuad(16909060L)
+    >>> numToDottedQuad(long(16909060))
     '1.2.3.4'
-    >>> numToDottedQuad(4294967295L)
+    >>> numToDottedQuad(long(4294967295))
     '255.255.255.255'
-    >>> numToDottedQuad(4294967296L)
+    >>> numToDottedQuad(long(4294967296))
     Traceback (most recent call last):
     ValueError: Not a good numeric IP: 4294967296
+    >>> numToDottedQuad(-1)
+    Traceback (most recent call last):
+    ValueError: Not a good numeric IP: -1
+    >>> numToDottedQuad(1)
+    '0.0.0.1'
+    >>> numToDottedQuad(16777218)
+    '1.0.0.2'
+    >>> numToDottedQuad(16908291)
+    '1.2.0.3'
+    >>> numToDottedQuad(16909060)
+    '1.2.3.4'
+    >>> numToDottedQuad(4294967295)
+    '255.255.255.255'
+    >>> numToDottedQuad(4294967296)
+    Traceback (most recent call last):
+    ValueError: Not a good numeric IP: 4294967296
+
     """
     
     # import here to avoid it when ip_addr values are not used
     import socket, struct
     
     # no need to intercept here, 4294967295L is fine
-    if num > 4294967295 or num < 0:
+    if num > long(4294967295) or num < 0:
         raise ValueError('Not a good numeric IP: %s' % num)
     try:
         return socket.inet_ntoa(
-            struct.pack('!L', int(num)))
+            struct.pack('!L', long(num)))
     except (socket.error, struct.error, OverflowError):
         raise ValueError('Not a good numeric IP: %s' % num)
 
@@ -371,7 +393,7 @@ class VdtParamError(SyntaxError):
         Traceback (most recent call last):
         VdtParamError: passed an incorrect value "jedi" for parameter "yoda".
         """
-        SyntaxError.__init__(self, 'passed an incorrect value "%r" for parameter "%r".' % (value, name))
+        SyntaxError.__init__(self, 'passed an incorrect value "%s" for parameter "%s".' % (value, name))
 
 
 class VdtTypeError(ValidateError):
@@ -471,9 +493,9 @@ class Validator(object):
     ...     # check that value is of the correct type.
     ...     # possible valid inputs are integers or strings
     ...     # that represent integers
-    ...     if not isinstance(value, (int, long, basestring)):
+    ...     if not isinstance(value, (int, long, string_type)):
     ...         raise VdtTypeError(value)
-    ...     elif isinstance(value, basestring):
+    ...     elif isinstance(value, string_type):
     ...         # if we are given a string
     ...         # attempt to convert to an integer
     ...         try:
@@ -743,7 +765,7 @@ def _is_num_param(names, values, to_float=False):
     for (name, val) in zip(names, values):
         if val is None:
             out_params.append(val)
-        elif isinstance(val, (int, float, string_type)):
+        elif isinstance(val, (int, long, float, string_type)):
             try:
                 out_params.append(fun(val))
             except ValueError as e:
@@ -800,7 +822,7 @@ def is_integer(value, min=None, max=None):
     0
     """
     (min_val, max_val) = _is_num_param(('min', 'max'), (min, max))
-    if not isinstance(value, (int, string_type)):
+    if not isinstance(value, (int, long, string_type)):
         raise VdtTypeError(value)
     if isinstance(value, string_type):
         # if it's a string - does it represent an integer ?
@@ -852,7 +874,7 @@ def is_float(value, min=None, max=None):
     """
     (min_val, max_val) = _is_num_param(
         ('min', 'max'), (min, max), to_float=True)
-    if not isinstance(value, (int, float, string_type)):
+    if not isinstance(value, (int, long, float, string_type)):
         raise VdtTypeError(value)
     if not isinstance(value, float):
         # if it's a string - does it represent a float ?
@@ -1334,20 +1356,20 @@ def _test(value, *args, **keywargs):
     ...    ]
     >>> v = Validator({'test': _test})
     >>> for entry in checks:
-    ...     print v.check(('test(%s)' % entry), 3)
-    (3, ('3', '6'), {'test': ['a', 'b', 'c'], 'max': '3', 'min': '1'})
+    ...     pprint(v.check(('test(%s)' % entry), 3))
+    (3, ('3', '6'), {'max': '3', 'min': '1', 'test': ['a', 'b', 'c']})
     (3, ('3',), {})
     (3, ('3', '6'), {})
     (3, ('3',), {})
-    (3, (), {'test': 'a b c', 'min': '1'})
-    (3, (), {'test': 'a, b, c', 'min': '5'})
-    (3, (), {'test': 'a, b, c', 'max': '3', 'min': '1'})
-    (3, (), {'test': '-99', 'min': '-100'})
+    (3, (), {'min': '1', 'test': 'a b c'})
+    (3, (), {'min': '5', 'test': 'a, b, c'})
+    (3, (), {'max': '3', 'min': '1', 'test': 'a, b, c'})
+    (3, (), {'min': '-100', 'test': '-99'})
     (3, (), {'max': '3', 'min': '1'})
     (3, ('3', '6'), {'test': '36'})
     (3, ('3', '6'), {'test': 'a, b, c'})
-    (3, ('3',), {'test': ['a', 'b', 'c'], 'max': '3'})
-    (3, ('3',), {'test': ["'a'", 'b', 'x=(c)'], 'max': '3'})
+    (3, ('3',), {'max': '3', 'test': ['a', 'b', 'c']})
+    (3, ('3',), {'max': '3', 'test': ["'a'", 'b', 'x=(c)']})
     (3, (), {'test': 'x=fish(3)'})
     
     >>> v = Validator()
@@ -1379,14 +1401,14 @@ def _test(value, *args, **keywargs):
     
     Bug test for unicode arguments
     >>> v = Validator()
-    >>> v.check(u'string(min=4)', u'test')
-    u'test'
+    >>> v.check(unicode('string(min=4)'), unicode('test')) == unicode('test')
+    True
     
     >>> v = Validator()
-    >>> v.get_default_value(u'string(min=4, default="1234")')
-    u'1234'
-    >>> v.check(u'string(min=4, default="1234")', u'test')
-    u'test'
+    >>> v.get_default_value(unicode('string(min=4, default="1234")')) == unicode('1234')
+    True
+    >>> v.check(unicode('string(min=4, default="1234")'), unicode('test')) == unicode('test')
+    True
     
     >>> v = Validator()
     >>> default = v.get_default_value('string(default=None)')
@@ -1412,7 +1434,8 @@ def _test3():
     ''
     >>> vtor.check('string(default="\n")', '', missing=True)
     '\n'
-    >>> print vtor.check('string(default="\n")', '', missing=True),
+    >>> print(vtor.check('string(default="\n")', '', missing=True))
+    <BLANKLINE>
     <BLANKLINE>
     >>> vtor.check('string()', '\n')
     '\n'
