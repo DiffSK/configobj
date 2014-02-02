@@ -18,9 +18,7 @@ MODULES = 'configobj', 'validate'
 
 DESCRIPTION = 'Config file reading, writing and validation.'
 
-URL = 'http://www.voidspace.org.uk/python/configobj.html'
-
-DOWNLOAD_URL = "http://www.voidspace.org.uk/downloads/configobj-%s.zip" % VERSION
+URL = 'http://https://github.com/DiffSK/configobj'
 
 LONG_DESCRIPTION = """**ConfigObj** is a simple but powerful config file reader and writer: an *ini
 file round tripper*. Its main feature is that it is very easy to use, with a
@@ -42,6 +40,8 @@ It has lots of other features though :
 * The order of keys/sections is preserved
 * Powerful ``unrepr`` mode for storing/retrieving Python data-types
 
+| Release 5.0.0 updates the supported python versions to 2.6, 2.7, 3.2, 3.3
+| and is otherwise unchanged
 | Release 4.7.2 fixes several bugs in 4.7.1
 | Release 4.7.1 fixes a bug with the deprecated options keyword in
 | 4.7.0.
@@ -53,18 +53,20 @@ CLASSIFIERS = [
     'Intended Audience :: Developers',
     'License :: OSI Approved :: BSD License',
     'Programming Language :: Python',
-    'Programming Language :: Python :: 2.3',
-    'Programming Language :: Python :: 2.4',
-    'Programming Language :: Python :: 2.5',
+    'Programming Language :: Python :: 2',
     'Programming Language :: Python :: 2.6',
+    'Programming Language :: Python :: 2.7',
+    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3.2',
+    'Programming Language :: Python :: 3.3',
     'Operating System :: OS Independent',
     'Topic :: Software Development :: Libraries',
     'Topic :: Software Development :: Libraries :: Python Modules',
 ]
 
-AUTHOR = 'Michael Foord & Nicola Larosa'
+AUTHOR = 'Rob Dennis, Eli Courtwright (Michael Foord & Nicola Larosa original maintainers)'
 
-AUTHOR_EMAIL = 'fuzzyman@voidspace.org.uk'
+AUTHOR_EMAIL = 'rdennis+configobj@gmail.com, eli@courtwright.org, fuzzyman@voidspace.co.uk, nico@tekNico.net'
 
 KEYWORDS = "config, ini, dictionary, application, admin, sysadmin, configuration, validation".split(', ')
 
@@ -73,7 +75,6 @@ setup(name=NAME,
       version=VERSION,
       description=DESCRIPTION,
       long_description=LONG_DESCRIPTION,
-      download_url=DOWNLOAD_URL,
       author=AUTHOR,
       author_email=AUTHOR_EMAIL,
       url=URL,
