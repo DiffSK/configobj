@@ -1,14 +1,16 @@
 # setup.py
 # Install script for ConfigObj
-# Copyright (C) 2005-2010 Michael Foord, Mark Andrews, Nicola Larosa
-# E-mail: fuzzyman AT voidspace DOT org DOT uk
-#         mark AT la-la DOT com
-#         nico AT tekNico DOT net
+# Copyright (C) 2005-2014:
+# (name) : (email)
+# Michael Foord: fuzzyman AT voidspace DOT org DOT uk
+# Mark Andrews: mark AT la-la DOT com
+# Nicola Larosa: nico AT tekNico DOT net
+# Rob Dennis: rdennis AT gmail DOT com
+# Eli Courtwright: eli AT courtwright DOT org
 
 # This software is licensed under the terms of the BSD license.
-# http://www.voidspace.org.uk/python/license.shtml
+# http://opensource.org/licenses/BSD-3-Clause
 
-import sys
 from distutils.core import setup
 from configobj import __version__ as VERSION
 

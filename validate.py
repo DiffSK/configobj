@@ -1,20 +1,18 @@
 # validate.py
 # A Validator object
-# Copyright (C) 2005-2010 Michael Foord, Mark Andrews, Nicola Larosa
-# E-mail: fuzzyman AT voidspace DOT org DOT uk
-#         mark AT la-la DOT com
-#         nico AT tekNico DOT net
+# Copyright (C) 2005-2014:
+# (name) : (email)
+# Michael Foord: fuzzyman AT voidspace DOT org DOT uk
+# Mark Andrews: mark AT la-la DOT com
+# Nicola Larosa: nico AT tekNico DOT net
+# Rob Dennis: rdennis AT gmail DOT com
+# Eli Courtwright: eli AT courtwright DOT org
 
 # This software is licensed under the terms of the BSD license.
-# http://www.voidspace.org.uk/python/license.shtml
-# Basically you're free to copy, modify, distribute and relicense it,
-# So long as you keep a copy of the license with it.
+# http://opensource.org/licenses/BSD-3-Clause
 
-# Scripts maintained at http://www.voidspace.org.uk/python/index.shtml
-# For information about bugfixes, updates and support, please join the
-# ConfigObj mailing list:
-# http://lists.sourceforge.net/lists/listinfo/configobj-develop
-# Comments, suggestions and bug reports welcome.
+# ConfigObj 5 - main repository for documentation and issue tracking:
+# https://github.com/DiffSK/configobj
 
 """
     The Validator object is used to check that supplied values 
