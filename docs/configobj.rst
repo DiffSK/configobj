@@ -67,7 +67,7 @@ Downloading
 The current version is **5.0.0**, dated 8th February 2014. ConfigObj 4 is
 stable and mature. We still expect to pick up a few bugs along the way though [#]_.
 
-We recommend downloading and installing using easy_install or pip:
+We recommend downloading and installing using pip:
 
     pip install configobj
 
