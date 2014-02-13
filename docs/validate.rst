@@ -1,3 +1,5 @@
+.. _validate_doc:
+
 ===================================
  Validation Schema with validate.py
 ===================================
@@ -6,25 +8,20 @@
 --------------------------
 
 
-:Authors: `Michael Foord`_, `Nicola Larosa`_, `Mark Andrews`_
-:Version: Validate 1.0.1
-:Date: 2010/01/09
-:Homepage: `Validate Homepage`_
-:Repository: `Google code homepage <http://code.google.com/p/configobj/>`_
-:PyPI Entry: `Validate on Python Packaging Index <http://pypi.python.org/pypi/validate>`_
+:Authors: Michael Foord, Nicola Larosa, Rob Dennis, Eli Courtwright, Mark Andrews
+:Version: Validate 2.0.0
+:Date: 2014/02/08
+:Homepage: `Github Page`_
 :License: `BSD License`_
 :Support: `Mailing List`_
 
 .. _Mailing List: http://lists.sourceforge.net/lists/listinfo/configobj-develop
-.. _Michael Foord: fuzzyman@voidspace.org.uk
-.. _Nicola Larosa: nico@teknico.net
 .. _This Document:
-.. _Validate Homepage: http://www.voidspace.org.uk/python/validate.html
-.. _BSD License: http://www.voidspace.org.uk/python/license.shtml
+.. _Github Page: https://github.com/DiffSK/configobj
+.. _BSD License: http://opensource.org/licenses/BSD-3-Clause
 
 
 .. contents:: Validate Manual
-.. sectnum::
 
 
 Introduction
@@ -58,50 +55,25 @@ Some standard functions are provided, for basic data types; these come built
 into every validator. Additional checks are easy to write: they can be provided
 when the ``Validator`` is instantiated, or added afterwards.
 
-Validate was primarily written to support ConfigObj_, but is designed to be 
+Validate was primarily written to support ConfigObj, but is designed to be
 applicable to many other situations.
 
-For support and bug reports please use the ConfigObj `Mailing List`_.
-
-.. _ConfigObj: http://www.voidspace.org.uk/python/configobj.html
+For support and bug reports please use the ConfigObj `Github Page`_
 
 
 Downloading
 ===========
 
-The current version is **1.0.1**, dated 9th January 2010. 
+The current version is **2.0.0**, dated 8th February 2014.
 
-You can get obtain validate in the following ways :
+You can obtain validate in the following ways :
 
 
 Files
 -----
 
-* validate.py_ from Voidspace
-
-* configobj.zip from Voidspace - See the homepage of ConfigObj_ for the latest 
-  version and download links.
-
-    This contains validate.py and `this document`_. (As well as ConfigObj_ and 
-    the ConfigObj documentation).
-    
-* The latest development version can be obtained from the `Subversion Repository`_.
-
-
-Documentation
--------------
-
-*configobj.zip* contains `this document`_.
-
-* You can view `this document`_ online as the `Validate Homepage`_.
-
-.. _configobj.py: http://www.voidspace.org.uk/cgi-bin/voidspace/download/configobj.py
-.. _configobj.zip: http://www.voidspace.org.uk/cgi-bin/voidspace/download/configobj-4.7.0.zip
-.. _validate.py: http://www.voidspace.org.uk/cgi-bin/voidspace/download/validate.py
-.. _Subversion Repository: http://code.google.com/p/configobj/
-.. _Sourceforge: http://sourceforge.net/projects/configobj
-.. _validate: http://www.voidspace.org.uk/python/validate.html
-
+* validate.py from `Github Page`_
+* The latest development version can be obtained from the `Github Page`_.
 
 The standard functions
 ======================
@@ -571,8 +543,7 @@ ISSUES
 
 .. note::
 
-    Please file any bug reports to `Michael Foord`_ or the ConfigObj
-    `Mailing List`_.
+    Please file any bug reports to the `Github Page`_
 
 If we could pull tuples out of arguments, it would be easier
 to specify arguments for 'mixed_lists'.
@@ -580,6 +551,12 @@ to specify arguments for 'mixed_lists'.
 
 CHANGELOG
 =========
+
+2014/02/08 - Version 2.0.0
+--------------------------
+* Python 3 single-source compatibility at the cost of a more restrictive set of versions: 2.6, 2.7, 3.2, 3.3 (otherwise unchanged)
+* New maintainers: Rob Dennis and Eli Courtwright
+* New home on github
 
 2009/10/25 - Version 1.0.1
 --------------------------
@@ -672,7 +649,7 @@ Moved a function call outside a try...except block.
 2005/08/18      Version 0.2.0
 -----------------------------
 
-Updated by `Michael Foord`_ and `Nicola Larosa`_
+Updated by Michael Foord and Nicola Larosa
 
 Does type conversion as well.
 
@@ -680,7 +657,6 @@ Does type conversion as well.
 2005/02/01      Version 0.1.0
 -----------------------------
 
-Initial version developed by `Michael Foord`_
-and Mark Andrews.
+Initial version developed by Michael Foord and Mark Andrews.
 
 
