@@ -1,4 +1,4 @@
-configobj [![Build Status](https://travis-ci.org/DiffSK/configobj.png?branch=master)](https://travis-ci.org/DiffSK/configobj)[![Downloads](https://pypip.in/d/configobj/badge.png)](https://crate.io/package/configobj)[![Downloads](https://pypip.in/v/configobj/badge.png)](https://crate.io/package/configobj)
+configobj [![Build Status](https://travis-ci.org/DiffSK/configobj.png?branch=master)](https://travis-ci.org/DiffSK/configobj)[![Downloads](https://pypip.in/d/configobj/badge.png)](https://crate.io/packages/configobj)[![Downloads](https://pypip.in/v/configobj/badge.png)](https://crate.io/packages/configobj)
 =========
 
 Python 3+ compatible port of the [configobj](https://pypi.python.org/pypi/configobj/) library.
