@@ -20,7 +20,7 @@ MODULES = 'configobj', 'validate'
 
 DESCRIPTION = 'Config file reading, writing and validation.'
 
-URL = 'http://https://github.com/DiffSK/configobj'
+URL = 'https://github.com/DiffSK/configobj'
 
 LONG_DESCRIPTION = """**ConfigObj** is a simple but powerful config file reader and writer: an *ini
 file round tripper*. Its main feature is that it is very easy to use, with a
