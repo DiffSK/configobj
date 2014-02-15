@@ -1,21 +1,22 @@
+.. _config_doc:
+
 ==================================
  Reading and Writing Config Files
 ==================================
 ----------------------------------------
- ConfigObj 4 Introduction and Reference
+ ConfigObj 5 Introduction and Reference
 ----------------------------------------
 
-:Authors: Michael Foord, Nicola Larosa
-:Version: ConfigObj 4.7.2
-:Date: 2010/02/27
-:Homepage: `ConfigObj Homepage`_
+:Authors: Michael Foord, Nicola Larosa, Rob Dennis, Eli Courtwright
+:Version: ConfigObj 5.0.0
+:Date: 2014/02/08
 :PyPI Entry: `ConfigObj on PyPI <http://pypi.python.org/pypi/configobj/>`_
-:Development: `Google Code Homepage`_
+:Homepage: `Github Page`_
 :License: `BSD License`_
 :Support: `Mailing List`_
 
 .. _Mailing List: http://lists.sourceforge.net/lists/listinfo/configobj-develop
-.. _Google Code Homepage: http://code.google.com/p/configobj/
+.. _Github Page: https://github.com/DiffSK/configobj
 
 .. meta::
    :description: ConfigObj - a Python module for easy reading and writing of 
@@ -25,7 +26,6 @@
 
 
 .. contents:: ConfigObj Manual
-.. sectnum::
 
 .. note::
 
@@ -58,64 +58,24 @@ It has lots of other features though :
 * Full Unicode support
 
 
-For support and bug reports please use the ConfigObj `Mailing List`_ or the issue tracker on the 
-`Google Code Homepage`_.
+For support and bug reports please use the ConfigObj `Github Page`_.
 
 
 Downloading
 ===========
 
-The current version is **4.7.2**, dated 27th February 2010. ConfigObj 4 is
+The current version is **5.0.0**, dated 8th February 2014. ConfigObj 4 is
 stable and mature. We still expect to pick up a few bugs along the way though [#]_.
 
-You can get ConfigObj in the following ways :
+We recommend downloading and installing using pip:
 
-* configobj.py_ from Voidspace
-
-    ConfigObj has no external dependencies. This file is sufficient to access
-    all the functionality except Validation_.
-
-* configobj.zip_ from Voidspace
-
-    This also contains validate.py_  and `this document`_.
-
-* validate.py_ from Voidspace
-
-
-Installing
-----------
-
-ConfigObj has a source distribution `on PyPI <http://pypi.python.org/pypi/configobj/>`_. If you unzip
-the archive you can install it with::
-
-    setup.py install
-    
-Alternatively, you can install with easy install or pip::
-
-    easy_install configobj
-
-
-Documentation
--------------
-
-*configobj.zip* also contains `this document`_.
-
-* You can view `this document`_ online at the `ConfigObj Homepage`_.
-
+    pip install configobj
 
 Development Version
 -------------------
 
-It is sometimes possible to get the latest *development version* of ConfigObj
-from the Subversion Repository maintained on the `Google Code Homepage`_.
-
-.. _configobj.py: http://www.voidspace.org.uk/downloads/configobj.py
-.. _configobj.zip: http://www.voidspace.org.uk/downloads/configobj-4.7.2.zip
-.. _validate.py: http://www.voidspace.org.uk/downloads/validate.py
-.. _this document:
-.. _configobj homepage: http://www.voidspace.org.uk/python/configobj.html
-
-
+It's possible to get the latest *development version* of ConfigObj
+from the Git Repository maintained on the `Github Page`_.
 
 ConfigObj in the Real World
 ===========================
@@ -580,8 +540,7 @@ validate
     if test == True:
         print 'Succeeded.'
 
-The validate method uses the `validate 
-<http://www.voidspace.org.uk/python/validate.html>`__ module to do the
+The validate method uses the :validate: module to do the
 validation.
     
 This method validates the ConfigObj against the configspec. By doing type
@@ -1749,7 +1708,7 @@ configspec values then you must also pass in ``_inspec=True``.
                            list_values=False, _inspec=True)
     config = ConfigObj(filename, configspec=configspec)
 
-.. _validate.py documentation: http://www.voidspace.org.uk/python/validate.html
+.. _validate.py documentation: :ref:`validate_doc`
 
 
 Type Conversion
@@ -1848,7 +1807,7 @@ As well as using ``__many__`` to validate unspecified sections you can use it to
 example, to specify that all values in a section should be integers::
 
     [section]
-	__many__ = integer
+    __many__ = integer
 	
 If you want to use repeated values alongside repeated sections you can call one ``__many__`` and the
 other ``___many___`` (with three underscores).
@@ -2308,13 +2267,12 @@ free software: test it, break it, just don't blame us if it eats your data !
 Of course if it does, let us know and we'll fix the problem so it doesn't
 happen to anyone else::
 
-    Copyright (c) 2004 - 2010, Michael Foord & Nicola Larosa
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are
-    met:
-
+    Copyright (C) 2005-2014:
+    (name) : (email)
+    Michael Foord: fuzzyman AT voidspace DOT org DOT uk
+    Nicola Larosa: nico AT tekNico DOT net
+    Rob Dennis: rdennis AT gmail DOT com
+    Eli Courtwright: eli AT courtwright DOT org
 
         * Redistributions of source code must retain the above copyright
           notice, this list of conditions and the following disclaimer.
@@ -2324,9 +2282,9 @@ happen to anyone else::
           disclaimer in the documentation and/or other materials provided
           with the distribution.
 
-        * Neither the name of Michael Foord nor Nicola Larosa
-          may be used to endorse or promote products derived from this
-          software without specific prior written permission.
+        * None of the authors names may be used to endorse or
+          promote products derived from this software without
+          specific prior written permission.
 
     THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
     "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -2342,7 +2300,7 @@ happen to anyone else::
 
 You should also be able to find a copy of this license at : `BSD License`_
 
-.. _BSD License: http://www.voidspace.org.uk/python/license.shtml
+.. _BSD License: http://opensource.org/licenses/BSD-3-Clause
 
 
 TODO
@@ -2377,8 +2335,7 @@ ISSUES
 
 .. note::
 
-    Please file any bug reports to `Michael Foord`_ or the **ConfigObj**
-    `Mailing List`_.
+    Please file any bug reports at the `Github Page`_
 
 There is currently no way to specify the encoding of a configspec file.
 
@@ -2422,6 +2379,11 @@ CHANGELOG
 This is an abbreviated changelog showing the major releases up to version 4.
 From version 4 it lists all releases and changes.
 
+2014/02/08 - Version 5.0.0
+--------------------------
+* Python 3 single-source compatibility at the cost of a more restrictive set of versions: 2.6, 2.7, 3.2, 3.3 (otherwise unchanged)
+* New maintainers: Rob Dennis and Eli Courtwright
+* New home on github
 
 2010/02/27 - Version 4.7.2
 --------------------------
@@ -2642,7 +2604,7 @@ The errors stored will be an ``UnreprError``.
 Added ``validate.py`` back into ``configobj.zip``. (Thanks to Stewart
 Midwinter)
 
-Updated to `validate.py`_ 0.2.2.
+Updated to ``validate.py`` 0.2.2.
 
 Preserve tuples when calling the ``dict`` method. (Thanks to Gustavo Niemeyer.)
 
