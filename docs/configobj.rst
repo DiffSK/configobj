@@ -64,8 +64,8 @@ For support and bug reports please use the ConfigObj `Github Page`_.
 Downloading
 ===========
 
-The current version is **5.0.0**, dated 8th February 2014. ConfigObj 4 is
-stable and mature. We still expect to pick up a few bugs along the way though [#]_.
+The current version is **5.0.0**, dated 8th February 2014. ConfigObj 5 is
+stable and mature. We still expect to pick up a few bugs along the way though, particularly with respect to Python 3 compatibility [#]_.
 
 We recommend downloading and installing using pip:
 
@@ -2246,8 +2246,12 @@ Here is an example of how you could present this information to the user.
 CREDITS
 =======
 
-ConfigObj 4 is written by (and copyright) `Michael Foord`_ and 
-`Nicola Larosa`_.
+ConfigObj version 4 and forward is written by (and copyright) Michael Foord,
+Nicola Larosa, Rob Dennis and Eli Courtwright.
+
+Rob Dennis and Eli Courtwright added Python 2 and 3 compatibility in a single
+source starting with version 5, and have taken stewardship of ConfigObj moving
+forward.
 
 Particularly thanks to Nicola Larosa for help on the config file spec, the
 validation system and the doctests.
@@ -2949,6 +2953,3 @@ Footnotes
 
 .. [#] Minimum required version of *validate.py* 0.2.0 .
 
-.. _listquote: http://www.voidspace.org.uk/python/modules.shtml#listquote
-.. _Michael Foord: http://www.voidspace.org.uk/python/weblog/index.shtml
-.. _Nicola Larosa: http://www.teknico.net
