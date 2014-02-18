@@ -16,7 +16,7 @@ from configobj import __version__ as VERSION
 
 NAME = 'configobj'
 
-MODULES = 'configobj', 'validate'
+MODULES = 'configobj', 'validate', 'six'
 
 DESCRIPTION = 'Config file reading, writing and validation.'
 

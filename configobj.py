@@ -19,6 +19,7 @@ import sys
 
 from codecs import BOM_UTF8, BOM_UTF16, BOM_UTF16_BE, BOM_UTF16_LE
 
+import six
 
 # imported lazily to avoid startup performance hit if it isn't used
 compiler = None
@@ -80,16 +81,6 @@ MISSING = object()
 
 __version__ = '5.0.1'
 
-try:
-    any
-except NameError:
-    def any(iterable):
-        for entry in iterable:
-            if entry:
-                return True
-        return False
-
-
 __all__ = (
     '__version__',
     'DEFAULT_INDENT_TYPE',
@@ -134,10 +125,6 @@ OPTION_DEFAULTS = {
 
 # this could be replaced if six is used for compatibility, or there are no
 # more assertions about items being a string
-if sys.version_info < (3,):
-    string_type = basestring
-else:
-    string_type = str
 
 
 def getObj(s):
@@ -569,11 +556,11 @@ class Section(dict):
         """Fetch the item and do string interpolation."""
         val = dict.__getitem__(self, key)
         if self.main.interpolation: 
-            if isinstance(val, string_type):
+            if isinstance(val, six.string_types):
                 return self._interpolate(key, val)
             if isinstance(val, list):
                 def _check(entry):
-                    if isinstance(entry, string_type):
+                    if isinstance(entry, six.string_types):
                         return self._interpolate(key, entry)
                     return entry
                 new = [_check(entry) for entry in val]
@@ -596,7 +583,7 @@ class Section(dict):
         ``unrepr`` must be set when setting a value to a dictionary, without
         creating a new sub-section.
         """
-        if not isinstance(key, string_type):
+        if not isinstance(key, six.string_types):
             raise ValueError('The key "%s" is not a string.' % key)
         
         # add the comment
@@ -630,11 +617,11 @@ class Section(dict):
             if key not in self:
                 self.scalars.append(key)
             if not self.main.stringify:
-                if isinstance(value, string_type):
+                if isinstance(value, six.string_types):
                     pass
                 elif isinstance(value, (list, tuple)):
                     for entry in value:
-                        if not isinstance(entry, string_type):
+                        if not isinstance(entry, six.string_types):
                             raise TypeError('Value is not a string "%s".' % entry)
                 else:
                     raise TypeError('Value is not a string "%s".' % value)
@@ -975,7 +962,7 @@ class Section(dict):
             return False
         else:
             try:
-                if not isinstance(val, string_type):
+                if not isinstance(val, six.string_types):
                     # TODO: Why do we raise a KeyError here?
                     raise KeyError()
                 else:
@@ -1246,12 +1233,11 @@ class ConfigObj(Section):
         
         
     def _load(self, infile, configspec):
-        if isinstance(infile, string_type):
+        if isinstance(infile, six.string_types):
             self.filename = infile
             if os.path.isfile(infile):
-                h = open(infile, 'rb')
-                infile = h.read() or []
-                h.close()
+                with open(infile, 'rb') as h:
+                    content = h.read() or []
             elif self.file_error:
                 # raise an error if the file doesn't exist
                 raise IOError('Config file not found: "%s".' % self.filename)
@@ -1260,13 +1246,12 @@ class ConfigObj(Section):
                 if self.create_empty:
                     # this is a good test that the filename specified
                     # isn't impossible - like on a non-existent device
-                    h = open(infile, 'w')
-                    h.write('')
-                    h.close()
-                infile = []
+                    with open(infile, 'w') as h:
+                        h.write('')
+                content = []
                 
         elif isinstance(infile, (list, tuple)):
-            infile = list(infile)
+            content = list(infile)
             
         elif isinstance(infile, dict):
             # initialise self
@@ -1294,20 +1279,20 @@ class ConfigObj(Section):
         
         elif getattr(infile, 'read', MISSING) is not MISSING:
             # This supports file like objects
-            infile = infile.read() or []
+            content = infile.read() or []
             # needs splitting into lines - but needs doing *after* decoding
             # in case it's not an 8 bit encoding
         else:
             raise TypeError('infile must be a filename, file like object, or list of lines.')
 
-        if infile:
+        if content:
             # don't do it for the empty ConfigObj
-            infile = self._handle_bom(infile)
+            content = self._handle_bom(content)
             # infile is now *always* a list
             #
             # Set the newlines attribute (first line ending it finds)
             # and strip trailing '\n' or '\r' from lines
-            for line in infile:
+            for line in content:
                 if (not line) or (line[-1] not in ('\r', '\n')):
                     continue
                 for end in ('\r\n', '\n', '\r'):
@@ -1316,10 +1301,10 @@ class ConfigObj(Section):
                         break
                 break
 
-            assert all(isinstance(line, string_type) for line in infile), repr(infile)
-            infile = [line.rstrip('\r\n') for line in infile]
+        assert all(isinstance(line, six.string_types) for line in content), repr(content)
+        content = [line.rstrip('\r\n') for line in content]
             
-        self._parse(infile)
+        self._parse(content)
         # if we had any errors, now is the time to raise them
         if self._errors:
             info = "at line %s." % self._errors[0].line_number
@@ -1408,6 +1393,7 @@ class ConfigObj(Section):
         ``infile`` must always be returned as a list of lines, but may be
         passed in as a single string.
         """
+
         if ((self.encoding is not None) and
             (self.encoding.lower() not in BOM_LIST)):
             # No need to check for a BOM
@@ -1419,6 +1405,13 @@ class ConfigObj(Section):
             line = infile[0]
         else:
             line = infile
+
+        if isinstance(line, six.text_type):
+            # it's already decoded and there's no need to do anything
+            # else, just use the _decode utility method to handle
+            # listifying appropriately
+            return self._decode(infile, self.encoding)
+
         if self.encoding is not None:
             # encoding explicitly supplied
             # And it could have an associated BOM
@@ -1458,7 +1451,8 @@ class ConfigObj(Section):
         
         # No encoding specified - so we need to check for UTF8/UTF16
         for BOM, (encoding, final_encoding) in list(BOMS.items()):
-            if not isinstance(line, bytes) or not line.startswith(BOM):
+            if not isinstance(line, six.binary_type) or not line.startswith(BOM):
+                # didn't specify a BOM, or it's not a bytestring
                 continue
             else:
                 # BOM discovered
@@ -1473,15 +1467,22 @@ class ConfigObj(Section):
                     else:
                         infile = newline
                     # UTF-8
-                    if isinstance(infile, str):
+                    if isinstance(infile, six.text_type):
                         return infile.splitlines(True)
+                    elif isinstance(infile, six.binary_type):
+                        return infile.decode('utf-8').splitlines(True)
                     else:
                         return self._decode(infile, 'utf-8')
                 # UTF16 - have to decode
                 return self._decode(infile, encoding)
             
+
+        if six.PY2 and isinstance(line, str):
+            # don't actually do any decoding, since we're on python 2 and
+            # returning a bytestring is fine
+            return self._decode(infile, None)
         # No BOM discovered and no encoding specified, default to UTF-8
-        if isinstance(infile, bytes):
+        if isinstance(infile, six.binary_type):
             return infile.decode('utf-8').splitlines(True)
         else:
             return self._decode(infile, 'utf-8')
@@ -1489,7 +1490,7 @@ class ConfigObj(Section):
 
     def _a_to_u(self, aString):
         """Decode ASCII strings to unicode if a self.encoding is specified."""
-        if isinstance(aString, bytes) and self.encoding:
+        if isinstance(aString, six.binary_type) and self.encoding:
             return aString.decode(self.encoding)
         else:
             return aString
@@ -1501,23 +1502,28 @@ class ConfigObj(Section):
         
         if is a string, it also needs converting to a list.
         """
-        if isinstance(infile, string_type):
+        if isinstance(infile, six.string_types):
             return infile.splitlines(True)
-        if isinstance(infile, bytes):
+        if isinstance(infile, six.binary_type):
             # NOTE: Could raise a ``UnicodeDecodeError``
-            return infile.decode(encoding).splitlines(True)
-        for i, line in enumerate(infile):
-            if not isinstance(line, string_type):
-                # NOTE: The isinstance test here handles mixed lists of unicode/string
-                # NOTE: But the decode will break on any non-string values
-                # NOTE: Or could raise a ``UnicodeDecodeError``
-                infile[i] = line.decode(encoding)
+            if encoding:
+                return infile.decode(encoding).splitlines(True)
+            else:
+                return infile.splitlines(True)
+
+        if encoding:
+            for i, line in enumerate(infile):
+                if isinstance(line, six.binary_type):
+                    # NOTE: The isinstance test here handles mixed lists of unicode/string
+                    # NOTE: But the decode will break on any non-string values
+                    # NOTE: Or could raise a ``UnicodeDecodeError``
+                    infile[i] = line.decode(encoding)
         return infile
 
 
     def _decode_element(self, line):
         """Decode element to unicode if necessary."""
-        if isinstance(line, bytes) and self.default_encoding:
+        if isinstance(line, six.binary_type) and self.default_encoding:
             return line.decode(self.default_encoding)
         else:
             return line
@@ -1529,7 +1535,9 @@ class ConfigObj(Section):
         Used by ``stringify`` within validate, to turn non-string values
         into strings.
         """
-        if not isinstance(value, string_type):
+        if not isinstance(value, six.string_types):
+            # intentially 'str' because it's just whatever the "normal"
+            # string type is for the python version we're dealing with
             return str(value)
         else:
             return value
@@ -1621,7 +1629,7 @@ class ConfigObj(Section):
             mat = self._keyword.match(line)
             if mat is None:
                 self._handle_error(
-                    'Invalid line ({!r}) (matched as neither section nor keyword) at line "%s".'.format(line),
+                    'Invalid line ({0!r}) (matched as neither section nor keyword) at line "%s".'.format(line),
                     ParseError, infile, cur_index)
             else:
                 # is a keyword value
@@ -1780,8 +1788,10 @@ class ConfigObj(Section):
                 return self._quote(value[0], multiline=False) + ','
             return ', '.join([self._quote(val, multiline=False)
                 for val in value])
-        if not isinstance(value, string_type):
+        if not isinstance(value, six.string_types):
             if self.stringify:
+                # intentially 'str' because it's just whatever the "normal"
+                # string type is for the python version we're dealing with
                 value = str(value)
             else:
                 raise TypeError('Value "%s" is not a string.' % value)
@@ -2341,7 +2351,7 @@ class ConfigObj(Section):
         This method raises a ``ReloadError`` if the ConfigObj doesn't have
         a filename attribute pointing to a file.
         """
-        if not isinstance(self.filename, string_type):
+        if not isinstance(self.filename, six.string_types):
             raise ReloadError()
 
         filename = self.filename
