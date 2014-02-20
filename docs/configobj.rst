@@ -8,7 +8,7 @@
 ----------------------------------------
 
 :Authors: Michael Foord, Nicola Larosa, Rob Dennis, Eli Courtwright
-:Version: ConfigObj 5.0.0
+:Version: ConfigObj 5.0.1
 :Date: 2014/02/08
 :PyPI Entry: `ConfigObj on PyPI <http://pypi.python.org/pypi/configobj/>`_
 :Homepage: `Github Page`_
@@ -64,7 +64,7 @@ For support and bug reports please use the ConfigObj `Github Page`_.
 Downloading
 ===========
 
-The current version is **5.0.0**, dated 8th February 2014. ConfigObj 5 is
+The current version is **5.0.1**, dated 19th February 2014. ConfigObj 5 is
 stable and mature. We still expect to pick up a few bugs along the way though, particularly with respect to Python 3 compatibility [#]_.
 
 We recommend downloading and installing using pip:
@@ -2382,6 +2382,14 @@ CHANGELOG
 
 This is an abbreviated changelog showing the major releases up to version 4.
 From version 4 it lists all releases and changes.
+
+2014/02/19 - Version 5.0.1
+--------------------------
+* BUGFIX: Fixed regression on python 2.x where passing an ``encoding`` parameter did
+  not convert a bytestring config file (which is the most common) to unicode. Added
+  unit tests for this and related cases
+* BUGFIX: A particular error message would fail to display with a type error on python 2.6
+  only
 
 2014/02/08 - Version 5.0.0
 --------------------------
