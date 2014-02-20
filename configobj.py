@@ -79,10 +79,7 @@ tdquot = "'''%s'''"
 # Sentinel for use in getattr calls to replace hasattr
 MISSING = object()
 
-__version__ = '5.0.1'
-
 __all__ = (
-    '__version__',
     'DEFAULT_INDENT_TYPE',
     'DEFAULT_INTERPOLATION',
     'ConfigObjError',
@@ -143,7 +140,6 @@ class UnknownType(Exception):
 class Builder(object):
     
     def build(self, o):
-        m = getattr(self, 'build_' + o.__class__.__name__, None)
         if m is None:
             raise UnknownType(o.__class__.__name__)
         return m(o)

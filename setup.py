@@ -12,11 +12,11 @@
 # http://opensource.org/licenses/BSD-3-Clause
 
 from distutils.core import setup
-from configobj import __version__ as VERSION
 
+# TODO - #20 - refactor the way we do versions
+VERSION = '5.0.1'
 NAME = 'configobj'
-
-MODULES = 'configobj', 'validate', 'six'
+MODULES = 'configobj', 'validate'
 
 DESCRIPTION = 'Config file reading, writing and validation.'
 
@@ -75,6 +75,7 @@ KEYWORDS = "config, ini, dictionary, application, admin, sysadmin, configuration
 
 setup(name=NAME,
       version=VERSION,
+      install_requires=['six==1.5.2'],
       description=DESCRIPTION,
       long_description=LONG_DESCRIPTION,
       author=AUTHOR,
