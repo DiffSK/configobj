@@ -1,4 +1,4 @@
-configobj [![Build Status](https://travis-ci.org/DiffSK/configobj.png?branch=master)](https://travis-ci.org/DiffSK/configobj)[![Downloads](https://pypip.in/d/configobj/badge.png)](https://crate.io/packages/configobj)[![Downloads](https://pypip.in/v/configobj/badge.png)](https://crate.io/packages/configobj)[![Coverage Status](https://coveralls.io/repos/DiffSK/configobj/badge.png?branch=master)](https://coveralls.io/r/DiffSK/configobj?branch=master)
+configobj [![Build Status](https://travis-ci.org/DiffSK/configobj.png?branch=master)](https://travis-ci.org/DiffSK/configobj)[![Downloads](https://pypip.in/d/configobj/badge.png)](https://crate.io/packages/configobj)[![PyPI version](https://badge.fury.io/py/configobj.png)](http://badge.fury.io/py/configobj)[![Coverage Status](https://coveralls.io/repos/DiffSK/configobj/badge.png?branch=master)](https://coveralls.io/r/DiffSK/configobj?branch=master)
 =========
 
 Python 3+ compatible port of the [configobj](https://pypi.python.org/pypi/configobj/) library.
