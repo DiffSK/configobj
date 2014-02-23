@@ -1,21 +1,11 @@
 from codecs import BOM_UTF8
-import os
-import sys
-from configobj import ConfigObj, flatten_errors
-from validate import Validator, VdtValueTooSmallError
+from warnings import catch_warnings
 
 import pytest
 import six
 
-try:
-    #TODO(robdennis): determine if this is really 2.6 and newer
-    # Python 2.6 only
-    from warnings import catch_warnings
-except ImportError:
-    # this will cause an error, but at least the other tests
-    # will run on Python 2.5
-    catch_warnings = None
-
+from configobj import ConfigObj, flatten_errors
+from validate import Validator, VdtValueTooSmallError
 
 def test_order_preserved():
     c = ConfigObj()
@@ -42,19 +32,17 @@ def test_order_preserved():
     assert c['section']['section'] is not c2['section']['section']
 
 
-# @pytest.mark.skipif(catch_warnings is None,
-#                     reason='catch_warnings is required')
-# def test_options_deprecation():
-#     with catch_warnings(record=True) as log:
-#         ConfigObj(options={})
-#
-#     # unpack the only member of log
-#     try:
-#         warning, = log
-#     except ValueError:
-#         assert len(log) == 1
-#
-#     assert warning.category == DeprecationWarning
+def test_options_deprecation():
+    with catch_warnings(record=True) as log:
+        ConfigObj(options={})
+
+    # unpack the only member of log
+    try:
+        warning, = log
+    except ValueError:
+        assert len(log) == 1
+
+    assert warning.category == DeprecationWarning
 
 
 def test_list_members():
