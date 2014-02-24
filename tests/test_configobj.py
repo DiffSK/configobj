@@ -4,8 +4,10 @@ from warnings import catch_warnings
 import pytest
 import six
 
+import configobj as co
 from configobj import ConfigObj, flatten_errors
 from validate import Validator, VdtValueTooSmallError
+
 
 def test_order_preserved():
     c = ConfigObj()
@@ -570,3 +572,31 @@ def _doctest():
     '        key1 = 3.0    # a float']
     1
     """
+
+
+def test_error_types():
+    # errors that don't have interesting messages
+    test_value = 'what'
+    for ErrorClass in (co.ConfigObjError, co.NestingError, co.ParseError,
+                       co.DuplicateError, co.ConfigspecError,
+                       co.RepeatSectionError):
+        with pytest.raises(ErrorClass) as excinfo:
+            # TODO: assert more interesting things
+            # now that we're not using doctest
+            raise ErrorClass(test_value)
+        assert str(excinfo.value) == test_value
+
+    for ErrorClassWithMessage, msg in (
+        (co.InterpolationLoopError,
+         'interpolation loop detected in value "{0}".'),
+        (co.MissingInterpolationOption,
+         'missing option "{0}" in interpolation.'),
+    ):
+        with pytest.raises(ErrorClassWithMessage) as excinfo:
+            raise ErrorClassWithMessage(test_value)
+        assert str(excinfo.value) == msg.format(test_value)
+
+    # ReloadError is raised as IOError
+    with pytest.raises(IOError):
+        raise co.ReloadError()
+
