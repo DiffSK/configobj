@@ -41,52 +41,6 @@ from configobj import *
 from validate import Validator, VdtValueTooSmallError
 
 
-def _section_test():
-    """
-    Tests from Section methods.
-    
-    >>> n = a.dict()
-    >>> n == a
-    1
-    >>> n is a
-    0
-        
-    >>> a = '''[section1]
-    ...     option1 = True
-    ...     [[subsection]]
-    ...     more_options = False
-    ...     # end of file'''.splitlines()
-    >>> b = '''# File is user.ini
-    ...     [section1]
-    ...     option1 = False
-    ...     # end of file'''.splitlines()
-    >>> c1 = ConfigObj(b)
-    >>> c2 = ConfigObj(a)
-    >>> c2.merge(c1)
-    >>> c2
-    ConfigObj({'section1': {'option1': 'False', 'subsection': {'more_options': 'False'}}})
-    
-    >>> config = '''[XXXXsection]
-    ... XXXXkey = XXXXvalue'''.splitlines()
-    >>> cfg = ConfigObj(config)
-    >>> cfg
-    ConfigObj({'XXXXsection': {'XXXXkey': 'XXXXvalue'}})
-    >>> def transform(section, key):
-    ...     val = section[key]
-    ...     newkey = key.replace('XXXX', 'CLIENT1')
-    ...     section.rename(key, newkey)
-    ...     if isinstance(val, (tuple, list, dict)):
-    ...         pass
-    ...     else:
-    ...         val = val.replace('XXXX', 'CLIENT1')
-    ...         section[newkey] = val
-    >>> cfg.walk(transform, call_on_sections=True)
-    {'CLIENT1section': {'CLIENT1key': None}}
-    >>> cfg
-    ConfigObj({'CLIENT1section': {'CLIENT1key': 'CLIENT1value'}})
-    """
-
-
 def _test_reset():
     """
     >>> something = object()
