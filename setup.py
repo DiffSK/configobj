@@ -10,8 +10,13 @@
 
 # This software is licensed under the terms of the BSD license.
 # http://opensource.org/licenses/BSD-3-Clause
-
+import sys
 from distutils.core import setup
+
+if sys.version_info < (2, 6):
+    print('for python versions < 2.6 use configobj '
+          'version 4.7.2')
+    sys.exit(1)
 
 # TODO - #20 - refactor the way we do versions
 VERSION = '5.0.1'
