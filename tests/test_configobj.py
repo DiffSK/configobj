@@ -1,6 +1,8 @@
 from codecs import BOM_UTF8
 from warnings import catch_warnings
 
+import sys
+
 import pytest
 import six
 
@@ -126,6 +128,16 @@ test = some string
         assert not isinstance(c['test'], unicode)
     else:
         assert isinstance(c['test'], str)
+
+
+@pytest.fixture
+def cfg():
+    return ConfigObj()
+
+
+@pytest.fixture
+def val():
+    return Validator()
 
 
 @pytest.fixture
@@ -284,7 +296,7 @@ def test_behavior_when_list_values_is_false():
     ]
 
 
-def test_flatten_errors():
+def test_flatten_errors(val):
     config = '''
        test1=40
        test2=hello
@@ -317,7 +329,6 @@ def test_flatten_errors():
                test3=integer
                test4=float(6.0)
        '''.split('\n')
-    val = Validator()
     c1 = ConfigObj(config, configspec=configspec)
     res = c1.validate(val)
     assert flatten_errors(c1, res) == [([], 'test4', False), (['section'], 'test4', False), (['section', 'sub section'], 'test4', False)]
@@ -379,199 +390,138 @@ def test_unicode_handling():
     assert uc2.newlines == '\r'
 
 
-def _doctest():
-    """
-    Dummy function to hold some of the doctests.
+class TestWritingConfigs(object):
+    def test_validate(self, val):
+        spec = [
+            '# Initial Comment',
+            '',
+            'key1 = string(default=Hello)',
+            '',
+            '# section comment',
+            '[section] # inline comment',
+            '# key1 comment',
+            'key1 = integer(default=6)',
+            '# key2 comment',
+            'key2 = boolean(default=True)',
+            '# subsection comment',
+            '[[sub-section]] # inline comment',
+            '# another key1 comment',
+            'key1 = float(default=3.0)'
+        ]
+        blank_config = ConfigObj(configspec=spec)
+        assert blank_config.validate(val, copy=True)
+        assert blank_config.dict() == {
+            'key1': 'Hello',
+            'section': {'key1': 6, 'key2': True, 'sub-section': {'key1': 3.0}}
+        }
+        assert blank_config.write() == [
+            '# Initial Comment',
+            '',
+            'key1 = Hello',
+            '',
+            '# section comment',
+            '[section]# inline comment',
+            '# key1 comment',
+            'key1 = 6',
+            '# key2 comment',
+            'key2 = True',
+            '# subsection comment',
+            '[[sub-section]]# inline comment',
+            '# another key1 comment',
+            'key1 = 3.0'
+        ]
 
-    Test flatten_errors:
+    def test_writing_empty_values(self):
+        config_with_empty_values = [
+            '',
+            'key1 =',
+            'key2 =# a comment',
+        ]
+        cfg = ConfigObj(config_with_empty_values)
+        assert cfg.write() == ['', 'key1 = ""', 'key2 = ""# a comment']
+        cfg.write_empty_values = True
+        assert cfg.write() == ['', 'key1 = ', 'key2 = # a comment']
 
-    Test unicode handling, BOM, write witha file like object and line endings :
+
+class TestUnrepr(object):
+    def test_in_reading(self):
+        config_to_be_unreprd = '''
+            key1 = (1, 2, 3)    # comment
+            key2 = True
+            key3 = 'a string'
+            key4 = [1, 2, 3, 'a mixed list']
+        '''.splitlines()
+        cfg = ConfigObj(config_to_be_unreprd, unrepr=True)
+        assert cfg == {
+            'key1': (1, 2, 3),
+            'key2': True,
+            'key3': 'a string',
+            'key4': [1, 2, 3, 'a mixed list']
+        }
+
+        assert cfg == ConfigObj(cfg.write(), unrepr=True)
+
+    def test_in_multiline_values(self):
+        config_with_multiline_value = '''k = \"""{
+'k1': 3,
+'k2': 6.0}\"""
+'''.splitlines()
+        cfg = ConfigObj(config_with_multiline_value, unrepr=True)
+        assert cfg == {'k': {'k1': 3, 'k2': 6.0}}
+
+    def test_with_a_dictionary(self):
+        config_with_dict_value = ['k = {"a": 1}']
+        cfg = ConfigObj(config_with_dict_value, unrepr=True)
+        assert isinstance(cfg['k'], dict)
+
+    def test_with_hash(self):
+        config_with_a_hash_in_a_list = [
+            'key1 = (1, 2, 3)    # comment',
+            'key2 = True',
+            "key3 = 'a string'",
+            "key4 = [1, 2, 3, 'a mixed list#']"
+        ]
+        cfg = ConfigObj(config_with_a_hash_in_a_list, unrepr=True)
+        assert cfg == {
+            'key1': (1, 2, 3),
+            'key2': True,
+            'key3': 'a string',
+            'key4': [1, 2, 3, 'a mixed list#']
+        }
 
 
+class TestValueErrors(object):
+    def test_bool(self, cfg):
+        cfg['a'] = 'fish'
+        with pytest.raises(ValueError) as excinfo:
+            cfg.as_bool('a')
+        assert str(excinfo.value) == 'Value "fish" is neither True nor False'
+        cfg['b'] = 'True'
+        assert cfg.as_bool('b') is True
+        cfg['b'] = 'off'
+        assert cfg.as_bool('b') is False
 
-    Test validate in copy mode
-    a = '''
-    # Initial Comment
-    ...
-    key1 = string(default=Hello)
-    ...
-    # section comment
-    [section] # inline comment
-    # key1 comment
-    key1 = integer(default=6)
-    # key2 comment
-    key2 = boolean(default=True)
-    ...
-       # subsection comment
-       [[sub-section]] # inline comment
-       # another key1 comment
-       key1 = float(default=3.0)'''.splitlines()
-    b = ConfigObj(configspec=a)
-    b.validate(val, copy=True)
-    1
-    b.write() == ['',
-    '# Initial Comment',
-    '',
-    'key1 = Hello',
-    '',
-    '# section comment',
-    '[section]    # inline comment',
-    '    # key1 comment',
-    '    key1 = 6',
-    '    # key2 comment',
-    '    key2 = True',
-    '    ',
-    '    # subsection comment',
-    '    [[sub-section]]    # inline comment',
-    '        # another key1 comment',
-    '        key1 = 3.0']
-    1
+    def test_int(self, cfg):
+        for bad in ('fish', '3.2'):
+            cfg['a'] = bad
+            with pytest.raises(ValueError) as excinfo:
+                cfg.as_int('a')
+            assert str(excinfo.value).startswith('invalid literal for int()')
 
-    Test Writing Empty Values
-    a = '''
-       key1 =
-       key2 =# a comment'''
-    b = ConfigObj(a.splitlines())
-    b.write()
-    ['', 'key1 = ""', 'key2 = ""    # a comment']
-    b.write_empty_values = True
-    b.write()
-    ['', 'key1 = ', 'key2 =     # a comment']
+        cfg['b'] = '1'
+        assert cfg.as_bool('b') is True
+        cfg['b'] = '3.2'
 
-    Test unrepr when reading
-    a = '''
-       key1 = (1, 2, 3)    # comment
-       key2 = True
-       key3 = 'a string'
-       key4 = [1, 2, 3, 'a mixed list']
-    '''.splitlines()
-    b = ConfigObj(a, unrepr=True)
-    b == {'key1': (1, 2, 3),
-    'key2': True,
-    'key3': 'a string',
-    'key4': [1, 2, 3, 'a mixed list']}
-    1
+    def test_float(self, cfg):
+        cfg['a'] = 'fish'
+        with pytest.raises(ValueError):
+            cfg.as_float('a')
 
-    Test unrepr when writing
-    c = ConfigObj(b.write(), unrepr=True)
-    c == b
-    1
+        cfg['b'] = '1'
+        assert cfg.as_float('b') == 1
+        cfg['b'] = '3.2'
+        assert cfg.as_float('b') == 3.2
 
-    Test unrepr with multiline values
-    a = '''k = \"""{
-    'k1': 3,
-    'k2': 6.0}\"""
-    '''.splitlines()
-    c = ConfigObj(a, unrepr=True)
-    c == {'k': {'k1': 3, 'k2': 6.0}}
-    1
-
-    Test unrepr with a dictionary
-    a = 'k = {"a": 1}'.splitlines()
-    c = ConfigObj(a, unrepr=True)
-    isinstance(c['k'], dict)
-    True
-
-    a = ConfigObj()
-    a['a'] = 'fish'
-    a.as_bool('a')
-    Traceback (most recent call last):
-    ValueError: Value "fish" is neither True nor False
-    a['b'] = 'True'
-    a.as_bool('b')
-    1
-    a['b'] = 'off'
-    a.as_bool('b')
-    0
-
-    a = ConfigObj()
-    a['a'] = 'fish'
-    try:
-       a.as_int('a')
-    except ValueError as e:
-       err_mess = str(e)
-    err_mess.startswith('invalid literal for int()')
-    1
-    a['b'] = '1'
-    a.as_int('b')
-    1
-    a['b'] = '3.2'
-    try:
-       a.as_int('b')
-    except ValueError as e:
-       err_mess = str(e)
-    err_mess.startswith('invalid literal for int()')
-    1
-
-    a = ConfigObj()
-    a['a'] = 'fish'
-    a.as_float('a')
-    Traceback (most recent call last):
-    ValueError: invalid literal for float(): fish
-    a['b'] = '1'
-    a.as_float('b')
-    1.0
-    a['b'] = '3.2'
-    a.as_float('b')
-    3.2...
-
-     Test # with unrepr
-     a = '''
-        key1 = (1, 2, 3)    # comment
-        key2 = True
-        key3 = 'a string'
-        key4 = [1, 2, 3, 'a mixed list#']
-     '''.splitlines()
-     b = ConfigObj(a, unrepr=True)
-     b == {'key1': (1, 2, 3),
-     'key2': True,
-     'key3': 'a string',
-     'key4': [1, 2, 3, 'a mixed list#']}
-     1
-    """
-
-    # Comments are no longer parsed from values in configspecs
-    # so the following test fails and is disabled
-    untested = """
-    Test validate in copy mode
-    a = '''
-    # Initial Comment
-    ...
-    key1 = string(default=Hello)    # comment 1
-    ...
-    # section comment
-    [section] # inline comment
-    # key1 comment
-    key1 = integer(default=6) # an integer value
-    # key2 comment
-    key2 = boolean(default=True) # a boolean
-    ...
-       # subsection comment
-       [[sub-section]] # inline comment
-       # another key1 comment
-       key1 = float(default=3.0) # a float'''.splitlines()
-    b = ConfigObj(configspec=a)
-    b.validate(val, copy=True)
-    1
-    b.write()
-    b.write() == ['',
-    '# Initial Comment',
-    '',
-    'key1 = Hello    # comment 1',
-    '',
-    '# section comment',
-    '[section]    # inline comment',
-    '    # key1 comment',
-    '    key1 = 6    # an integer value',
-    '    # key2 comment',
-    '    key2 = True    # a boolean',
-    '    ',
-    '    # subsection comment',
-    '    [[sub-section]]    # inline comment',
-    '        # another key1 comment',
-    '        key1 = 3.0    # a float']
-    1
-    """
 
 
 def test_error_types():
@@ -600,3 +550,45 @@ def test_error_types():
     with pytest.raises(IOError):
         raise co.ReloadError()
 
+
+class TestSectionBehavior(object):
+    def test_dictionary_representation(self, a):
+
+        n = a.dict()
+        assert n == a
+        assert n is not a
+
+    def test_merging(self):
+        config_with_subsection = '''[section1]
+        option1 = True
+        [[subsection]]
+        more_options = False
+        # end of file'''.splitlines()
+        config_that_overwrites_parameter = '''# File is user.ini
+        [section1]
+        option1 = False
+        # end of file'''.splitlines()
+        c1 = ConfigObj(config_that_overwrites_parameter)
+        c2 = ConfigObj(config_with_subsection)
+        c2.merge(c1)
+        assert c2.dict() == {'section1': {'option1': 'False', 'subsection': {'more_options': 'False'}}}
+
+    def test_walking_with_in_place_updates(self):
+            config = '''[XXXXsection]
+            XXXXkey = XXXXvalue'''.splitlines()
+            cfg = ConfigObj(config)
+            assert cfg.dict() == {'XXXXsection': {'XXXXkey': 'XXXXvalue'}}
+            def transform(section, key):
+                val = section[key]
+                newkey = key.replace('XXXX', 'CLIENT1')
+                section.rename(key, newkey)
+                if isinstance(val, six.string_types):
+                    val = val.replace('XXXX', 'CLIENT1')
+                    section[newkey] = val
+
+            assert cfg.walk(transform, call_on_sections=True) == {
+                'CLIENT1section': {'CLIENT1key': None}
+            }
+            assert cfg.dict() == {
+                'CLIENT1section': {'CLIENT1key': 'CLIENT1value'}
+            }
