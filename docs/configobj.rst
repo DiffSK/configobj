@@ -326,9 +326,9 @@ ConfigObj takes the following arguments (with the default values shown) :
 * 'file_error': ``False``
 
     If this value is ``True`` and the file specified by ``infile`` doesn't
-    exist, ConfigObj will raise an ``IOError``.
-
-    Altering this value after initial parsing has no effect.
+    exist, ConfigObj will raise an ``IOError``. This error will be raised whenever
+    an attempt to load the ``infile`` occurs, either in the constructor or using
+    the reload method.
 
 * 'interpolation': ``True``
 
@@ -2382,6 +2382,11 @@ CHANGELOG
 
 This is an abbreviated changelog showing the major releases up to version 4.
 From version 4 it lists all releases and changes.
+
+2014/02/27 - Version 5.0.2
+--------------------------
+* Specific error message for installing version this version on Python versions older than 2.5
+* Documentation corrections
 
 2014/02/19 - Version 5.0.1
 --------------------------
