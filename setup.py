@@ -47,9 +47,11 @@ It has lots of other features though :
 * The order of keys/sections is preserved
 * Powerful ``unrepr`` mode for storing/retrieving Python data-types
 
+| Release 5.0.2 adds a specific error message when trying to install on
+| Python versions older than 2.5
 | Release 5.0.1 fixes a regression with unicode conversion not happening
 | in certain cases PY2
-| Release 5.0.0 updates the supported python versions to 2.6, 2.7, 3.2, 3.3
+| Release 5.0.0 updates the supported Python versions to 2.6, 2.7, 3.2, 3.3
 | and is otherwise unchanged
 | Release 4.7.2 fixes several bugs in 4.7.1
 | Release 4.7.1 fixes a bug with the deprecated options keyword in
