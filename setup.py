@@ -19,7 +19,7 @@ if sys.version_info < (2, 6):
     sys.exit(1)
 
 # TODO - #20 - refactor the way we do versions
-VERSION = '5.0.1'
+VERSION = '5.0.2'
 NAME = 'configobj'
 MODULES = 'configobj', 'validate'
 
