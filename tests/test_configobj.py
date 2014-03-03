@@ -1,13 +1,13 @@
+import os
 from codecs import BOM_UTF8
 from warnings import catch_warnings
-
-import sys
+from tempfile import NamedTemporaryFile
 
 import pytest
 import six
 
 import configobj as co
-from configobj import ConfigObj, flatten_errors
+from configobj import ConfigObj, flatten_errors, ReloadError
 from validate import Validator, VdtValueTooSmallError
 
 
@@ -641,3 +641,78 @@ def test_reset_a_configobj():
     assert cfg.default_values == {}
     assert cfg == ConfigObj()
     assert repr(cfg) == 'ConfigObj({})'
+
+
+class TestReloading(object):
+    @pytest.fixture
+    def reloadable_cfg_content(self):
+        content = '''
+                test1=40
+                test2=hello
+                test3=3
+                test4=5.0
+                [section]
+                    test1=40
+                    test2=hello
+                    test3=3
+                    test4=5.0
+                    [[sub section]]
+                        test1=40
+                        test2=hello
+                        test3=3
+                        test4=5.0
+                [section2]
+                    test1=40
+                    test2=hello
+                    test3=3
+                    test4=5.0
+            '''
+        return content
+
+    def test_handle_no_filename(self):
+        for bad_args in ([six.StringIO()], [], [[]]):
+            cfg = ConfigObj(*bad_args)
+            with pytest.raises(ReloadError) as excinfo:
+                cfg.reload()
+            assert str(excinfo.value) == 'reload failed, filename is not set.'
+
+    def test_reloading_with_an_actual_file(self, request,
+                                           reloadable_cfg_content):
+
+        # with open('temp', 'w') as cfg_file:
+        with NamedTemporaryFile(delete=False, mode='w') as cfg_file:
+            cfg_file.write(reloadable_cfg_content)
+        request.addfinalizer(lambda : os.unlink(cfg_file.name))
+
+        configspec = '''
+            test1= integer(30,50)
+            test2= string
+            test3=integer
+            test4=float(4.5)
+            [section]
+                test1=integer(30,50)
+                test2=string
+                test3=integer
+                test4=float(4.5)
+                [[sub section]]
+                    test1=integer(30,50)
+                    test2=string
+                    test3=integer
+                    test4=float(4.5)
+            [section2]
+                test1=integer(30,50)
+                test2=string
+                test3=integer
+                test4=float(4.5)
+            '''.splitlines()
+
+        cfg = ConfigObj(cfg_file.name, configspec=configspec)
+        cfg.configspec['test1'] = 'integer(50,60)'
+        backup = ConfigObj(cfg_file.name)
+        del cfg['section']
+        del cfg['test1']
+        cfg['extra'] = '3'
+        cfg['section2']['extra'] = '3'
+        cfg.reload()
+        assert cfg == backup
+        assert cfg.validate(Validator())
