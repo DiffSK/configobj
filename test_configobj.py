@@ -44,34 +44,6 @@ from validate import Validator, VdtValueTooSmallError
 def _test_configobj():
     """
     Testing ConfigObj
-    Testing with duplicate keys and sections.
-    
-    >>> c = '''
-    ... [hello]
-    ... member = value
-    ... [hello again]
-    ... member = value
-    ... [ "hello" ]
-    ... member = value
-    ... '''
-    >>> ConfigObj(c.split('\\n'), raise_errors = True)
-    Traceback (most recent call last):
-    DuplicateError: Duplicate section name at line 6.
-    
-    >>> d = '''
-    ... [hello]
-    ... member = value
-    ... [hello again]
-    ... member1 = value
-    ... member2 = value
-    ... 'member1' = value
-    ... [ "and again" ]
-    ... member = value
-    ... '''
-    >>> ConfigObj(d.split('\\n'), raise_errors = True)
-    Traceback (most recent call last):
-    DuplicateError: Duplicate keyword name at line 7.
-
     Testing ConfigParser-style interpolation
     
     >>> c = ConfigObj()

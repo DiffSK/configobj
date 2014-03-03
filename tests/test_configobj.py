@@ -7,7 +7,7 @@ import pytest
 import six
 
 import configobj as co
-from configobj import ConfigObj, flatten_errors, ReloadError
+from configobj import ConfigObj, flatten_errors, ReloadError, DuplicateError
 from validate import Validator, VdtValueTooSmallError
 
 
@@ -716,3 +716,33 @@ class TestReloading(object):
         cfg.reload()
         assert cfg == backup
         assert cfg.validate(Validator())
+
+
+class TestDuplicates(object):
+    def test_duplicate_section(self):
+        cfg = '''
+        [hello]
+        member = value
+        [hello again]
+        member = value
+        [ "hello" ]
+        member = value
+        '''
+        with pytest.raises(DuplicateError) as excinfo:
+            ConfigObj(cfg.splitlines(), raise_errors=True)
+        assert str(excinfo.value) == 'Duplicate section name at line 6.'
+    
+    def test_duplicate_members(self):
+        d = '''
+        [hello]
+        member=value
+        [helloagain]
+        member1=value
+        member2=value
+        'member1'=value
+        ["andagain"]
+        member=value
+        '''
+        with pytest.raises(DuplicateError) as excinfo:
+            ConfigObj(d.splitlines(),raise_errors=True)
+        assert str(excinfo.value) == 'Duplicate keyword name at line 7.'
