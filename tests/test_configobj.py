@@ -592,3 +592,52 @@ class TestSectionBehavior(object):
             assert cfg.dict() == {
                 'CLIENT1section': {'CLIENT1key': 'CLIENT1value'}
             }
+
+
+def test_reset_a_configobj():
+
+    something = object()
+    cfg = ConfigObj()
+    cfg['something'] = something
+    cfg['section'] = {'something': something}
+    cfg.filename = 'fish'
+    cfg.raise_errors = something
+    cfg.list_values = something
+    cfg.create_empty = something
+    cfg.file_error = something
+    cfg.stringify = something
+    cfg.indent_type = something
+    cfg.encoding = something
+    cfg.default_encoding = something
+    cfg.BOM = something
+    cfg.newlines = something
+    cfg.write_empty_values = something
+    cfg.unrepr = something
+    cfg.initial_comment = something
+    cfg.final_comment = something
+    cfg.configspec = something
+    cfg.inline_comments = something
+    cfg.comments = something
+    cfg.defaults = something
+    cfg.default_values = something
+    cfg.reset()
+    
+    assert cfg.filename is None
+    assert cfg.raise_errors is False
+    assert cfg.list_values is True
+    assert cfg.create_empty is False
+    assert cfg.file_error is False
+    assert cfg.interpolation is True
+    assert cfg.configspec is None
+    assert cfg.stringify is True
+    assert cfg.indent_type is None
+    assert cfg.encoding is None
+    assert cfg.default_encoding is None
+    assert cfg.unrepr is False
+    assert cfg.write_empty_values is False
+    assert cfg.inline_comments == {}
+    assert cfg.comments == {}
+    assert cfg.defaults == []
+    assert cfg.default_values == {}
+    assert cfg == ConfigObj()
+    assert repr(cfg) == 'ConfigObj({})'
