@@ -44,124 +44,6 @@ from validate import Validator, VdtValueTooSmallError
 def _test_configobj():
     """
     Testing ConfigObj
-    Testing ConfigParser-style interpolation
-    
-    >>> c = ConfigObj()
-    >>> c['DEFAULT'] = {
-    ...     'b': 'goodbye',
-    ...     'userdir': 'c:\\\\home',
-    ...     'c': '%(d)s',
-    ...     'd': '%(c)s'
-    ... }
-    >>> c['section'] = {
-    ...     'a': '%(datadir)s\\\\some path\\\\file.py',
-    ...     'b': '%(userdir)s\\\\some path\\\\file.py',
-    ...     'c': 'Yo %(a)s',
-    ...     'd': '%(not_here)s',
-    ...     'e': '%(e)s',
-    ... }
-    >>> c['section']['DEFAULT'] = {
-    ...     'datadir': 'c:\\\\silly_test',
-    ...     'a': 'hello - %(b)s',
-    ... }
-    >>> c['section']['a'] == 'c:\\\\silly_test\\\\some path\\\\file.py'
-    1
-    >>> c['section']['b'] == 'c:\\\\home\\\\some path\\\\file.py'
-    1
-    >>> c['section']['c'] == 'Yo c:\\\\silly_test\\\\some path\\\\file.py'
-    1
-    
-    Switching Interpolation Off
-    
-    >>> c.interpolation = False
-    >>> c['section']['a'] == '%(datadir)s\\\\some path\\\\file.py'
-    1
-    >>> c['section']['b'] == '%(userdir)s\\\\some path\\\\file.py'
-    1
-    >>> c['section']['c'] == 'Yo %(a)s'
-    1
-    
-    Testing the interpolation errors.
-    
-    >>> c.interpolation = True
-    >>> c['section']['d']
-    Traceback (most recent call last):
-    MissingInterpolationOption: missing option "not_here" in interpolation.
-    >>> c['section']['e']
-    Traceback (most recent call last):
-    InterpolationLoopError: interpolation loop detected in value "e".
-    
-    Testing Template-style interpolation
-    
-    >>> interp_cfg = '''
-    ... [DEFAULT]
-    ... keyword1 = value1
-    ... 'keyword 2' = 'value 2'
-    ... reference = ${keyword1}
-    ... foo = 123
-    ... 
-    ... [ section ]
-    ... templatebare = $keyword1/foo
-    ... bar = $$foo
-    ... dollar = $$300.00
-    ... stophere = $$notinterpolated
-    ... with_braces = ${keyword1}s (plural)
-    ... with_spaces = ${keyword 2}!!!
-    ... with_several = $keyword1/$reference/$keyword1
-    ... configparsersample = %(keyword 2)sconfig
-    ... deep = ${reference}
-    ... 
-    ...     [[DEFAULT]]
-    ...     baz = $foo
-    ... 
-    ...     [[ sub-section ]]
-    ...     quux = '$baz + $bar + $foo'
-    ... 
-    ...         [[[ sub-sub-section ]]]
-    ...         convoluted = "$bar + $baz + $quux + $bar"
-    ... '''
-    >>> c = ConfigObj(interp_cfg.split('\\n'), interpolation='Template')
-    >>> c['section']['templatebare']
-    'value1/foo'
-    >>> c['section']['dollar']
-    '$300.00'
-    >>> c['section']['stophere']
-    '$notinterpolated'
-    >>> c['section']['with_braces']
-    'value1s (plural)'
-    >>> c['section']['with_spaces']
-    'value 2!!!'
-    >>> c['section']['with_several']
-    'value1/value1/value1'
-    >>> c['section']['configparsersample']
-    '%(keyword 2)sconfig'
-    >>> c['section']['deep']
-    'value1'
-    >>> c['section']['sub-section']['quux']
-    '123 + $foo + 123'
-    >>> c['section']['sub-section']['sub-sub-section']['convoluted']
-    '$foo + 123 + 123 + $foo + 123 + $foo'
-    
-    Testing our quoting.
-    
-    >>> i._quote('\"""\\'\\'\\'')
-    Traceback (most recent call last):
-    ConfigObjError: Value \"\"""'''" cannot be safely quoted.
-    >>> try:
-    ...     i._quote('\\n', multiline=False)
-    ... except ConfigObjError as e:
-    ...    e.msg
-    'Value "\\n" cannot be safely quoted.'
-    >>> i._quote(' "\\' ', multiline=False)
-    Traceback (most recent call last):
-    ConfigObjError: Value " "' " cannot be safely quoted.
-    
-    Testing with "stringify" off.
-    >>> c.stringify = False
-    >>> c['test'] = 1
-    Traceback (most recent call last):
-    TypeError: Value is not a string "1".
-    
     Testing Empty values.
     >>> cfg_with_empty = '''
     ... k =
@@ -170,7 +52,7 @@ def _test_configobj():
     ... val2 = ,
     ... val3 = 1,
     ... val4 = 1, 2
-    ... val5 = 1, 2, \'''.splitlines()
+    ... val5 = 1, 2, '''.splitlines()
     >>> cwe = ConfigObj(cfg_with_empty)
     >>> cwe == {'k': '', 'k2': '', 'val': 'test', 'val2': [],
     ...  'val3': ['1'], 'val4': ['1', '2'], 'val5': ['1', '2']}
@@ -181,12 +63,12 @@ def _test_configobj():
     1
     
     Testing list values.
-    >>> testconfig3 = \'''
+    >>> testconfig3 = '''
     ... a = ,
     ... b = test,
     ... c = test1, test2   , test3
     ... d = test1, test2, test3,
-    ... \'''
+    ... '''
     >>> d = ConfigObj(testconfig3.split('\\n'), raise_errors=True)
     >>> d['a'] == []
     1

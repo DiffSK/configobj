@@ -7,7 +7,7 @@ import pytest
 import six
 
 import configobj as co
-from configobj import ConfigObj, flatten_errors, ReloadError, DuplicateError
+from configobj import ConfigObj, flatten_errors, ReloadError, DuplicateError, MissingInterpolationOption, InterpolationLoopError, ConfigObjError
 from validate import Validator, VdtValueTooSmallError
 
 
@@ -190,12 +190,41 @@ def testconfig2():
             fish = 3
     """
 
+
+@pytest.fixture
+def testconfig6():
+    return b'''
+    name1 = """ a single line value """ # comment
+    name2 = \''' another single line value \''' # comment
+    name3 = """ a single line value """
+    name4 = \''' another single line value \'''
+        [ "multi section" ]
+        name1 = """
+        Well, this is a
+        multiline value
+        """
+        name2 = \'''
+        Well, this is a
+        multiline value
+        \'''
+        name3 = """
+        Well, this is a
+        multiline value
+        """     # a comment
+        name4 = \'''
+        Well, this is a
+        multiline value
+        \'''  # I guess this is a comment too
+    '''
+
+
+
 @pytest.fixture
 def a(testconfig1):
     """
     also copied from main doc tests
     """
-    return ConfigObj(testconfig1.split('\n'), raise_errors=True)
+    return ConfigObj(testconfig1.splitlines(), raise_errors=True)
 
 
 @pytest.fixture
@@ -203,7 +232,15 @@ def b(testconfig2):
     """
     also copied from main doc tests
     """
-    return ConfigObj(testconfig2.split('\n'), raise_errors=True)
+    return ConfigObj(testconfig2.splitlines(), raise_errors=True)
+
+
+@pytest.fixture
+def i(testconfig6):
+    """
+    also copied from main doc tests
+    """
+    return ConfigObj(testconfig6.splitlines(), raise_errors=True)
 
 
 def test_configobj_dict_representation(a, b):
@@ -746,3 +783,132 @@ class TestDuplicates(object):
         with pytest.raises(DuplicateError) as excinfo:
             ConfigObj(d.splitlines(),raise_errors=True)
         assert str(excinfo.value) == 'Duplicate keyword name at line 7.'
+
+
+class TestInterpolation(object):
+    """
+    tests various interpolation behaviors using config par
+    """
+    @pytest.fixture
+    def config_parser_cfg(self):
+        cfg = ConfigObj()
+        cfg['DEFAULT'] = {
+            'b': 'goodbye',
+            'userdir': r'c:\\home',
+            'c': '%(d)s',
+            'd': '%(c)s'
+        }
+        cfg['section'] = {
+            'a': r'%(datadir)s\\some path\\file.py',
+            'b': r'%(userdir)s\\some path\\file.py',
+            'c': 'Yo %(a)s',
+            'd': '%(not_here)s',
+            'e': '%(e)s',
+        }
+        cfg['section']['DEFAULT'] = {
+            'datadir': r'c:\\silly_test',
+            'a': 'hello - %(b)s',
+        }
+        return cfg
+
+    @pytest.fixture
+    def template_cfg(self):
+        interp_cfg = '''
+        [DEFAULT]
+        keyword1 = value1
+        'keyword 2' = 'value 2'
+        reference = ${keyword1}
+        foo = 123
+
+        [ section ]
+        templatebare = $keyword1/foo
+        bar = $$foo
+        dollar = $$300.00
+        stophere = $$notinterpolated
+        with_braces = ${keyword1}s (plural)
+        with_spaces = ${keyword 2}!!!
+        with_several = $keyword1/$reference/$keyword1
+        configparsersample = %(keyword 2)sconfig
+        deep = ${reference}
+
+            [[DEFAULT]]
+            baz = $foo
+
+            [[ sub-section ]]
+            quux = '$baz + $bar + $foo'
+
+                [[[ sub-sub-section ]]]
+                convoluted = "$bar + $baz + $quux + $bar"
+        '''
+        return ConfigObj(interp_cfg.splitlines(), interpolation='Template')
+
+    def test_interpolation(self, config_parser_cfg):
+        test_section = config_parser_cfg['section']
+        assert test_section['a'] == r'c:\\silly_test\\some path\\file.py'
+        assert test_section['b'] == r'c:\\home\\some path\\file.py'
+        assert test_section['c'] == r'Yo c:\\silly_test\\some path\\file.py'
+
+    def test_interpolation_turned_off(self, config_parser_cfg):
+        config_parser_cfg.interpolation = False
+        test_section = config_parser_cfg['section']
+        assert test_section['a'] == r'%(datadir)s\\some path\\file.py'
+        assert test_section['b'] == r'%(userdir)s\\some path\\file.py'
+        assert test_section['c'] == r'Yo %(a)s'
+
+    def test_handle_errors(self, config_parser_cfg):
+
+        with pytest.raises(MissingInterpolationOption) as excinfo:
+            print(config_parser_cfg['section']['d'])
+        assert (str(excinfo.value) ==
+                'missing option "not_here" in interpolation.')
+
+        with pytest.raises(InterpolationLoopError) as excinfo:
+            print(config_parser_cfg['section']['e'])
+        assert (str(excinfo.value) ==
+                'interpolation loop detected in value "e".')
+
+    def test_template_interpolation(self, template_cfg):
+        test_sec = template_cfg['section']
+        assert test_sec['templatebare'] == 'value1/foo'
+        assert test_sec['dollar'] == '$300.00'
+        assert test_sec['stophere'] == '$notinterpolated'
+        assert test_sec['with_braces'] == 'value1s (plural)'
+        assert test_sec['with_spaces'] == 'value 2!!!'
+        assert test_sec['with_several'] == 'value1/value1/value1'
+        assert test_sec['configparsersample'] == '%(keyword 2)sconfig'
+        assert test_sec['deep'] == 'value1'
+        assert test_sec['sub-section']['quux'] == '123 + $foo + 123'
+        assert (test_sec['sub-section']['sub-sub-section']['convoluted'] ==
+                '$foo + 123 + 123 + $foo + 123 + $foo')
+
+
+class TestQuotes(object):
+    """
+    tests what happens whn dealing with quotes
+    """
+    def assert_bad_quote_message(self, cfg, to_quote, **kwargs):
+        #TODO: this should be use repr instead of str
+        message = 'Value "{0}" cannot be safely quoted.'
+        with pytest.raises(ConfigObjError) as excinfo:
+            cfg._quote(to_quote, **kwargs)
+        assert str(excinfo.value) == message.format(to_quote)
+
+    def test_handle_unbalanced(self, i):
+        self.assert_bad_quote_message(i, '"""\'\'\'')
+
+    def test_handle_unallowed_newline(self, i):
+        newline = '\n'
+        self.assert_bad_quote_message(i, newline, multiline=False)
+
+    def test_handle_unallowed_open_quote(self, i):
+        open_quote = ' "\' '
+        self.assert_bad_quote_message(i, open_quote, multiline=False)
+
+
+def test_handle_stringify_off():
+    c = ConfigObj()
+    c.stringify = False
+
+    with pytest.raises(TypeError) as excinfo:
+        c['test'] = 1
+    assert str(excinfo.value) == 'Value is not a string "1".'
