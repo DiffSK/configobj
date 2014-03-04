@@ -8,7 +8,6 @@ env:
 install:
   - pip install tox
   - pip install python-coveralls
-  - pip install coveralls
 script:
   - tox -e $TOX_ENV
 after_success:
