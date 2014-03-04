@@ -7,7 +7,7 @@ env:
   - TOX_ENV=py26
 install:
   - pip install tox
-  - pip install coveralls
+  - pip install python-coveralls
 script:
   - tox -e $TOX_ENV
 after_success:
