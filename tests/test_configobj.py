@@ -903,6 +903,18 @@ class TestQuotes(object):
     def test_handle_unallowed_open_quote(self, i):
         open_quote = ' "\' '
         self.assert_bad_quote_message(i, open_quote, multiline=False)
+        
+    def test_handle_multiple_bad_quote_values(self):
+        testconfig5 = '''
+        config = "hello   # comment
+        test = 'goodbye
+        fish = 'goodbye   # comment
+        dummy = "hello again
+        '''
+        with pytest.raises(ConfigObjError) as excinfo:
+            ConfigObj(testconfig5.splitlines())
+        assert len(excinfo.value.errors) == 4
+
 
 
 def test_handle_stringify_off():
@@ -912,3 +924,109 @@ def test_handle_stringify_off():
     with pytest.raises(TypeError) as excinfo:
         c['test'] = 1
     assert str(excinfo.value) == 'Value is not a string "1".'
+
+
+class TestValues(object):
+    """
+    Tests specifics about behaviors with types of values
+    """
+    @pytest.fixture
+    def testconfig3(self):
+        return '''
+        a = ,
+        b = test,
+        c = test1, test2   , test3
+        d = test1, test2, test3,
+        '''.splitlines()
+
+    def test_empty_values(self):
+        cfg_with_empty = '''
+        k =
+        k2 =# comment test
+        val = test
+        val2 = ,
+        val3 = 1,
+        val4 = 1, 2
+        val5 = 1, 2, '''.splitlines()
+        cwe = ConfigObj(cfg_with_empty)
+        # see a comma? it's a list
+        assert cwe == {'k': '', 'k2': '', 'val': 'test', 'val2': [],
+                       'val3': ['1'], 'val4': ['1', '2'], 'val5': ['1', '2']}
+        # not any more
+        cwe = ConfigObj(cfg_with_empty, list_values=False)
+        assert cwe == {'k': '', 'k2': '', 'val': 'test', 'val2': ',',
+                       'val3': '1,', 'val4': '1, 2', 'val5': '1, 2,'}
+
+    def test_list_values(self, testconfig3):
+        cfg = ConfigObj(testconfig3, raise_errors=True)
+        assert cfg['a'] == []
+        assert cfg['b'] == ['test']
+        assert cfg['c'] == ['test1', 'test2', 'test3']
+        assert cfg['d'] == ['test1', 'test2', 'test3']
+
+    def test_list_values_off(self, testconfig3):
+        cfg = ConfigObj(testconfig3, raise_errors=True, list_values=False)
+        assert cfg['a'] == ','
+        assert cfg['b'] == 'test,'
+        assert cfg['c'] == 'test1, test2   , test3'
+        assert cfg['d'] == 'test1, test2, test3,'
+        
+    def test_handle_multiple_list_value_errors(self):
+        testconfig4 = '''
+        config = 3,4,,
+        test = 3,,4
+        fish = ,,
+        dummy = ,,hello, goodbye
+        '''
+        with pytest.raises(ConfigObjError) as excinfo:
+            ConfigObj(testconfig4.splitlines())
+        assert len(excinfo.value.errors) == 4
+
+        
+        
+def test_creating_with_a_dictionary():
+    dictionary_cfg_content = {
+        'key1': 'val1',
+        'key2': 'val2',
+        'section 1': {
+            'key1': 'val1',
+            'key2': 'val2',
+            'section 1b': {
+                'key1': 'val1',
+                'key2': 'val2',
+            },
+        },
+        'section 2': {
+            'key1': 'val1',
+            'key2': 'val2',
+            'section 2b': {
+                'key1': 'val1',
+                'key2': 'val2',
+            },
+        },
+        'key3': 'val3',
+    }
+    cfg = ConfigObj(dictionary_cfg_content)
+    assert dictionary_cfg_content == cfg
+    assert dictionary_cfg_content is not cfg
+    assert dictionary_cfg_content == cfg.dict()
+    assert dictionary_cfg_content is not cfg.dict()
+
+
+def test_multiline_comments(i):
+    assert i == {
+        'name4': ' another single line value ',
+        'multi section': {
+            'name4': '\n        Well, this is a\n        multiline '
+                'value\n        ',
+            'name2': '\n        Well, this is a\n        multiline '
+                'value\n        ',
+            'name3': '\n        Well, this is a\n        multiline '
+                'value\n        ',
+            'name1': '\n        Well, this is a\n        multiline '
+                'value\n        ',
+        },
+        'name2': ' another single line value ',
+        'name3': ' a single line value ',
+        'name1': ' a single line value ',
+    }
