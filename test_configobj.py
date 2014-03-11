@@ -30,204 +30,16 @@ INTP_VER = sys.version_info[:2]
 if INTP_VER < (2, 2):
     raise RuntimeError("Python v.2.2 or later needed")
 
-try:
-    from codecs import BOM_UTF8
-except ImportError:
-    # Python 2.2 does not have this
-    # UTF-8
-    BOM_UTF8 = '\xef\xbb\xbf'
+from codecs import BOM_UTF8
 
 from configobj import *
 from validate import Validator, VdtValueTooSmallError
 
 
-def _test_configobj():
-    """
-    Testing ConfigObj
-
-    Test indentation handling
-    
-    >>> ConfigObj({'sect': {'sect': {'foo': 'bar'}}}).write()
-    ['[sect]', '    [[sect]]', '        foo = bar']
-    >>> cfg = ['[sect]', '[[sect]]', 'foo = bar']
-    >>> ConfigObj(cfg).write() == cfg
-    1
-    >>> cfg = ['[sect]', '  [[sect]]', '    foo = bar']
-    >>> ConfigObj(cfg).write() == cfg
-    1
-    >>> cfg = ['[sect]', '    [[sect]]', '        foo = bar']
-    >>> assert ConfigObj(cfg).write() == cfg
-    >>> assert ConfigObj(oneTabCfg).write() == oneTabCfg
-    >>> assert ConfigObj(twoTabsCfg).write() == twoTabsCfg
-    >>> assert ConfigObj(tabsAndSpacesCfg).write() == [s.decode('utf-8') for s in tabsAndSpacesCfg]
-    >>> assert ConfigObj(cfg, indent_type=chr(9)).write() == oneTabCfg
-    >>> assert ConfigObj(oneTabCfg, indent_type='    ').write() == cfg
-    """
-
-
 def _test_validate():
     """
-    >>> config = '''
-    ... test1=40
-    ... test2=hello
-    ... test3=3
-    ... test4=5.0
-    ... [section]
-    ...     test1=40
-    ...     test2=hello
-    ...     test3=3
-    ...     test4=5.0
-    ...     [[sub section]]
-    ...         test1=40
-    ...         test2=hello
-    ...         test3=3
-    ...         test4=5.0
-    ... '''.split('\\n')
-    >>> configspec = '''
-    ... test1= integer(30,50)
-    ... test2= string
-    ... test3=integer
-    ... test4=float(6.0)
-    ... [section ]
-    ...     test1=integer(30,50)
-    ...     test2=string
-    ...     test3=integer
-    ...     test4=float(6.0)
-    ...     [[sub section]]
-    ...         test1=integer(30,50)
-    ...         test2=string
-    ...         test3=integer
-    ...         test4=float(6.0)
-    ... '''.split('\\n')
     >>> val = Validator()
-    >>> c1 = ConfigObj(config, configspec=configspec)
-    >>> test = c1.validate(val)
-    >>> test == {
-    ...         'test1': True,
-    ...         'test2': True,
-    ...         'test3': True,
-    ...         'test4': False,
-    ...         'section': {
-    ...             'test1': True,
-    ...             'test2': True,
-    ...             'test3': True,
-    ...             'test4': False,
-    ...             'sub section': {
-    ...                 'test1': True,
-    ...                 'test2': True,
-    ...                 'test3': True,
-    ...                 'test4': False,
-    ...             },
-    ...         },
-    ...     }
-    1
-    >>> val.check(c1.configspec['test4'], c1['test4'])
-    Traceback (most recent call last):
-    VdtValueTooSmallError: the value "5.0" is too small.
-    
-    >>> val_test_config = '''
-    ...     key = 0
-    ...     key2 = 1.1
-    ...     [section]
-    ...     key = some text
-    ...     key2 = 1.1, 3.0, 17, 6.8
-    ...         [[sub-section]]
-    ...         key = option1
-    ...         key2 = True'''.split('\\n')
-    >>> val_test_configspec = '''
-    ...     key = integer
-    ...     key2 = float
-    ...     [section]
-    ...     key = string
-    ...     key2 = float_list(4)
-    ...        [[sub-section]]
-    ...        key = option(option1, option2)
-    ...        key2 = boolean'''.split('\\n')
-    >>> val_test = ConfigObj(val_test_config, configspec=val_test_configspec)
-    >>> val_test.validate(val)
-    1
-    >>> val_test['key'] = 'text not a digit'
-    >>> val_res = val_test.validate(val)
-    >>> val_res == {'key2': True, 'section': True, 'key': False}
-    1
-    >>> configspec = '''
-    ...     test1=integer(30,50, default=40)
-    ...     test2=string(default="hello")
-    ...     test3=integer(default=3)
-    ...     test4=float(6.0, default=6.0)
-    ...     [section ]
-    ...         test1=integer(30,50, default=40)
-    ...         test2=string(default="hello")
-    ...         test3=integer(default=3)
-    ...         test4=float(6.0, default=6.0)
-    ...         [[sub section]]
-    ...             test1=integer(30,50, default=40)
-    ...             test2=string(default="hello")
-    ...             test3=integer(default=3)
-    ...             test4=float(6.0, default=6.0)
-    ...     '''.split('\\n')
-    >>> default_test = ConfigObj(['test1=30'], configspec=configspec)
-    >>> default_test
-    ConfigObj({'test1': '30'})
-    >>> default_test.defaults
-    []
-    >>> default_test.default_values
-    {}
-    >>> default_test.validate(val)
-    1
-    >>> default_test == {
-    ...     'test1': 30,
-    ...     'test2': 'hello',
-    ...     'test3': 3,
-    ...     'test4': 6.0,
-    ...     'section': {
-    ...         'test1': 40,
-    ...         'test2': 'hello',
-    ...         'test3': 3,
-    ...         'test4': 6.0,
-    ...         'sub section': {
-    ...             'test1': 40,
-    ...             'test3': 3,
-    ...             'test2': 'hello',
-    ...             'test4': 6.0,
-    ...         },
-    ...     },
-    ... }
-    1
-    >>> default_test.defaults
-    ['test2', 'test3', 'test4']
-    >>> default_test.default_values == {'test1': 40, 'test2': 'hello',
-    ... 'test3': 3, 'test4': 6.0}
-    1
-    >>> default_test.restore_default('test1')
-    40
-    >>> default_test['test1']
-    40
-    >>> 'test1' in default_test.defaults
-    1
-    >>> def change(section, key): 
-    ...     section[key] = 3
-    >>> _ = default_test.walk(change)
-    >>> default_test['section']['sub section']['test4']
-    3
-    >>> default_test.restore_defaults()
-    >>> default_test == {
-    ...     'test1': 40,
-    ...     'test2': "hello",
-    ...     'test3': 3,
-    ...     'test4': 6.0,
-    ...     'section': {
-    ...         'test1': 40,
-    ...         'test2': "hello",
-    ...         'test3': 3,
-    ...         'test4': 6.0,
-    ...         'sub section': {
-    ...             'test1': 40,
-    ...             'test2': "hello",
-    ...             'test3': 3,
-    ...             'test4': 6.0
-    ... }}}
-    1
+
     >>> a = ['foo = fish']
     >>> b = ['foo = integer(default=3)']
     >>> c = ConfigObj(a, configspec=b)
@@ -1230,9 +1042,9 @@ if __name__ == '__main__':
     #
     # these cannot be put among the doctests, because the doctest module
     # does a string.expandtabs() on all of them, sigh
-    oneTabCfg = ['[sect]', '\t[[sect]]', '\t\tfoo = bar']
-    twoTabsCfg = ['[sect]', '\t\t[[sect]]', '\t\t\t\tfoo = bar']
-    tabsAndSpacesCfg = [b'[sect]', b'\t \t [[sect]]', b'\t \t \t \t foo = bar']
+    # oneTabCfg = ['[sect]', '\t[[sect]]', '\t\tfoo = bar']
+    # twoTabsCfg = ['[sect]', '\t\t[[sect]]', '\t\t\t\tfoo = bar']
+    # tabsAndSpacesCfg = [b'[sect]', b'\t \t [[sect]]', b'\t \t \t \t foo = bar']
     #
     import doctest
     m = sys.modules.get('__main__')
@@ -1240,9 +1052,7 @@ if __name__ == '__main__':
     a = ConfigObj(testconfig1.split('\n'), raise_errors=True)
     b = ConfigObj(testconfig2.split(b'\n'), raise_errors=True)
     i = ConfigObj(testconfig6.split(b'\n'), raise_errors=True)
-    globs.update({'INTP_VER': INTP_VER, 'a': a, 'b': b, 'i': i,
-        'oneTabCfg': oneTabCfg, 'twoTabsCfg': twoTabsCfg,
-        'tabsAndSpacesCfg': tabsAndSpacesCfg})
+    globs.update({'INTP_VER': INTP_VER, 'a': a, 'b': b, 'i': i})
     pre_failures, pre_tests = doctest.testmod(
         m, globs=globs,
         optionflags=doctest.IGNORE_EXCEPTION_DETAIL | doctest.ELLIPSIS)

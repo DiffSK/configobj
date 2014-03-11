@@ -1,3 +1,4 @@
+# coding=utf-8
 import os
 from codecs import BOM_UTF8
 from warnings import catch_warnings
@@ -131,16 +132,6 @@ test = some string
 
 
 @pytest.fixture
-def cfg():
-    return ConfigObj()
-
-
-@pytest.fixture
-def val():
-    return Validator()
-
-
-@pytest.fixture
 def testconfig1():
     """
     copied from the main doctest
@@ -216,7 +207,6 @@ def testconfig6():
         multiline value
         \'''  # I guess this is a comment too
     '''
-
 
 
 @pytest.fixture
@@ -528,36 +518,36 @@ class TestUnrepr(object):
 
 
 class TestValueErrors(object):
-    def test_bool(self, cfg):
-        cfg['a'] = 'fish'
+    def test_bool(self, empty_cfg):
+        empty_cfg['a'] = 'fish'
         with pytest.raises(ValueError) as excinfo:
-            cfg.as_bool('a')
+            empty_cfg.as_bool('a')
         assert str(excinfo.value) == 'Value "fish" is neither True nor False'
-        cfg['b'] = 'True'
-        assert cfg.as_bool('b') is True
-        cfg['b'] = 'off'
-        assert cfg.as_bool('b') is False
+        empty_cfg['b'] = 'True'
+        assert empty_cfg.as_bool('b') is True
+        empty_cfg['b'] = 'off'
+        assert empty_cfg.as_bool('b') is False
 
-    def test_int(self, cfg):
+    def test_int(self, empty_cfg):
         for bad in ('fish', '3.2'):
-            cfg['a'] = bad
+            empty_cfg['a'] = bad
             with pytest.raises(ValueError) as excinfo:
-                cfg.as_int('a')
+                empty_cfg.as_int('a')
             assert str(excinfo.value).startswith('invalid literal for int()')
 
-        cfg['b'] = '1'
-        assert cfg.as_bool('b') is True
-        cfg['b'] = '3.2'
+        empty_cfg['b'] = '1'
+        assert empty_cfg.as_bool('b') is True
+        empty_cfg['b'] = '3.2'
 
-    def test_float(self, cfg):
-        cfg['a'] = 'fish'
+    def test_float(self, empty_cfg):
+        empty_cfg['a'] = 'fish'
         with pytest.raises(ValueError):
-            cfg.as_float('a')
+            empty_cfg.as_float('a')
 
-        cfg['b'] = '1'
-        assert cfg.as_float('b') == 1
-        cfg['b'] = '3.2'
-        assert cfg.as_float('b') == 3.2
+        empty_cfg['b'] = '1'
+        assert empty_cfg.as_float('b') == 1
+        empty_cfg['b'] = '3.2'
+        assert empty_cfg.as_float('b') == 3.2
 
 
 
@@ -886,11 +876,11 @@ class TestQuotes(object):
     """
     tests what happens whn dealing with quotes
     """
-    def assert_bad_quote_message(self, cfg, to_quote, **kwargs):
+    def assert_bad_quote_message(self, empty_cfg, to_quote, **kwargs):
         #TODO: this should be use repr instead of str
         message = 'Value "{0}" cannot be safely quoted.'
         with pytest.raises(ConfigObjError) as excinfo:
-            cfg._quote(to_quote, **kwargs)
+            empty_cfg._quote(to_quote, **kwargs)
         assert str(excinfo.value) == message.format(to_quote)
 
     def test_handle_unbalanced(self, i):
@@ -1084,3 +1074,35 @@ def test_interpolation_using_default_sections():
     c['DEFAULT'] = {'a' : 'fish'}
     c['a'] = '%(a)s'
     assert c.write() == ['a = %(a)s', '[DEFAULT]', 'a = fish']
+    
+
+class TestIndentation(object):
+    @pytest.fixture
+    def max_tabbed_cfg(self):
+        return ['[sect]', '    [[sect]]', '        foo = bar']
+
+    def test_write_dictionary(self):
+        assert ConfigObj({'sect': {'sect': {'foo': 'bar'}}}).write() == [
+            '[sect]', '    [[sect]]', '        foo = bar'
+        ]
+
+    def test_indentation_preserved(self, max_tabbed_cfg):
+        for cfg_content in (
+            ['[sect]', '[[sect]]', 'foo = bar'],
+            ['[sect]', '  [[sect]]', '    foo = bar'],
+            max_tabbed_cfg
+        ):
+            assert ConfigObj(cfg_content).write() == cfg_content
+
+    def test_handle_tabs_vs_spaces(self, max_tabbed_cfg):
+        one_tab = ['[sect]', '\t[[sect]]', '\t\tfoo = bar']
+        two_tabs = ['[sect]', '\t\t[[sect]]', '\t\t\t\tfoo = bar']
+        tabs_and_spaces = [b'[sect]', b'\t \t [[sect]]',
+                           b'\t \t \t \t foo = bar']
+
+        assert ConfigObj(one_tab).write() == one_tab
+        assert ConfigObj(two_tabs).write() == two_tabs
+        assert ConfigObj(tabs_and_spaces).write() == [s.decode('utf-8') for s in tabs_and_spaces]
+        assert ConfigObj(max_tabbed_cfg, indent_type=chr(9)).write() == one_tab
+        assert ConfigObj(one_tab, indent_type='    ').write() == max_tabbed_cfg
+
