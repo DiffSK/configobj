@@ -2117,10 +2117,10 @@ class ConfigObj(Section):
         if outfile is not None:
             outfile.write(output)
         else:
-            h = open(self.filename, 'w')
-            h.write(output)
-            h.close()
-
+            with open(self.filename, 'wb') as h:
+                h.write(output.encode(self.encoding or
+                                      self.default_encoding or
+                                      'ascii'))
 
     def validate(self, validator, preserve_errors=False, copy=False,
                  section=None):

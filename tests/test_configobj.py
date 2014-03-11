@@ -1030,3 +1030,57 @@ def test_multiline_comments(i):
         'name3': ' a single line value ',
         'name1': ' a single line value ',
     }
+
+
+class TestComments(object):
+    def test_starting_and_ending_comments(self, a, testconfig1):
+
+        filename = a.filename
+        a.filename = None
+        values = a.write()
+        index = 0
+        while index < 23:
+            index += 1
+            line = values[index-1]
+            assert line.endswith('# comment ' + str(index))
+        a.filename = filename
+
+        start_comment = ['# Initial Comment', '', '#']
+        end_comment = ['', '#', '# Final Comment']
+        newconfig = start_comment + testconfig1.splitlines() + end_comment
+        nc = ConfigObj(newconfig)
+        assert nc.initial_comment == ['# Initial Comment', '', '#']
+        assert nc.final_comment == ['', '#', '# Final Comment']
+        assert nc.initial_comment == start_comment
+        assert nc.final_comment == end_comment
+
+    def test_inline_comments(self):
+        c = ConfigObj()
+        c['foo'] = 'bar'
+        c.inline_comments['foo'] = 'Nice bar'
+        assert c.write() == ['foo = bar # Nice bar']
+
+
+def test_overwriting_filenames(a, b, i):
+    #TODO: I'm not entirely sure what this test is actually asserting
+    filename = a.filename
+    a.filename = 'test.ini'
+    a.write()
+    a.filename = filename
+    assert a == ConfigObj('test.ini', raise_errors=True)
+    os.remove('test.ini')
+    b.filename = 'test.ini'
+    b.write()
+    assert b == ConfigObj('test.ini', raise_errors=True)
+    os.remove('test.ini')
+    i.filename = 'test.ini'
+    i.write()
+    assert i == ConfigObj('test.ini', raise_errors=True)
+    os.remove('test.ini')
+
+
+def test_interpolation_using_default_sections():
+    c = ConfigObj()
+    c['DEFAULT'] = {'a' : 'fish'}
+    c['a'] = '%(a)s'
+    assert c.write() == ['a = %(a)s', '[DEFAULT]', 'a = fish']

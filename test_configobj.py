@@ -45,62 +45,6 @@ def _test_configobj():
     """
     Testing ConfigObj
 
-    >>> filename = a.filename
-    >>> a.filename = None
-    >>> values = a.write()
-    >>> index = 0
-    >>> while index < 23:
-    ...     index += 1
-    ...     line = values[index-1]
-    ...     assert line.endswith('# comment ' + str(index))
-    >>> a.filename = filename
-    
-    >>> start_comment = ['# Initial Comment', '', '#']
-    >>> end_comment = ['', '#', '# Final Comment']
-    >>> newconfig = start_comment + testconfig1.split('\\n') + end_comment
-    >>> nc = ConfigObj(newconfig)
-    >>> nc.initial_comment
-    ['# Initial Comment', '', '#']
-    >>> nc.final_comment
-    ['', '#', '# Final Comment']
-    >>> nc.initial_comment == start_comment
-    1
-    >>> nc.final_comment == end_comment
-    1
-    
-    Test the _handle_comment method
-    
-    >>> c = ConfigObj()
-    >>> c['foo'] = 'bar'
-    >>> c.inline_comments['foo'] = 'Nice bar'
-    >>> c.write()
-    ['foo = bar # Nice bar']
-    
-    tekNico: FIXME: use StringIO instead of real files
-    
-    >>> filename = a.filename
-    >>> a.filename = 'test.ini'
-    >>> a.write()
-    >>> a.filename = filename
-    >>> a == ConfigObj('test.ini', raise_errors=True)
-    1
-    >>> os.remove('test.ini')
-    >>> b.filename = 'test.ini'
-    >>> b.write()
-    >>> b == ConfigObj('test.ini', raise_errors=True)
-    1
-    >>> os.remove('test.ini')
-    >>> i.filename = 'test.ini'
-    >>> i.write()
-    >>> i == ConfigObj('test.ini', raise_errors=True)
-    1
-    >>> os.remove('test.ini')
-    >>> a = ConfigObj()
-    >>> a['DEFAULT'] = {'a' : 'fish'}
-    >>> a['a'] = '%(a)s'
-    >>> a.write()
-    ['a = %(a)s', '[DEFAULT]', 'a = fish']
-    
     Test indentation handling
     
     >>> ConfigObj({'sect': {'sect': {'foo': 'bar'}}}).write()
