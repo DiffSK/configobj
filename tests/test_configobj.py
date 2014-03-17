@@ -1106,3 +1106,40 @@ class TestIndentation(object):
         assert ConfigObj(max_tabbed_cfg, indent_type=chr(9)).write() == one_tab
         assert ConfigObj(one_tab, indent_type='    ').write() == max_tabbed_cfg
 
+
+class TestEdgeCasesWhenWritingOut(object):
+    def test_newline_terminated(self, empty_cfg):
+        empty_cfg.newlines = '\n'
+        empty_cfg['a'] = 'b'
+        collector = six.StringIO()
+        empty_cfg.write(collector)
+        assert collector.getvalue() == 'a = b\n'
+
+    def test_hash_escaping(self, empty_cfg):
+        empty_cfg.newlines = '\n'
+        empty_cfg['#a'] = 'b # something'
+        collector = six.StringIO()
+        empty_cfg.write(collector)
+        assert collector.getvalue() == '"#a" = "b # something"\n'
+        
+        empty_cfg = ConfigObj()
+        empty_cfg.newlines = '\n'
+        empty_cfg['a'] = 'b # something', 'c # something'
+        collector = six.StringIO()
+        empty_cfg.write(collector)
+        assert collector.getvalue() == 'a = "b # something", "c # something"\n'
+
+    def test_detecting_line_endings_from_existing_files(self):
+        for expected_line_ending in ('\r\n', '\n'):
+            with open('temp', 'w') as h:
+                h.write(expected_line_ending)
+            c = ConfigObj('temp')
+            assert c.newlines == expected_line_ending
+            os.remove('temp')
+
+    def test_writing_out_dict_value_with_unrepr(self):
+        # issue #42
+        cfg = ['thing = {"a": 1}']
+        c = ConfigObj(cfg, unrepr=True)
+        assert repr(c) == "ConfigObj({'thing': {'a': 1}})"
+        assert c.write() == ["thing = {'a': 1}"]
