@@ -2058,7 +2058,7 @@ class ConfigObj(Section):
             this_entry = section[entry]
             comment = self._handle_comment(section.inline_comments[entry])
             
-            if isinstance(this_entry, dict):
+            if isinstance(this_entry, Section):
                 # a section
                 out.append(self._write_marker(
                     indent_string,

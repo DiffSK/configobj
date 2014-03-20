@@ -517,59 +517,6 @@ def _test_unrepr_comments():
     """
 
 
-def _test_newline_terminated():
-    """
-    >>> c = ConfigObj()
-    >>> c.newlines = '\\n'
-    >>> c['a'] = 'b'
-    >>> collector = StringIO()
-    >>> c.write(collector)
-    >>> collector.getvalue()
-    'a = b\\n'
-    """
-    
-    
-def _test_hash_escaping():
-    """
-    >>> c = ConfigObj()
-    >>> c.newlines = '\\n'
-    >>> c['#a'] = 'b # something'
-    >>> collector = StringIO()
-    >>> c.write(collector)
-    >>> collector.getvalue()
-    '"#a" = "b # something"\\n'
-    
-    >>> c = ConfigObj()
-    >>> c.newlines = '\\n'
-    >>> c['a'] = 'b # something', 'c # something'
-    >>> collector = StringIO()
-    >>> c.write(collector)
-    >>> collector.getvalue()
-    'a = "b # something", "c # something"\\n'
-    """
-
-
-def _test_lineendings():
-    """
-    NOTE: Need to use a real file because this code is only
-          exercised when reading from the filesystem.
-          
-    >>> h = open('temp', 'w')
-    >>> _ = h.write('\\r\\n')
-    >>> h.close()
-    >>> c = ConfigObj('temp')
-    >>> c.newlines
-    '\\r\\n'
-    >>> h = open('temp', 'w')
-    >>> _ = h.write('\\n')
-    >>> h.close()
-    >>> c = ConfigObj('temp')
-    >>> c.newlines
-    '\\n'
-    >>> os.remove('temp')
-    """
-
-
 def _test_validate_with_copy_and_many():
     """
     >>> spec = '''
