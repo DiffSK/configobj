@@ -102,33 +102,44 @@ def test_interoplation_repr():
     repr(c)
 
 
-#issue #18
-def test_unicode_conversion_when_encoding_is_set():
-    cfg = """
-test = some string
-    """.splitlines()
+class TestEncoding(object):
+    #issue #18
+    def test_unicode_conversion_when_encoding_is_set(self):
+        cfg = """
+    test = some string
+        """.splitlines()
 
-    c = ConfigObj(cfg, encoding='utf8')
+        c = ConfigObj(cfg, encoding='utf8')
 
-    if six.PY2:
-        assert not isinstance(c['test'], str)
-        assert isinstance(c['test'], unicode)
-    else:
-        assert isinstance(c['test'], str)
+        if six.PY2:
+            assert not isinstance(c['test'], str)
+            assert isinstance(c['test'], unicode)
+        else:
+            assert isinstance(c['test'], str)
 
 
-#issue #18
-def test_no_unicode_conversion_when_encoding_is_omitted():
-    cfg = """
-test = some string
-    """.splitlines()
+    #issue #18
+    def test_no_unicode_conversion_when_encoding_is_omitted(self):
+        cfg = """
+    test = some string
+        """.splitlines()
 
-    c = ConfigObj(cfg)
-    if six.PY2:
-        assert isinstance(c['test'], str)
-        assert not isinstance(c['test'], unicode)
-    else:
-        assert isinstance(c['test'], str)
+        c = ConfigObj(cfg)
+        if six.PY2:
+            assert isinstance(c['test'], str)
+            assert not isinstance(c['test'], unicode)
+        else:
+            assert isinstance(c['test'], str)
+
+    #issue #44
+    def test_that_encoding_argument_is_used_to_decode(self):
+        cfg = [b'test = \xf0\x9f\x90\x9c']
+
+        c = ConfigObj(cfg, encoding='utf8')
+
+        assert isinstance(c['test'], six.text_type)
+        #TODO: this can be made more explicit if we switch to unicode_literals
+        assert c['test'] == b'\xf0\x9f\x90\x9c'.decode('utf8')
 
 
 @pytest.fixture
