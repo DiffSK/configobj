@@ -9,7 +9,7 @@ Found at [readthedocs](http://configobj.readthedocs.org/)
 
 Status
 =========
-This project has is now maintained by [Eli Courtwright](https://github.com/EliAndrewC) and [Rob Dennis](https://github.com/robdennis) with the blessing of original creator [Michael Foord](http://www.voidspace.org.uk/) and the most recent release is version *5.0.2* (view [changelog](http://configobj.readthedocs.org/en/v5.0.2/configobj.html#version-5-0-2)).
+This project has is now maintained by [Eli Courtwright](https://github.com/EliAndrewC) and [Rob Dennis](https://github.com/robdennis) with the blessing of original creator [Michael Foord](http://www.voidspace.org.uk/) and the most recent release is version *5.0.3* (view [changelog](http://configobj.readthedocs.org/en/v5.0.3/configobj.html#version-5-0-3)).
 
 For long time ConfigObj users, the biggest change is in the officially supported python versions:
 - 2.6

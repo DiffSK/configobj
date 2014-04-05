@@ -10,6 +10,7 @@
 
 # This software is licensed under the terms of the BSD license.
 # http://opensource.org/licenses/BSD-3-Clause
+import os
 import sys
 from distutils.core import setup
 
@@ -18,8 +19,14 @@ if sys.version_info < (2, 6):
           'version 4.7.2')
     sys.exit(1)
 
-# TODO - #20 - refactor the way we do versions
-VERSION = '5.0.2'
+__here__ = os.path.abspath(os.path.dirname(__file__))
+
+# http://stackoverflow.com/a/16084844/171094
+with open(os.path.join(__here__, '_version.py')) as version:
+    exec(version.read())
+# __version__ is now defined
+
+VERSION = __version__
 NAME = 'configobj'
 MODULES = 'configobj', 'validate'
 
@@ -47,6 +54,8 @@ It has lots of other features though :
 * The order of keys/sections is preserved
 * Powerful ``unrepr`` mode for storing/retrieving Python data-types
 
+| Release 5.0.3 corrects errors related to the incorrectly handling unicode
+| encoding and writing out files
 | Release 5.0.2 adds a specific error message when trying to install on
 | Python versions older than 2.5
 | Release 5.0.1 fixes a regression with unicode conversion not happening
