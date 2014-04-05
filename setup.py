@@ -10,18 +10,22 @@
 
 # This software is licensed under the terms of the BSD license.
 # http://opensource.org/licenses/BSD-3-Clause
+import os
 import sys
 from distutils.core import setup
+# a simple import wouldn't work if we moved towards a package with __init__
+from _version import __version__
 
 if sys.version_info < (2, 6):
     print('for python versions < 2.6 use configobj '
           'version 4.7.2')
     sys.exit(1)
 
-# TODO - #20 - refactor the way we do versions
-VERSION = '5.0.2'
+__here__ = os.path.abspath(os.path.dirname(__file__))
+
+VERSION = __version__
 NAME = 'configobj'
-MODULES = 'configobj', 'validate'
+MODULES = 'configobj', 'validate', '_version'
 
 DESCRIPTION = 'Config file reading, writing and validation.'
 
@@ -47,6 +51,8 @@ It has lots of other features though :
 * The order of keys/sections is preserved
 * Powerful ``unrepr`` mode for storing/retrieving Python data-types
 
+| Release 5.0.3 corrects errors related to the incorrectly handling unicode
+| encoding and writing out files
 | Release 5.0.2 adds a specific error message when trying to install on
 | Python versions older than 2.5
 | Release 5.0.1 fixes a regression with unicode conversion not happening
