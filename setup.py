@@ -13,6 +13,8 @@
 import os
 import sys
 from distutils.core import setup
+# a simple import wouldn't work if we moved towards a package with __init__
+from _version import __version__
 
 if sys.version_info < (2, 6):
     print('for python versions < 2.6 use configobj '
@@ -21,14 +23,9 @@ if sys.version_info < (2, 6):
 
 __here__ = os.path.abspath(os.path.dirname(__file__))
 
-# http://stackoverflow.com/a/16084844/171094
-with open(os.path.join(__here__, '_version.py')) as version:
-    exec(version.read())
-# __version__ is now defined
-
 VERSION = __version__
 NAME = 'configobj'
-MODULES = 'configobj', 'validate'
+MODULES = 'configobj', 'validate', '_version'
 
 DESCRIPTION = 'Config file reading, writing and validation.'
 
