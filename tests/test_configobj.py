@@ -1,5 +1,7 @@
 # coding=utf-8
 import os
+import re
+
 from codecs import BOM_UTF8
 from warnings import catch_warnings
 from tempfile import NamedTemporaryFile
@@ -10,6 +12,31 @@ import six
 import configobj as co
 from configobj import ConfigObj, flatten_errors, ReloadError, DuplicateError, MissingInterpolationOption, InterpolationLoopError, ConfigObjError
 from validate import Validator, VdtValueTooSmallError
+
+
+def cfg_lines(config_string_representation):
+    """
+    :param config_string_representation: string representation of a config
+        file (typically a triple-quoted string)
+    :type config_string_representation: str
+    :return: a list of lines of that config. Whitespace on the left will be
+        trimmed based on the indentation level to make it a bit saner to assert
+        content of a particular line
+    :rtype: list
+    """
+
+    lines = config_string_representation.splitlines()
+
+    for idx, line in enumerate(lines):
+        if line.strip():
+            line_no_with_content = idx
+            break
+    else:
+        raise ValueError('no content in provided config file: '
+                         '{!r}'.format(config_string_representation))
+
+    ws_chars = len(re.search('^(\s*)', lines[line_no_with_content]).group(1))
+    return [re.sub('^\s{0,%s}' % ws_chars, '', line) for line in lines]
 
 
 def test_order_preserved():
@@ -76,7 +103,7 @@ def test_with_default():
 
 
 def test_interpolation_with_section_names():
-    cfg = """
+    cfg = cfg_lines("""
 item1 = 1234
 [section]
     [[item1]]
@@ -85,7 +112,7 @@ item1 = 1234
         [[[item1]]]
         why = would you do this?
     [[other-subsection]]
-    item2 = '$item1'""".splitlines()
+    item2 = '$item1'""")
     c = ConfigObj(cfg, interpolation='Template')
 
     # This raises an exception in 4.7.1 and earlier due to the section
@@ -105,9 +132,7 @@ def test_interoplation_repr():
 class TestEncoding(object):
     #issue #18
     def test_unicode_conversion_when_encoding_is_set(self):
-        cfg = """
-    test = some string
-        """.splitlines()
+        cfg = cfg_lines("test = some string")
 
         c = ConfigObj(cfg, encoding='utf8')
 
@@ -120,9 +145,7 @@ class TestEncoding(object):
 
     #issue #18
     def test_no_unicode_conversion_when_encoding_is_omitted(self):
-        cfg = """
-    test = some string
-        """.splitlines()
+        cfg = cfg_lines("test = some string")
 
         c = ConfigObj(cfg)
         if six.PY2:
@@ -196,10 +219,10 @@ def testconfig2():
 @pytest.fixture
 def testconfig6():
     return b'''
-    name1 = """ a single line value """ # comment
-    name2 = \''' another single line value \''' # comment
-    name3 = """ a single line value """
-    name4 = \''' another single line value \'''
+        name1 = """ a single line value """ # comment
+        name2 = \''' another single line value \''' # comment
+        name3 = """ a single line value """
+        name4 = \''' another single line value \'''
         [ "multi section" ]
         name1 = """
         Well, this is a
@@ -225,7 +248,7 @@ def a(testconfig1):
     """
     also copied from main doc tests
     """
-    return ConfigObj(testconfig1.splitlines(), raise_errors=True)
+    return ConfigObj(cfg_lines(testconfig1), raise_errors=True)
 
 
 @pytest.fixture
@@ -233,7 +256,7 @@ def b(testconfig2):
     """
     also copied from main doc tests
     """
-    return ConfigObj(testconfig2.splitlines(), raise_errors=True)
+    return ConfigObj(cfg_lines(testconfig2), raise_errors=True)
 
 
 @pytest.fixture
@@ -241,7 +264,7 @@ def i(testconfig6):
     """
     also copied from main doc tests
     """
-    return ConfigObj(testconfig6.splitlines(), raise_errors=True)
+    return ConfigObj(cfg_lines(testconfig6), raise_errors=True)
 
 
 def test_configobj_dict_representation(a, b):
@@ -293,10 +316,10 @@ def test_configobj_dict_representation(a, b):
             },
         }
 
-    t = '''
+    t = cfg_lines("""
         'a' = b # !"$%^&*(),::;'@~#= 33
         "b" = b #= 6, 33
-''' .split('\n')
+    """)
     t2 = ConfigObj(t)
     assert t2 == {'a': 'b', 'b': 'b'}
     t2.inline_comments['b'] = ''
@@ -311,7 +334,7 @@ def test_behavior_when_list_values_is_false():
        key3 = "double quotes"
        key4 = "list", 'with', several, "quotes"
        '''
-    cfg = ConfigObj(c.splitlines(), list_values=False)
+    cfg = ConfigObj(cfg_lines(c), list_values=False)
     assert cfg == {
         'key1': 'no quotes',
         'key2': "'single quotes'",
@@ -335,7 +358,7 @@ def test_behavior_when_list_values_is_false():
 
 
 def test_flatten_errors(val):
-    config = '''
+    config = cfg_lines("""
        test1=40
        test2=hello
        test3=3
@@ -350,8 +373,8 @@ def test_flatten_errors(val):
                test2=hello
                test3=3
                test4=5.0
-    '''.split('\n')
-    configspec = '''
+    """)
+    configspec = cfg_lines("""
        test1= integer(30,50)
        test2= string
        test3=integer
@@ -366,7 +389,7 @@ def test_flatten_errors(val):
                test2=string
                test3=integer
                test4=float(6.0)
-       '''.split('\n')
+       """)
     c1 = ConfigObj(config, configspec=configspec)
     res = c1.validate(val)
     assert flatten_errors(c1, res) == [([], 'test4', False), (['section'], 'test4', False), (['section', 'sub section'], 'test4', False)]
@@ -395,6 +418,8 @@ def test_unicode_handling():
     # final comment2
     '''
 
+    # needing to keep line endings means this isn't a good candidate
+    # for the cfg_lines utility method
     u = u_base.encode('utf_8').splitlines(True)
     u[0] = BOM_UTF8 + u[0]
     uc = ConfigObj(u)
@@ -483,12 +508,12 @@ class TestWritingConfigs(object):
 
 class TestUnrepr(object):
     def test_in_reading(self):
-        config_to_be_unreprd = '''
+        config_to_be_unreprd = cfg_lines("""
             key1 = (1, 2, 3)    # comment
             key2 = True
             key3 = 'a string'
             key4 = [1, 2, 3, 'a mixed list']
-        '''.splitlines()
+        """)
         cfg = ConfigObj(config_to_be_unreprd, unrepr=True)
         assert cfg == {
             'key1': (1, 2, 3),
@@ -500,10 +525,11 @@ class TestUnrepr(object):
         assert cfg == ConfigObj(cfg.write(), unrepr=True)
 
     def test_in_multiline_values(self):
-        config_with_multiline_value = '''k = \"""{
-'k1': 3,
-'k2': 6.0}\"""
-'''.splitlines()
+        config_with_multiline_value = cfg_lines('''
+        k = \"""{
+            'k1': 3,
+            'k2': 6.0}\"""
+        ''')
         cfg = ConfigObj(config_with_multiline_value, unrepr=True)
         assert cfg == {'k': {'k1': 3, 'k2': 6.0}}
 
@@ -597,23 +623,29 @@ class TestSectionBehavior(object):
         assert n is not a
 
     def test_merging(self):
-        config_with_subsection = '''[section1]
-        option1 = True
-        [[subsection]]
-        more_options = False
-        # end of file'''.splitlines()
-        config_that_overwrites_parameter = '''# File is user.ini
-        [section1]
-        option1 = False
-        # end of file'''.splitlines()
+        config_with_subsection = cfg_lines("""
+            [section1]
+            option1 = True
+            [[subsection]]
+            more_options = False
+            # end of file
+        """)
+        config_that_overwrites_parameter = cfg_lines("""
+            # File is user.ini
+            [section1]
+            option1 = False
+            # end of file
+        """)
         c1 = ConfigObj(config_that_overwrites_parameter)
         c2 = ConfigObj(config_with_subsection)
         c2.merge(c1)
         assert c2.dict() == {'section1': {'option1': 'False', 'subsection': {'more_options': 'False'}}}
 
     def test_walking_with_in_place_updates(self):
-            config = '''[XXXXsection]
-            XXXXkey = XXXXvalue'''.splitlines()
+            config = cfg_lines("""
+                [XXXXsection]
+                XXXXkey = XXXXvalue
+            """)
             cfg = ConfigObj(config)
             assert cfg.dict() == {'XXXXsection': {'XXXXkey': 'XXXXvalue'}}
             def transform(section, key):
@@ -717,12 +749,11 @@ class TestReloading(object):
     def test_reloading_with_an_actual_file(self, request,
                                            reloadable_cfg_content):
 
-        # with open('temp', 'w') as cfg_file:
         with NamedTemporaryFile(delete=False, mode='w') as cfg_file:
             cfg_file.write(reloadable_cfg_content)
         request.addfinalizer(lambda : os.unlink(cfg_file.name))
 
-        configspec = '''
+        configspec = cfg_lines("""
             test1= integer(30,50)
             test2= string
             test3=integer
@@ -742,7 +773,7 @@ class TestReloading(object):
                 test2=string
                 test3=integer
                 test4=float(4.5)
-            '''.splitlines()
+            """)
 
         cfg = ConfigObj(cfg_file.name, configspec=configspec)
         cfg.configspec['test1'] = 'integer(50,60)'
@@ -841,7 +872,7 @@ class TestInterpolation(object):
                 [[[ sub-sub-section ]]]
                 convoluted = "$bar + $baz + $quux + $bar"
         '''
-        return ConfigObj(interp_cfg.splitlines(), interpolation='Template')
+        return ConfigObj(cfg_lines(interp_cfg), interpolation='Template')
 
     def test_interpolation(self, config_parser_cfg):
         test_section = config_parser_cfg['section']
@@ -933,22 +964,22 @@ class TestValues(object):
     """
     @pytest.fixture
     def testconfig3(self):
-        return '''
-        a = ,
-        b = test,
-        c = test1, test2   , test3
-        d = test1, test2, test3,
-        '''.splitlines()
+        return cfg_lines("""
+            a = ,
+            b = test,
+            c = test1, test2   , test3
+            d = test1, test2, test3,
+        """)
 
     def test_empty_values(self):
-        cfg_with_empty = '''
+        cfg_with_empty = cfg_lines("""
         k =
         k2 =# comment test
         val = test
         val2 = ,
         val3 = 1,
         val4 = 1, 2
-        val5 = 1, 2, '''.splitlines()
+        val5 = 1, 2, """)
         cwe = ConfigObj(cfg_with_empty)
         # see a comma? it's a list
         assert cwe == {'k': '', 'k2': '', 'val': 'test', 'val2': [],
@@ -1014,26 +1045,23 @@ def test_creating_with_a_dictionary():
     assert dictionary_cfg_content is not cfg.dict()
 
 
-def test_multiline_comments(i):
-    assert i == {
-        'name4': ' another single line value ',
-        'multi section': {
-            'name4': '\n        Well, this is a\n        multiline '
-                'value\n        ',
-            'name2': '\n        Well, this is a\n        multiline '
-                'value\n        ',
-            'name3': '\n        Well, this is a\n        multiline '
-                'value\n        ',
-            'name1': '\n        Well, this is a\n        multiline '
-                'value\n        ',
-        },
-        'name2': ' another single line value ',
-        'name3': ' a single line value ',
-        'name1': ' a single line value ',
-    }
-
-
 class TestComments(object):
+    def test_multiline_comments(self, i):
+
+        expected_multiline_value = '\nWell, this is a\nmultiline value\n'
+        assert i == {
+            'name4': ' another single line value ',
+            'multi section': {
+                'name4': expected_multiline_value,
+                'name2': expected_multiline_value,
+                'name3': expected_multiline_value,
+                'name1': expected_multiline_value,
+            },
+            'name2': ' another single line value ',
+            'name3': ' a single line value ',
+            'name1': ' a single line value ',
+        }
+
     def test_starting_and_ending_comments(self, a, testconfig1):
 
         filename = a.filename
@@ -1048,7 +1076,7 @@ class TestComments(object):
 
         start_comment = ['# Initial Comment', '', '#']
         end_comment = ['', '#', '# Final Comment']
-        newconfig = start_comment + testconfig1.splitlines() + end_comment
+        newconfig = start_comment + cfg_lines(testconfig1) + end_comment
         nc = ConfigObj(newconfig)
         assert nc.initial_comment == ['# Initial Comment', '', '#']
         assert nc.final_comment == ['', '#', '# Final Comment']
@@ -1060,6 +1088,28 @@ class TestComments(object):
         c['foo'] = 'bar'
         c.inline_comments['foo'] = 'Nice bar'
         assert c.write() == ['foo = bar # Nice bar']
+
+    def test_unrepr_comments(self):
+        config = cfg_lines("""
+            # initial comments
+            # with two lines
+            key = "value"
+            # section comment
+            [section] # inline section comment
+            # key comment
+            key = "value"
+            # final comment
+            # with two lines"""
+        )
+        c = ConfigObj(config, unrepr=True)
+        assert c == { 'key': 'value', 'section': { 'key': 'value'}}
+        assert c.initial_comment == ['', '# initial comments', '# with two lines']
+        assert c.comments == {'section': ['# section comment'], 'key': []}
+        assert c.inline_comments == {'section': '# inline section comment', 'key': ''}
+        assert c['section'].comments == { 'key': ['# key comment']}
+        assert c.final_comment == ['# final comment', '# with two lines']
+
+
 
 
 def test_overwriting_filenames(a, b, i):
