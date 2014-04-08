@@ -160,7 +160,12 @@ class TestEncoding(object):
 
         c = ConfigObj(cfg, encoding='utf8')
 
-        assert isinstance(c['test'], six.text_type)
+        if six.PY2:
+            assert isinstance(c['test'], unicode)
+            assert not isinstance(c['test'], str)
+        else:
+            assert isinstance(c['test'], str)
+
         #TODO: this can be made more explicit if we switch to unicode_literals
         assert c['test'] == b'\xf0\x9f\x90\x9c'.decode('utf8')
 
@@ -1115,7 +1120,7 @@ class TestComments(object):
             'section': '# inline section comment', 'key': ''
         }
         assert c['section'].comments == { 'key': ['# key comment']}
-        assert c.final_comment == ['# final comment', '# with two lines']
+        assert c.final_comment == ['', '# final comment', '# with two lines']
 
     def test_comments(self, comment_filled_cfg):
         c = ConfigObj(comment_filled_cfg)
@@ -1128,7 +1133,7 @@ class TestComments(object):
             'section': '# inline section comment', 'key': None
         }
         assert c['section'].comments == { 'key': ['# key comment']}
-        assert c.final_comment == ['# final comment', '# with two lines']
+        assert c.final_comment == ['', '# final comment', '# with two lines']
 
 
 
