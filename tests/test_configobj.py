@@ -1046,6 +1046,21 @@ def test_creating_with_a_dictionary():
 
 
 class TestComments(object):
+    @pytest.fixture
+    def comment_filled_cfg(self):
+        return cfg_lines("""
+            # initial comments
+            # with two lines
+            key = "value"
+            # section comment
+            [section] # inline section comment
+            # key comment
+            key = "value"
+
+            # final comment
+            # with two lines"""
+        )
+
     def test_multiline_comments(self, i):
 
         expected_multiline_value = '\nWell, this is a\nmultiline value\n'
@@ -1089,26 +1104,31 @@ class TestComments(object):
         c.inline_comments['foo'] = 'Nice bar'
         assert c.write() == ['foo = bar # Nice bar']
 
-    def test_unrepr_comments(self):
-        config = cfg_lines("""
-            # initial comments
-            # with two lines
-            key = "value"
-            # section comment
-            [section] # inline section comment
-            # key comment
-            key = "value"
-            # final comment
-            # with two lines"""
-        )
-        c = ConfigObj(config, unrepr=True)
+    def test_unrepr_comments(self, comment_filled_cfg):
+        c = ConfigObj(comment_filled_cfg, unrepr=True)
         assert c == { 'key': 'value', 'section': { 'key': 'value'}}
-        assert c.initial_comment == ['', '# initial comments', '# with two lines']
+        assert c.initial_comment == [
+            '', '# initial comments', '# with two lines'
+        ]
         assert c.comments == {'section': ['# section comment'], 'key': []}
-        assert c.inline_comments == {'section': '# inline section comment', 'key': ''}
+        assert c.inline_comments == {
+            'section': '# inline section comment', 'key': ''
+        }
         assert c['section'].comments == { 'key': ['# key comment']}
         assert c.final_comment == ['# final comment', '# with two lines']
 
+    def test_comments(self, comment_filled_cfg):
+        c = ConfigObj(comment_filled_cfg)
+        assert c == { 'key': 'value', 'section': { 'key': 'value'}}
+        assert c.initial_comment == [
+            '', '# initial comments', '# with two lines'
+        ]
+        assert c.comments == {'section': ['# section comment'], 'key': []}
+        assert c.inline_comments == {
+            'section': '# inline section comment', 'key': None
+        }
+        assert c['section'].comments == { 'key': ['# key comment']}
+        assert c.final_comment == ['# final comment', '# with two lines']
 
 
 
