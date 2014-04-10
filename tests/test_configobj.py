@@ -1,4 +1,5 @@
 # coding=utf-8
+from __future__ import unicode_literals
 import os
 import re
 
@@ -18,13 +19,12 @@ def cfg_lines(config_string_representation):
     """
     :param config_string_representation: string representation of a config
         file (typically a triple-quoted string)
-    :type config_string_representation: str
+    :type config_string_representation: str or unicode
     :return: a list of lines of that config. Whitespace on the left will be
         trimmed based on the indentation level to make it a bit saner to assert
         content of a particular line
-    :rtype: list
+    :rtype: str or unicode
     """
-
     lines = config_string_representation.splitlines()
 
     for idx, line in enumerate(lines):
@@ -35,8 +35,50 @@ def cfg_lines(config_string_representation):
         raise ValueError('no content in provided config file: '
                          '{!r}'.format(config_string_representation))
 
-    ws_chars = len(re.search('^(\s*)', lines[line_no_with_content]).group(1))
-    return [re.sub('^\s{0,%s}' % ws_chars, '', line) for line in lines]
+    first_content = lines[line_no_with_content]
+    if isinstance(first_content, six.binary_type):
+        first_content = first_content.decode('utf-8')
+    ws_chars = len(re.search('^(\s*)', first_content).group(1))
+
+    def yield_stringified_line():
+        for line in lines:
+            if isinstance(line, six.binary_type):
+                yield line.decode('utf-8')
+            else:
+                yield line
+
+
+    return [re.sub('^\s{0,%s}' % ws_chars, '', line).encode('utf-8')
+            for line in yield_stringified_line()]
+
+
+@pytest.fixture
+def cfg_contents(request):
+
+    def make_file_with_contents_and_return_name(config_string_representation):
+        """
+        :param config_string_representation: string representation of a config
+            file (typically a triple-quoted string)
+        :type config_string_representation: str or unicode
+        :return: a list of lines of that config. Whitespace on the left will be
+            trimmed based on the indentation level to make it a bit saner to assert
+            content of a particular line
+        :rtype: basestring
+        """
+
+        lines = cfg_lines(config_string_representation)
+
+        with NamedTemporaryFile(delete=False, mode='wb') as cfg_file:
+            for line in lines:
+                if isinstance(line, six.binary_type):
+                    cfg_file.write(line + os.linesep.encode('utf-8'))
+                else:
+                    cfg_file.write((line + os.linesep).encode('utf-8'))
+        request.addfinalizer(lambda : os.unlink(cfg_file.name))
+
+        return cfg_file.name
+
+    return make_file_with_contents_and_return_name
 
 
 def test_order_preserved():
@@ -102,8 +144,8 @@ def test_with_default():
         c.pop('c')
 
 
-def test_interpolation_with_section_names():
-    cfg = cfg_lines("""
+def test_interpolation_with_section_names(cfg_contents):
+    cfg = cfg_contents("""
 item1 = 1234
 [section]
     [[item1]]
@@ -130,9 +172,17 @@ def test_interoplation_repr():
 
 
 class TestEncoding(object):
+    @pytest.fixture
+    def ant_cfg(self):
+        return """
+        [tags]
+            [[bug]]
+                translated = \U0001f41c
+        """
+
     #issue #18
-    def test_unicode_conversion_when_encoding_is_set(self):
-        cfg = cfg_lines("test = some string")
+    def test_unicode_conversion_when_encoding_is_set(self, cfg_contents):
+        cfg = cfg_contents(b"test = some string")
 
         c = ConfigObj(cfg, encoding='utf8')
 
@@ -144,8 +194,8 @@ class TestEncoding(object):
 
 
     #issue #18
-    def test_no_unicode_conversion_when_encoding_is_omitted(self):
-        cfg = cfg_lines("test = some string")
+    def test_no_unicode_conversion_when_encoding_is_omitted(self, cfg_contents):
+        cfg = cfg_contents(b"test = some string")
 
         c = ConfigObj(cfg)
         if six.PY2:
@@ -155,7 +205,7 @@ class TestEncoding(object):
             assert isinstance(c['test'], str)
 
     #issue #44
-    def test_that_encoding_argument_is_used_to_decode(self):
+    def test_that_encoding_using_list_of_strings(self):
         cfg = [b'test = \xf0\x9f\x90\x9c']
 
         c = ConfigObj(cfg, encoding='utf8')
@@ -169,6 +219,22 @@ class TestEncoding(object):
         #TODO: this can be made more explicit if we switch to unicode_literals
         assert c['test'] == b'\xf0\x9f\x90\x9c'.decode('utf8')
 
+    #issue #44
+    def test_encoding_in_subsections(self, ant_cfg, cfg_contents):
+        c = cfg_contents(ant_cfg)
+        cfg = ConfigObj(c, encoding='utf-8')
+
+        assert isinstance(cfg['tags']['bug']['translated'], six.text_type)
+
+    #issue #44
+    def test_encoding_in_config_files(self, request, ant_cfg):
+        # the cfg_contents fixture is doing this too, but be explicit
+        with NamedTemporaryFile(delete=False, mode='wb') as cfg_file:
+            cfg_file.write(ant_cfg.encode('utf-8'))
+        request.addfinalizer(lambda : os.unlink(cfg_file.name))
+
+        cfg = ConfigObj(cfg_file.name, encoding='utf-8')
+        assert isinstance(cfg['tags']['bug']['translated'], six.text_type)
 
 @pytest.fixture
 def testconfig1():
@@ -249,30 +315,30 @@ def testconfig6():
 
 
 @pytest.fixture
-def a(testconfig1):
+def a(testconfig1, cfg_contents):
     """
     also copied from main doc tests
     """
-    return ConfigObj(cfg_lines(testconfig1), raise_errors=True)
+    return ConfigObj(cfg_contents(testconfig1), raise_errors=True)
 
 
 @pytest.fixture
-def b(testconfig2):
+def b(testconfig2, cfg_contents):
     """
     also copied from main doc tests
     """
-    return ConfigObj(cfg_lines(testconfig2), raise_errors=True)
+    return ConfigObj(cfg_contents(testconfig2), raise_errors=True)
 
 
 @pytest.fixture
-def i(testconfig6):
+def i(testconfig6, cfg_contents):
     """
     also copied from main doc tests
     """
-    return ConfigObj(cfg_lines(testconfig6), raise_errors=True)
+    return ConfigObj(cfg_contents(testconfig6), raise_errors=True)
 
 
-def test_configobj_dict_representation(a, b):
+def test_configobj_dict_representation(a, b, cfg_contents):
 
     assert a.depth == 0
     assert a == {
@@ -362,8 +428,8 @@ def test_behavior_when_list_values_is_false():
     ]
 
 
-def test_flatten_errors(val):
-    config = cfg_lines("""
+def test_flatten_errors(val, cfg_contents):
+    config = cfg_contents("""
        test1=40
        test2=hello
        test3=3
@@ -379,7 +445,7 @@ def test_flatten_errors(val):
                test3=3
                test4=5.0
     """)
-    configspec = cfg_lines("""
+    configspec = cfg_contents("""
        test1= integer(30,50)
        test2= string
        test3=integer
@@ -529,8 +595,8 @@ class TestUnrepr(object):
 
         assert cfg == ConfigObj(cfg.write(), unrepr=True)
 
-    def test_in_multiline_values(self):
-        config_with_multiline_value = cfg_lines('''
+    def test_in_multiline_values(self, cfg_contents):
+        config_with_multiline_value = cfg_contents('''
         k = \"""{
             'k1': 3,
             'k2': 6.0}\"""
@@ -627,15 +693,15 @@ class TestSectionBehavior(object):
         assert n == a
         assert n is not a
 
-    def test_merging(self):
-        config_with_subsection = cfg_lines("""
+    def test_merging(self, cfg_contents):
+        config_with_subsection = cfg_contents("""
             [section1]
             option1 = True
             [[subsection]]
             more_options = False
             # end of file
         """)
-        config_that_overwrites_parameter = cfg_lines("""
+        config_that_overwrites_parameter = cfg_contents("""
             # File is user.ini
             [section1]
             option1 = False
@@ -646,8 +712,8 @@ class TestSectionBehavior(object):
         c2.merge(c1)
         assert c2.dict() == {'section1': {'option1': 'False', 'subsection': {'more_options': 'False'}}}
 
-    def test_walking_with_in_place_updates(self):
-            config = cfg_lines("""
+    def test_walking_with_in_place_updates(self, cfg_contents):
+            config = cfg_contents("""
                 [XXXXsection]
                 XXXXkey = XXXXvalue
             """)
@@ -752,13 +818,14 @@ class TestReloading(object):
             assert str(excinfo.value) == 'reload failed, filename is not set.'
 
     def test_reloading_with_an_actual_file(self, request,
-                                           reloadable_cfg_content):
+                                           reloadable_cfg_content,
+                                           cfg_contents):
 
-        with NamedTemporaryFile(delete=False, mode='w') as cfg_file:
-            cfg_file.write(reloadable_cfg_content)
+        with NamedTemporaryFile(delete=False, mode='wb') as cfg_file:
+            cfg_file.write(reloadable_cfg_content.encode('utf-8'))
         request.addfinalizer(lambda : os.unlink(cfg_file.name))
 
-        configspec = cfg_lines("""
+        configspec = cfg_contents("""
             test1= integer(30,50)
             test2= string
             test3=integer
@@ -849,7 +916,7 @@ class TestInterpolation(object):
         return cfg
 
     @pytest.fixture
-    def template_cfg(self):
+    def template_cfg(self, cfg_contents):
         interp_cfg = '''
         [DEFAULT]
         keyword1 = value1
@@ -877,7 +944,7 @@ class TestInterpolation(object):
                 [[[ sub-sub-section ]]]
                 convoluted = "$bar + $baz + $quux + $bar"
         '''
-        return ConfigObj(cfg_lines(interp_cfg), interpolation='Template')
+        return ConfigObj(cfg_contents(interp_cfg), interpolation='Template')
 
     def test_interpolation(self, config_parser_cfg):
         test_section = config_parser_cfg['section']
@@ -968,16 +1035,16 @@ class TestValues(object):
     Tests specifics about behaviors with types of values
     """
     @pytest.fixture
-    def testconfig3(self):
-        return cfg_lines("""
+    def testconfig3(self, cfg_contents):
+        return cfg_contents("""
             a = ,
             b = test,
             c = test1, test2   , test3
             d = test1, test2, test3,
         """)
 
-    def test_empty_values(self):
-        cfg_with_empty = cfg_lines("""
+    def test_empty_values(self, cfg_contents):
+        cfg_with_empty = cfg_contents("""
         k =
         k2 =# comment test
         val = test
@@ -1052,8 +1119,8 @@ def test_creating_with_a_dictionary():
 
 class TestComments(object):
     @pytest.fixture
-    def comment_filled_cfg(self):
-        return cfg_lines("""
+    def comment_filled_cfg(self, cfg_contents):
+        return cfg_contents("""
             # initial comments
             # with two lines
             key = "value"
@@ -1082,7 +1149,7 @@ class TestComments(object):
             'name1': ' a single line value ',
         }
 
-    def test_starting_and_ending_comments(self, a, testconfig1):
+    def test_starting_and_ending_comments(self, a, testconfig1, cfg_contents):
 
         filename = a.filename
         a.filename = None
@@ -1096,7 +1163,7 @@ class TestComments(object):
 
         start_comment = ['# Initial Comment', '', '#']
         end_comment = ['', '#', '# Final Comment']
-        newconfig = start_comment + cfg_lines(testconfig1) + end_comment
+        newconfig = start_comment + testconfig1.splitlines() + end_comment
         nc = ConfigObj(newconfig)
         assert nc.initial_comment == ['# Initial Comment', '', '#']
         assert nc.final_comment == ['', '#', '# Final Comment']
@@ -1225,7 +1292,7 @@ class TestEdgeCasesWhenWritingOut(object):
 
     def test_writing_out_dict_value_with_unrepr(self):
         # issue #42
-        cfg = ['thing = {"a": 1}']
+        cfg = [str('thing = {"a": 1}')]
         c = ConfigObj(cfg, unrepr=True)
         assert repr(c) == "ConfigObj({'thing': {'a': 1}})"
         assert c.write() == ["thing = {'a': 1}"]
