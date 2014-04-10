@@ -1234,7 +1234,7 @@ class ConfigObj(Section):
             self.filename = infile
             if os.path.isfile(infile):
                 with open(infile, 'rb') as h:
-                    content = h.read() or []
+                    content = h.readlines() or []
             elif self.file_error:
                 # raise an error if the file doesn't exist
                 raise IOError('Config file not found: "%s".' % self.filename)
