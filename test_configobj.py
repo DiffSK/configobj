@@ -487,36 +487,6 @@ def _test_errors():
     """
 
 
-def _test_unrepr_comments():
-    """
-    >>> config = '''
-    ... # initial comments
-    ... # with two lines
-    ... key = "value"
-    ... # section comment
-    ... [section] # inline section comment
-    ... # key comment
-    ... key = "value"
-    ... # final comment
-    ... # with two lines
-    ... '''.splitlines()
-    >>> c = ConfigObj(config, unrepr=True)
-    >>> c == { 'key': 'value',
-    ... 'section': { 'key': 'value'}}
-    1
-    >>> c.initial_comment == ['', '# initial comments', '# with two lines']
-    1
-    >>> c.comments == {'section': ['# section comment'], 'key': []}
-    1
-    >>> c.inline_comments == {'section': '# inline section comment', 'key': ''}
-    1
-    >>> c['section'].comments == { 'key': ['# key comment']}
-    1
-    >>> c.final_comment == ['# final comment', '# with two lines']
-    1
-    """
-
-
 def _test_validate_with_copy_and_many():
     """
     >>> spec = '''
