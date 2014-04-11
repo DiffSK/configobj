@@ -90,7 +90,7 @@ KEYWORDS = "config, ini, dictionary, application, admin, sysadmin, configuration
 
 setup(name=NAME,
       version=VERSION,
-      install_requires=['six==1.5.2'],
+      install_requires=['six'],
       description=DESCRIPTION,
       long_description=LONG_DESCRIPTION,
       author=AUTHOR,

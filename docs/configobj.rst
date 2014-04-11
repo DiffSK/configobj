@@ -895,7 +895,7 @@ newlines
 
 When a config file is read, ConfigObj records the type of newline separators in the
 file and uses this separator when writing. It defaults to ``None``, and ConfigObj
-uses the system default (``os.sep``) if write is called without newlines having
+uses the system default (``os.linesep``) if write is called without newlines having
 been set.
 
 
