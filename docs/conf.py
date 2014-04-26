@@ -50,7 +50,7 @@ copyright = u'2014, Michael Foord, Nicola Larosa, Rob Dennis, Eli Courtwright'
 # built documents.
 #
 # The full version, including alpha/beta/rc tags.
-release = '5.0.4'
+release = '5.0.5'
 # The short X.Y version.
 version = '.'.join(release.split('.')[:2])
 
