@@ -2107,21 +2107,25 @@ class ConfigObj(Section):
             # Windows specific hack to avoid writing '\r\r\n'
             newline = '\n'
         output = self._a_to_u(newline).join(out)
-        if self.encoding:
-            output = output.encode(self.encoding)
-        if self.BOM and ((self.encoding is None) or match_utf8(self.encoding)):
-            # Add the UTF8 BOM
-            output = BOM_UTF8 + output
-            
         if not output.endswith(newline):
             output += newline
+
+        if isinstance(output, six.binary_type):
+            output_bytes = output
+        else:
+            output_bytes = output.encode(self.encoding or
+                                         self.default_encoding or
+                                         'ascii')
+
+        if self.BOM and ((self.encoding is None) or match_utf8(self.encoding)):
+            # Add the UTF8 BOM
+            output_bytes = BOM_UTF8 + output_bytes
+
         if outfile is not None:
-            outfile.write(output)
+            outfile.write(output_bytes)
         else:
             with open(self.filename, 'wb') as h:
-                h.write(output.encode(self.encoding or
-                                      self.default_encoding or
-                                      'ascii'))
+                h.write(output_bytes)
 
     def validate(self, validator, preserve_errors=False, copy=False,
                  section=None):
