@@ -216,7 +216,6 @@ class TestEncoding(object):
         else:
             assert isinstance(c['test'], str)
 
-        #TODO: this can be made more explicit if we switch to unicode_literals
         assert c['test'] == '\U0001f41c'
 
     #issue #44
