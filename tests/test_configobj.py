@@ -225,7 +225,7 @@ class TestEncoding(object):
 
         assert isinstance(cfg['tags']['bug']['translated'], six.text_type)
 
-    #issue #44
+    #issue #44 and #55
     def test_encoding_in_config_files(self, request, ant_cfg):
         # the cfg_contents fixture is doing this too, but be explicit
         with NamedTemporaryFile(delete=False, mode='wb') as cfg_file:
