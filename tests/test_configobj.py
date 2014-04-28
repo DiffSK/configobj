@@ -216,8 +216,7 @@ class TestEncoding(object):
         else:
             assert isinstance(c['test'], str)
 
-        #TODO: this can be made more explicit if we switch to unicode_literals
-        assert c['test'] == b'\xf0\x9f\x90\x9c'.decode('utf8')
+        assert c['test'] == '\U0001f41c'
 
     #issue #44
     def test_encoding_in_subsections(self, ant_cfg, cfg_contents):
@@ -226,7 +225,7 @@ class TestEncoding(object):
 
         assert isinstance(cfg['tags']['bug']['translated'], six.text_type)
 
-    #issue #44
+    #issue #44 and #55
     def test_encoding_in_config_files(self, request, ant_cfg):
         # the cfg_contents fixture is doing this too, but be explicit
         with NamedTemporaryFile(delete=False, mode='wb') as cfg_file:
@@ -235,6 +234,7 @@ class TestEncoding(object):
 
         cfg = ConfigObj(cfg_file.name, encoding='utf-8')
         assert isinstance(cfg['tags']['bug']['translated'], six.text_type)
+        cfg.write()
 
 @pytest.fixture
 def testconfig1():
@@ -515,7 +515,7 @@ def test_unicode_handling():
     uc = ConfigObj(u)
     assert uc.newlines == '\r\n'
     uc.newlines = '\r'
-    file_like = six.StringIO()
+    file_like = six.BytesIO()
     uc.write(file_like)
     file_like.seek(0)
     uc2 = ConfigObj(file_like)
@@ -811,7 +811,7 @@ class TestReloading(object):
         return content
 
     def test_handle_no_filename(self):
-        for bad_args in ([six.StringIO()], [], [[]]):
+        for bad_args in ([six.BytesIO()], [], [[]]):
             cfg = ConfigObj(*bad_args)
             with pytest.raises(ReloadError) as excinfo:
                 cfg.reload()
@@ -1264,23 +1264,23 @@ class TestEdgeCasesWhenWritingOut(object):
     def test_newline_terminated(self, empty_cfg):
         empty_cfg.newlines = '\n'
         empty_cfg['a'] = 'b'
-        collector = six.StringIO()
+        collector = six.BytesIO()
         empty_cfg.write(collector)
-        assert collector.getvalue() == 'a = b\n'
+        assert collector.getvalue() == b'a = b\n'
 
     def test_hash_escaping(self, empty_cfg):
         empty_cfg.newlines = '\n'
         empty_cfg['#a'] = 'b # something'
-        collector = six.StringIO()
+        collector = six.BytesIO()
         empty_cfg.write(collector)
-        assert collector.getvalue() == '"#a" = "b # something"\n'
+        assert collector.getvalue() == b'"#a" = "b # something"\n'
         
         empty_cfg = ConfigObj()
         empty_cfg.newlines = '\n'
         empty_cfg['a'] = 'b # something', 'c # something'
-        collector = six.StringIO()
+        collector = six.BytesIO()
         empty_cfg.write(collector)
-        assert collector.getvalue() == 'a = "b # something", "c # something"\n'
+        assert collector.getvalue() == b'a = "b # something", "c # something"\n'
 
     def test_detecting_line_endings_from_existing_files(self):
         for expected_line_ending in ('\r\n', '\n'):
