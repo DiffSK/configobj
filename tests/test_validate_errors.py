@@ -2,7 +2,7 @@ import os
 
 import pytest
 
-from configobj import ConfigObj, get_extra_values
+from configobj import ConfigObj, get_extra_values, ParseError
 from validate import Validator
 
 @pytest.fixture()
@@ -63,3 +63,10 @@ def test_get_extra_values(conf):
         (('section',), 'extra-sub-section'),
     ])
     assert sorted(extra_values) == expected
+
+
+def test_invalid_lines_with_percents(tmpdir, specpath):
+    ini = tmpdir.join('config.ini')
+    ini.write('extra: %H:%M\n')
+    with pytest.raises(ParseError):
+        conf = ConfigObj(str(ini), configspec=specpath, file_error=True)
