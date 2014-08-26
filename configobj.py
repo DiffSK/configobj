@@ -1603,6 +1603,7 @@ class ConfigObj(Section):
                 else:
                     self._handle_error("Section too nested",
                                        NestingError, infile, cur_index)
+                    continue
                     
                 sect_name = self._unquote(sect_name)
                 if sect_name in parent:
