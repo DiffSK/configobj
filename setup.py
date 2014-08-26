@@ -51,6 +51,7 @@ It has lots of other features though :
 * The order of keys/sections is preserved
 * Powerful ``unrepr`` mode for storing/retrieving Python data-types
 
+| Release 5.0.6 improves error messages in certain edge cases
 | Release 5.0.5 corrects a unicode-bug that still existed in writing files
 | Release 5.0.4 corrects a unicode-bug that still existed in reading files after
 | fixing lists of string in 5.0.3
