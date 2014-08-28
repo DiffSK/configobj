@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 import os
 import re
+import warnings
 
 from codecs import BOM_UTF8
 from warnings import catch_warnings
@@ -107,6 +108,7 @@ def test_order_preserved():
 
 
 def test_options_deprecation():
+    warnings.simplefilter('always', DeprecationWarning)
     with catch_warnings(record=True) as log:
         ConfigObj(options={})
 
