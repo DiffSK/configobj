@@ -1363,9 +1363,9 @@ class ConfigObj(Section):
                 return self[key]
             except MissingInterpolationOption:
                 return dict.__getitem__(self, key)
-        return ('ConfigObj({%s})' % 
+        return ('%s({%s})' % (self.__class__.__name__,
                 ', '.join([('%s: %s' % (repr(key), repr(_getval(key)))) 
-                for key in (self.scalars + self.sections)]))
+                for key in (self.scalars + self.sections)])))
     
     
     def _handle_bom(self, infile):
