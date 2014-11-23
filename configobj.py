@@ -16,6 +16,7 @@
 import os
 import re
 import sys
+import collections
 
 from codecs import BOM_UTF8, BOM_UTF16, BOM_UTF16_BE, BOM_UTF16_LE
 
@@ -646,10 +647,39 @@ class Section(dict):
 
     def update(self, indict):
         """
-        A version of update that uses our ``__setitem__``.
+        A "deep" update
+
+        This only updates the actual values. If a value is something like a
+        dict or a list it is kept alive.
+
+        Example time:
+
+            >>> c = ConfigObj({'a': 1, 'b': 5})
+            >>> c['a']
+            1
+            >>> c['b']
+            5
+            >>> c.update({'a':2, 'c' : { 'd': 3}})
+            >>> c['a']
+            2
+            >>> c['b']
+            5
+            >>> c['c']['d']
+            3
+            >>> c.update({'c': { 'd': 99}})
+            >>> c['a']
+            2
+            >>> c['b']
+            5
+            >>> c['c']['d']
+            99
         """
-        for entry in indict:
-            self[entry] = indict[entry]
+        for k, v in indict.iteritems():
+            if isinstance(v, collections.Mapping):
+                self[k] = self.get(k, self.__class__())
+                self[k].update(v)
+            else:
+                self[k] = v
 
 
     def pop(self, key, default=MISSING):
