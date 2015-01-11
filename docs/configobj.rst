@@ -461,7 +461,7 @@ ConfigObj takes the following arguments (with the default values shown) :
     * ``key`` will be the key that changed
 
     * ``old_value`` will the be original value that was in the key
-    
+
     * ``value`` will be the new value of the key
 
     To detect the value change, an equality test is used (ie. old_value != value).
