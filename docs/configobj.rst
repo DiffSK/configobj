@@ -256,7 +256,7 @@ ConfigObj specifications
                        interpolation=True, raise_errors=False, list_values=True,
                        create_empty=False, file_error=False, stringify=True,
                        indent_type=None, default_encoding=None, unrepr=False,
-                       write_empty_values=False, _inspec=False)
+                       write_empty_values=False, _inspec=False, on_change=None)
 
 Many of the keyword arguments are available as attributes after the config file has been
 parsed.
@@ -447,6 +447,21 @@ ConfigObj takes the following arguments (with the default values shown) :
     creating a ConfigObj instance from a configspec file you must pass True
     for this argument as well as ``list_values=False``.
 
+* 'on_change': ``None``
+
+    If ``on_change`` is a callable, it is executed when a change in the
+    ConfigObj root section or subsection data is detected.  If ``on_change``
+    is not callable, then it is not called.  The callable must accept four
+    parameters, matching the following function signature:
+
+    my_handler(name, key, old_value, value)
+
+    ``name`` will be the name of the section that changed (from Section.name)
+    ``key`` will be the key that changed
+    ``old_value`` will the be original value that was in the key
+    ``value`` will be the new value of the key
+
+    To detect the value change, an equality test is used (ie. old_value != value).
 
 Methods
 -------
@@ -763,8 +778,8 @@ A ConfigObj has the following attributes :
 
 .. note::
 
-    This doesn't include *comments*, *inline_comments*, *defaults*, or
-    *configspec*. These are actually attributes of Sections_.
+    This doesn't include *comments*, *inline_comments*, *defaults*,
+    *configspec*, or *on_change*. These are actually attributes of Sections_.
 
 It also has the following attributes as a result of parsing. They correspond to
 options when the ConfigObj was created, but changing them has no effect.
@@ -898,6 +913,23 @@ file and uses this separator when writing. It defaults to ``None``, and ConfigOb
 uses the system default (``os.linesep``) if write is called without newlines having
 been set.
 
+Mentioning on_change
+====================
+
+If ConfigObj is instantiated with the ``on_change`` parameter set to a callable,
+``on_change`` is called when changed data is detected in the root Section or any
+subsection.  This is helpful for those cases where you may want a configuration
+change to trigger some other action.
+
+Here is an example of how to use ``on_change``:
+
+>>> def my_on_change_handler(name, key, old_value, value):
+>>>     print("Detected change in [{0}]:{1} from {2} to {3}".format(name, key, old_value, value)
+>>> my_configobj = ConfigObj(on_change=my_on_change_handler)
+>>> my_configobj["section"] = {}
+Detected change in [section]:None from None to {}
+>>> my_configobj["section"]["parameter"] = 1
+Detected change in [section]:parameter from None to 1
 
 The Config File Format
 ======================
@@ -1212,6 +1244,12 @@ Section Attributes
     all the extra values in a config file using the get_extra_values_ function.
     
     New in ConfigObj 4.7.0.
+
+* on_change
+
+    The on_change attribute is a callable that will be called when a data change
+    is detected in the Section.  This is typically set when instantiating the main
+    ConfigObj.  By default it is ``None``.
     
 
 Section Methods

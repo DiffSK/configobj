@@ -631,7 +631,7 @@ class Section(dict):
                     raise TypeError('Value is not a string "%s".' % value)
             dict.__setitem__(self, key, value)
         if old_value != value and callable(self.on_change):  # TODO: Is this really the right place to put this?
-            self.on_change(key, old_value, value)
+            self.on_change(self.name, key, old_value, value)
 
 
     def __delitem__(self, key):
@@ -1192,7 +1192,7 @@ class ConfigObj(Section):
                     interpolation=True, raise_errors=False, list_values=True,
                     create_empty=False, file_error=False, stringify=True,
                     indent_type=None, default_encoding=None, unrepr=False,
-                    write_empty_values=False, _inspec=False)``
+                    write_empty_values=False, _inspec=False, on_change=None)``
         """
         self._inspec = _inspec
         # init the superclass
