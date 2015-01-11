@@ -456,10 +456,13 @@ ConfigObj takes the following arguments (with the default values shown) :
 
     my_handler(name, key, old_value, value)
 
-    ``name`` will be the name of the section that changed (from Section.name)
-    ``key`` will be the key that changed
-    ``old_value`` will the be original value that was in the key
-    ``value`` will be the new value of the key
+    * ``name`` will be the name of the section that changed (from Section.name)
+
+    * ``key`` will be the key that changed
+
+    * ``old_value`` will the be original value that was in the key
+    
+    * ``value`` will be the new value of the key
 
     To detect the value change, an equality test is used (ie. old_value != value).
 
