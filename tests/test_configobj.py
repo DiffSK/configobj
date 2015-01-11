@@ -1298,3 +1298,52 @@ class TestEdgeCasesWhenWritingOut(object):
         c = ConfigObj(cfg, unrepr=True)
         assert repr(c) == "ConfigObj({'thing': {'a': 1}})"
         assert c.write() == ["thing = {'a': 1}"]
+
+
+class TestOnChange(object):
+    on_change_called = False
+    expected_name = None
+    expected_key = None
+    expected_old_value = None
+    expected_value = None
+
+    def on_change_handler(self, name, key, old_value, value):
+        self.on_change_called = True
+        assert name == self.expected_name
+        assert key == self.expected_key
+        assert old_value == self.expected_old_value
+        assert value == self.expected_value
+
+    def test_on_change(self):
+        c = ConfigObj(on_change=self.on_change_handler)
+
+        self.on_change_called = False
+        self.expected_name = None
+        self.expected_key = "test_section"
+        self.expected_old_value = None
+        self.expected_value = {}
+        c["test_section"] = {}
+        assert self.on_change_called is True
+
+        self.on_change_called = False
+        self.expected_name = "test_section"
+        self.expected_key = "test_value"
+        self.expected_old_value = None
+        self.expected_value = 1
+        c["test_section"]["test_value"] = 1
+        assert self.on_change_called is True
+
+        self.on_change_called = False
+        self.expected_name = "test_section"
+        self.expected_key = "test_value"
+        self.expected_old_value = 1
+        self.expected_value = 2
+        c["test_section"]["test_value"] = 2
+        assert self.on_change_called is True
+
+    def test_on_change_none(self):
+        c = ConfigObj(on_change=None)
+
+        self.on_change_called = False
+        c["test_section"] = {}
+        assert self.on_change_called == False

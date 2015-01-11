@@ -6,6 +6,7 @@
 # Nicola Larosa: nico AT tekNico DOT net
 # Rob Dennis: rdennis AT gmail DOT com
 # Eli Courtwright: eli AT courtwright DOT org
+# Kris Hardy: kris AT rkrishardy DOT com (Added on_change callback for event triggering)
 
 # This software is licensed under the terms of the BSD license.
 # http://opensource.org/licenses/BSD-3-Clause
@@ -484,12 +485,13 @@ class Section(dict):
         return (__newobj__, (self.__class__,), state)
     
     
-    def __init__(self, parent, depth, main, indict=None, name=None):
+    def __init__(self, parent, depth, main, indict=None, name=None, on_change=None):
         """
         * parent is the section above
         * depth is the depth level of this section
         * main is the main ConfigObj
         * indict is a dictionary to initialise the section with
+        * on_change is a callable to execute when a change occurs in the data
         """
         if indict is None:
             indict = {}
@@ -502,6 +504,8 @@ class Section(dict):
         self.depth = depth
         # purely for information
         self.name = name
+        # callable to execute when a change occurs
+        self.on_change = on_change
         #
         self._initialise()
         # we do this explicitly so that __setitem__ is used properly
@@ -592,6 +596,7 @@ class Section(dict):
         if key in self.defaults:
             self.defaults.remove(key)
         #
+        old_value = self[key] if key in self else None
         if isinstance(value, Section):
             if key not in self:
                 self.sections.append(key)
@@ -610,7 +615,8 @@ class Section(dict):
                     new_depth,
                     self.main,
                     indict=value,
-                    name=key))
+                    name=key,
+                    on_change=self.on_change))
         else:
             if key not in self:
                 self.scalars.append(key)
@@ -624,6 +630,8 @@ class Section(dict):
                 else:
                     raise TypeError('Value is not a string "%s".' % value)
             dict.__setitem__(self, key, value)
+        if old_value != value and callable(self.on_change):  # TODO: Is this really the right place to put this?
+            self.on_change(self.name, key, old_value, value)
 
 
     def __delitem__(self, key):
@@ -1176,7 +1184,7 @@ class ConfigObj(Section):
                  interpolation=True, raise_errors=False, list_values=True,
                  create_empty=False, file_error=False, stringify=True,
                  indent_type=None, default_encoding=None, unrepr=False,
-                 write_empty_values=False, _inspec=False):
+                 write_empty_values=False, _inspec=False, on_change=None):
         """
         Parse a config file or create a config file object.
         
@@ -1184,11 +1192,11 @@ class ConfigObj(Section):
                     interpolation=True, raise_errors=False, list_values=True,
                     create_empty=False, file_error=False, stringify=True,
                     indent_type=None, default_encoding=None, unrepr=False,
-                    write_empty_values=False, _inspec=False)``
+                    write_empty_values=False, _inspec=False, on_change=None)``
         """
         self._inspec = _inspec
         # init the superclass
-        Section.__init__(self, self, 0, self)
+        Section.__init__(self, self, 0, self, on_change=on_change)
         
         infile = infile or []
         
@@ -1617,7 +1625,8 @@ class ConfigObj(Section):
                     parent,
                     cur_depth,
                     self,
-                    name=sect_name)
+                    name=sect_name,
+                    on_change=self.on_change)
                 parent[sect_name] = this_section
                 parent.inline_comments[sect_name] = comment
                 parent.comments[sect_name] = comment_list
