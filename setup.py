@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # setup.py
 # Install script for ConfigObj
 # Copyright (C) 2005-2014:
