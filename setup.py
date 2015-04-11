@@ -12,10 +12,11 @@
 # This software is licensed under the terms of the BSD license.
 # http://opensource.org/licenses/BSD-3-Clause
 import os
+import re
 import sys
+from contextlib import closing
+
 from setuptools import setup
-# a simple import wouldn't work if we moved towards a package with __init__
-from _version import __version__
 
 if sys.version_info < (2, 6):
     print('for python versions < 2.6 use configobj '
@@ -24,13 +25,22 @@ if sys.version_info < (2, 6):
 
 __here__ = os.path.abspath(os.path.dirname(__file__))
 
-VERSION = __version__
 NAME = 'configobj'
-MODULES = 'configobj', 'validate', '_version'
-
+MODULES = ['validate']
+PACKAGES = ['configobj']
 DESCRIPTION = 'Config file reading, writing and validation.'
-
 URL = 'https://github.com/DiffSK/configobj'
+
+REQUIRES = """
+    six
+"""
+
+VERSION = ''
+with closing(open(os.path.join(__here__, 'src', PACKAGES[0], '_version.py'), 'r')) as handle:
+    for line in handle.readlines():
+        if line.startswith('__version__'):
+            VERSION = re.split('''['"]''', line)[1]
+assert re.match(r"[0-9](\.[0-9]+)", VERSION), "No semantic version found in 'configobj._version'"
 
 LONG_DESCRIPTION = """**ConfigObj** is a simple but powerful config file reader and writer: an *ini
 file round tripper*. Its main feature is that it is very easy to use, with a
@@ -93,15 +103,18 @@ AUTHOR_EMAIL = 'rdennis+configobj@gmail.com, eli@courtwright.org, fuzzyman@voids
 KEYWORDS = "config, ini, dictionary, application, admin, sysadmin, configuration, validation".split(', ')
 
 
-setup(name=NAME,
-      version=VERSION,
-      install_requires=['six'],
-      description=DESCRIPTION,
-      long_description=LONG_DESCRIPTION,
-      author=AUTHOR,
-      author_email=AUTHOR_EMAIL,
-      url=URL,
-      py_modules=MODULES,
-      classifiers=CLASSIFIERS,
-      keywords=KEYWORDS
-     )
+if __name__ == '__main__':
+    setup(name=NAME,
+          version=VERSION,
+          description=DESCRIPTION,
+          long_description=LONG_DESCRIPTION,
+          author=AUTHOR,
+          author_email=AUTHOR_EMAIL,
+          url=URL,
+          py_modules=MODULES,
+          package_dir={'': 'src'},
+          packages=PACKAGES,
+          install_requires=[i.strip() for i in REQUIRES.splitlines() if i.strip()],
+          classifiers=CLASSIFIERS,
+          keywords=KEYWORDS
+         )
