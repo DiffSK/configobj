@@ -596,6 +596,7 @@ class Validator(object):
         Arguments:
             check: string representing check to apply (including arguments)
             value: object to be checked
+
         Returns value, converted to correct type if necessary
 
         If the check fails, raises a ``ValidateError`` subclass.
