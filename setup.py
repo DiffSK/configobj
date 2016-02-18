@@ -102,19 +102,21 @@ AUTHOR_EMAIL = 'rdennis+configobj@gmail.com, eli@courtwright.org, fuzzyman@voids
 
 KEYWORDS = "config, ini, dictionary, application, admin, sysadmin, configuration, validation".split(', ')
 
+project = dict(
+    name=NAME,
+    version=VERSION,
+    description=DESCRIPTION,
+    long_description=LONG_DESCRIPTION,
+    author=AUTHOR,
+    author_email=AUTHOR_EMAIL,
+    url=URL,
+    py_modules=MODULES,
+    package_dir={'': 'src'},
+    packages=PACKAGES,
+    install_requires=[i.strip() for i in REQUIRES.splitlines() if i.strip()],
+    classifiers=CLASSIFIERS,
+    keywords=KEYWORDS,
+)
 
 if __name__ == '__main__':
-    setup(name=NAME,
-          version=VERSION,
-          description=DESCRIPTION,
-          long_description=LONG_DESCRIPTION,
-          author=AUTHOR,
-          author_email=AUTHOR_EMAIL,
-          url=URL,
-          py_modules=MODULES,
-          package_dir={'': 'src'},
-          packages=PACKAGES,
-          install_requires=[i.strip() for i in REQUIRES.splitlines() if i.strip()],
-          classifiers=CLASSIFIERS,
-          keywords=KEYWORDS
-         )
+    setup(**project)
