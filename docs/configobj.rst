@@ -19,7 +19,7 @@
 .. _Github Page: https://github.com/DiffSK/configobj
 
 .. meta::
-   :description: ConfigObj - a Python module for easy reading and writing of 
+   :description: ConfigObj - a Python module for easy reading and writing of
                  config files.
    :keywords: python, script, module, config, configuration, data, persistence,
               developer, configparser
@@ -31,7 +31,7 @@
 
     The best introduction to working with ConfigObj, including the powerful configuration validation system,
     is the article:
-    
+
     * `An Introduction to ConfigObj <http://www.voidspace.org.uk/python/articles/configobj.shtml>`_
 
 
@@ -42,7 +42,7 @@ Introduction
 file round tripper*. Its main feature is that it is very easy to use, with a
 straightforward programmer's interface and a simple syntax for config files.
 It has lots of other features though :
-    
+
 * Nested sections (subsections), to any level
 * List values
 * Multiple line values
@@ -79,7 +79,7 @@ from the Git Repository maintained on the `Github Page`_.
 
 ConfigObj in the Real World
 ===========================
-    
+
 **ConfigObj** is widely used. Projects using it include:
 
 * `Bazaar <http://bazaar-ng.org>`_.
@@ -89,10 +89,10 @@ ConfigObj in the Real World
 
 * `Chandler <http://chandler.osafoundation.org/>`_
 
-   A Python and `wxPython <http://www.wxpython.org>`_ 
-   Personal Information Manager, being developed by the 
+   A Python and `wxPython <http://www.wxpython.org>`_
+   Personal Information Manager, being developed by the
    `OSAFoundation <http://www.osafoundation.org/>`_.
- 
+
 * `matplotlib <http://matplotlib.sourceforge.net/>`_
 
     A 2D plotting library.
@@ -100,9 +100,9 @@ ConfigObj in the Real World
 * `IPython <http://ipython.scipy.org/moin/>`_
 
     IPython is an enhanced interactive Python shell. IPython uses ConfigObj in a module called 'TConfig' that combines it with enthought `Traits <http://code.enthought.com/traits/>`_: `tconfig <http://ipython.scipy.org/ipython/ipython/browser/ipython/branches/saw/sandbox/tconfig>`_.
-    
-* `Elisa - the Fluendo Mediacenter <http://elisa.fluendo.com/>`_    
-    
+
+* `Elisa - the Fluendo Mediacenter <http://elisa.fluendo.com/>`_
+
     Elisa is an open source cross-platform media center solution designed to be simple for people not particularly familiar with computers.
 
 
@@ -187,12 +187,12 @@ and then writing to file :
     #
     config.write()
 
-    
+
 .. caution::
 
     Keywords and section names can only be strings [#]_. Attempting to set
     anything else will raise a ``ValueError``.
-    
+
     See `String Interpolation and List Values`_ for an important note on
     using lists in combination with `String Interpolation`_.
 
@@ -264,11 +264,11 @@ parsed.
 .. note::
 
     New in ConfigObj 4.7.0: Instantiating ConfigObj with
-    an ``options`` dictionary is now deprecated. To modify code that used to 
+    an ``options`` dictionary is now deprecated. To modify code that used to
     do this simply unpack the dictionary in the constructor call:
-    
+
     .. code-block:: python
-    
+
         config = ConfigObj(filename, **options)
 
 ConfigObj takes the following arguments (with the default values shown) :
@@ -312,7 +312,7 @@ ConfigObj takes the following arguments (with the default values shown) :
     If ``list_values = False`` then single line values are not quoted or
     unquoted when reading and writing.
 
-    Changing this value affects whether single line values will be quoted or 
+    Changing this value affects whether single line values will be quoted or
     not when writing.
 
 * 'create_empty': ``False``
@@ -337,7 +337,7 @@ ConfigObj takes the following arguments (with the default values shown) :
 
     You can set this attribute to change whether string interpolation is done
     when values are fetched. See the `String Interpolation`_ section for more details.
-    
+
     New in ConfigObj 4.7.0: Interpolation will also be done in list values.
 
 * 'configspec': ``None``
@@ -394,17 +394,17 @@ ConfigObj takes the following arguments (with the default values shown) :
     Unicode [#]_. If you want your config file as Unicode (keys and members)
     you need to provide an encoding to decode the file with. This encoding will
     also be used to encode the config file when writing.
-    
+
     You can change the encoding attribute at any time.
-    
+
     Any characters in your strings that can't be encoded with the specified
     encoding will raise a ``UnicodeEncodeError``.
-    
+
     .. note::
-    
+
         ``UTF16`` encoded files will automatically be detected and decoded,
         even if ``encoding`` is ``None``.
-        
+
         This is because it is a 16-bit encoding, and ConfigObj will mangle it
         (split characters on byte boundaries) if it parses it without decoding.
 
@@ -419,11 +419,11 @@ ConfigObj takes the following arguments (with the default values shown) :
     strings in the **ConfigObj** before writing. If this is ``None``, then
     the Python default encoding (``sys.defaultencoding`` - usually ASCII) is
     used.
-    
+
     For most Western European users, a value of ``latin-1`` is sensible.
-    
+
     ``default_encoding`` is *only* used if an ``encoding`` is specified.
-    
+
     Any characters in byte-strings that can't be decoded using the
     ``default_encoding`` will raise a ``UnicodeDecodeError``.
 
@@ -432,11 +432,11 @@ ConfigObj takes the following arguments (with the default values shown) :
     The ``unrepr`` option reads and writes files in a different mode. This
     allows you to store and retrieve the basic Python data-types using config
     files.
-    
+
     This uses Python syntax for lists and quoting. See `unrepr mode`_ for the
     full details.
 
-* 'write_empty_values': ``False`` 
+* 'write_empty_values': ``False``
 
     If ``write_empty_values`` is ``True``, empty strings are written as
     empty values. See `Empty Values`_ for more details.
@@ -472,15 +472,15 @@ Read about Sections_ for details of all the methods.
 .. hint::
 
     The *merge* method of sections is a recursive update.
-    
+
     You can use this to merge sections, or even whole ConfigObjs, into each
     other.
-    
+
     You would typically use this to create a default ConfigObj and then merge
     in user settings. This way users only need to specify values that are
     different from the default. You can use configspecs and validation to
     achieve the same thing of course.
-    
+
 
 The public methods available on ConfigObj are :
 
@@ -542,7 +542,7 @@ validate
 
 The validate method uses the :validate: module to do the
 validation.
-    
+
 This method validates the ConfigObj against the configspec. By doing type
 conversion as well it can abstract away the config file altogether and present
 the config *data* to your application (in the types it expects it to be).
@@ -565,7 +565,7 @@ details.
     The system of configspecs can seem confusing at first, but is actually
     quite simple and powerful. The best guide to them is this article on
     ConfigObj:
-    
+
     * `An Introduction to ConfigObj`_
 
 The ``copy`` parameter fills in missing values from the configspec (default
@@ -594,14 +594,14 @@ must be switched off to correctly read configspec files with hashes in the value
 Return Value
 ############
 
-By default, the validate method either returns ``True`` (everything passed) 
-or a dictionary of ``True`` / ``False`` representing pass/fail. The dictionary 
+By default, the validate method either returns ``True`` (everything passed)
+or a dictionary of ``True`` / ``False`` representing pass/fail. The dictionary
 follows the structure of the ConfigObj.
 
-If a whole section passes then it is replaced with the value ``True``. If a 
+If a whole section passes then it is replaced with the value ``True``. If a
 whole section fails, then it is replaced with the value ``False``.
 
-If a value is missing, and there is no default in the check, then the check 
+If a value is missing, and there is no default in the check, then the check
 automatically fails.
 
 The ``validate`` method takes an optional keyword argument ``preserve_errors``.
@@ -619,7 +619,7 @@ represented by a ``False`` in the results dictionary.
 Mentioning Default Values
 #########################
 
-In the check in your configspec, you can specify a default to be used - by 
+In the check in your configspec, you can specify a default to be used - by
 using the ``default`` keyword. E.g. ::
 
     key1 = integer(0, 30, default=15)
@@ -680,7 +680,7 @@ along with repeated sections then you can call one of them ``___many___`` (tripl
 underscores).
 
 Sections with repeated sections or values can also have specifically named sub-sections
-or values. The ``__many__`` configspec will only be used to validate entries that don't 
+or values. The ``__many__`` configspec will only be used to validate entries that don't
 have an explicit configspec.
 
 See `Repeated Sections`_ for examples.
@@ -719,7 +719,7 @@ If you set ``copy=True`` when you call validate, then no values are marked as
 defaults. In addition, all comments from the configspec are copied into
 your ConfigObj instance. You can then call ``write`` to create your config
 file.
-    
+
 There is a limitation with this. In order to allow `String Interpolation`_ to work
 within configspecs, ``DEFAULT`` sections are not processed by
 validation; even in copy mode.
@@ -732,7 +732,7 @@ If a ConfigObj instance was loaded from the filesystem, then this method will re
 will also reuse any configspec you supplied at instantiation (including reloading it from
 the filesystem if you passed it in as a filename).
 
-If the ConfigObj does not have a filename attribute pointing to a file, then a ``ReloadError`` 
+If the ConfigObj does not have a filename attribute pointing to a file, then a ``ReloadError``
 will be raised.
 
 
@@ -841,7 +841,7 @@ This allows you to do your own parsing of values. It exists primarily to
 support the reading of the configspec_ - but has other use cases.
 
 For example you could use the ``LineParser`` from the
-`listquote module <http://www.voidspace.org.uk/python/listquote.html#lineparser>`_ 
+`listquote module <http://www.voidspace.org.uk/python/listquote.html#lineparser>`_
 to read values for nested lists.
 
 Single line values aren't quoted when writing - but multiline values are
@@ -1039,7 +1039,7 @@ When parsed, the above config file produces the following data structure:
         },
     })
 
-    
+
 Sections are ordered: note how the structure of the resulting ConfigObj is in
 the same order as the original file.
 
@@ -1048,10 +1048,10 @@ the same order as the original file.
     In ConfigObj 4.3.0 *empty values* became valid syntax. They are read as the
     empty string. There is also an option/attribute (``write_empty_values``) to
     allow the writing of these.
-    
+
     This is mainly to support 'legacy' config files, written from other
     applications. This is documented under `Empty Values`_.
-    
+
     `unrepr mode`_ introduces *another* syntax variation, used for storing
     basic Python datatypes in config files.
 
@@ -1070,17 +1070,17 @@ and ``clear`` sections.
 .. note::
 
     You create a new section by assigning a member to be a dictionary.
-    
+
     The new ``Section`` is created *from* the dictionary, but isn't the same
     thing as the dictionary. (So references to the dictionary you use to create
     the section *aren't* references to the new section).
-    
+
     Note the following.
 
     .. code-block:: python
 
         config = ConfigObj()
-        vals = {'key1': 'value 1', 
+        vals = {'key1': 'value 1',
                 'key2': 'value 2'
                }
         config['vals'] = vals
@@ -1088,7 +1088,7 @@ and ``clear`` sections.
         True
         config['vals'] is vals
         False
-     
+
     If you now change ``vals``, the changes won't be reflected in ``config['vals']``.
 
 A section is ordered, following its ``scalars`` and ``sections``
@@ -1210,9 +1210,9 @@ Section Attributes
     of the section that don't appear in the configspec (i.e. they are additional
     values). Rather than accessing this directly it may be more convenient to get
     all the extra values in a config file using the get_extra_values_ function.
-    
+
     New in ConfigObj 4.7.0.
-    
+
 
 Section Methods
 ---------------
@@ -1232,16 +1232,16 @@ Section Methods
 * **merge**
 
     ``merge(indict)``
-    
+
     This method is a *recursive update* method. It allows you to merge two
     config files together.
-    
+
     You would typically use this to create a default ConfigObj and then merge
     in user settings. This way users only need to specify values that are
     different from the default.
-    
+
     For example :
-    
+
     .. code-block:: python
 
         # def_cfg contains your default config settings
@@ -1250,14 +1250,14 @@ Section Methods
         usr = ConfigObj(user_cfg)
         #
         cfg.merge(usr)
-        
+
         """
         cfg now contains a combination of the default settings and the user
         settings.
-        
+
         The user settings will have overwritten any of the default ones.
         """
-    
+
 * **walk**
 
     This method can be used to transform values and names. See `walking a
@@ -1266,73 +1266,73 @@ Section Methods
 * **as_bool**
 
     ``as_bool(key)``
-    
+
     Returns ``True`` if the key contains a string that represents ``True``, or
     is the ``True`` object.
-    
-    Returns ``False`` if the key contains a string that represents ``False``, 
-    or is the ``False`` object. 
+
+    Returns ``False`` if the key contains a string that represents ``False``,
+    or is the ``False`` object.
 
     Raises a ``ValueError`` if the key contains anything else.
-    
+
     Strings that represent ``True`` are (not case sensitive)::
-    
+
         true, yes, on, 1
-        
+
     Strings that represent ``False`` are::
-    
+
         false, no, off, 0
-    
-        
+
+
 * **as_int**
 
     ``as_int(key)``
-    
+
     This returns the value contained in the specified key as an integer.
-    
+
     It raises a ``ValueError`` if the conversion can't be done.
 
-    
+
 * **as_float**
 
     ``as_float(key)``
-    
+
     This returns the value contained in the specified key as a float.
-    
+
     It raises a ``ValueError`` if the conversion can't be done.
-    
-    
+
+
 * **as_list**
 
     ``as_list(key)``
-    
+
     This returns the value contained in the specified key as a list.
-    
-    If it isn't a list it will be wrapped as a list so that you can 
+
+    If it isn't a list it will be wrapped as a list so that you can
     guarantee the returned value will be a list.
-    
+
 
 * **restore_default**
 
     ``restore_default(key)``
-    
+
     Restore (and return) the default value for the specified key.
-    
+
     This method will only work for a ConfigObj that was created
     with a configspec and has been validated.
-    
+
     If there is no default value for this key, ``KeyError`` is raised.
 
 * **restore_defaults**
-    
+
     ``restore_defaults()``
 
     Recursively restore default values to all members
     that have them.
-    
+
     This method will only work for a ConfigObj that was created
     with a configspec and has been validated.
-    
+
     It doesn't delete or modify entries without default values.
 
 
@@ -1387,7 +1387,7 @@ Examples
 
 You can use this for transforming all values in your ConfigObj. For example
 you might like the nested lists from ConfigObj 3. This was provided by the
-listquote_ module. You could switch off the parsing for list values
+`listquote module`_. You could switch off the parsing for list values
 (``list_values=False``) and use listquote to parse every value.
 
 Another thing you might want to do is use the Python escape codes in your
@@ -1500,13 +1500,13 @@ and change values and member names :
     #
     cfg.walk(transform, call_on_sections=True)
     print cfg
-    ConfigObj({'CLIENT1key1': 'CLIENT1value1', 'CLIENT1key2': 'CLIENT1value2', 
-    'CLIENT1key3': 'CLIENT1value3', 
-    'CLIENT1section1': {'CLIENT1key1': 'CLIENT1value1', 
-        'CLIENT1key2': 'CLIENT1value2', 'CLIENT1key3': 'CLIENT1value3'}, 
-    'CLIENT1section2': {'CLIENT1key1': 'CLIENT1value1', 
-        'CLIENT1key2': 'CLIENT1value2', 'CLIENT1key3': 'CLIENT1value3', 
-        'CLIENT1section1': {'CLIENT1key1': 'CLIENT1value1', 
+    ConfigObj({'CLIENT1key1': 'CLIENT1value1', 'CLIENT1key2': 'CLIENT1value2',
+    'CLIENT1key3': 'CLIENT1value3',
+    'CLIENT1section1': {'CLIENT1key1': 'CLIENT1value1',
+        'CLIENT1key2': 'CLIENT1value2', 'CLIENT1key3': 'CLIENT1value3'},
+    'CLIENT1section2': {'CLIENT1key1': 'CLIENT1value1',
+        'CLIENT1key2': 'CLIENT1value2', 'CLIENT1key3': 'CLIENT1value3',
+        'CLIENT1section1': {'CLIENT1key1': 'CLIENT1value1',
             'CLIENT1key2': 'CLIENT1value2', 'CLIENT1key3': 'CLIENT1value3'}}})
 
 
@@ -1563,10 +1563,10 @@ The following other exceptions are defined (all deriving from
 * ``UnreprError``
 
     An error occurred when parsing a value in `unrepr mode`_.
-    
+
 * ``ReloadError``
 
-    ``reload`` was called on a ConfigObj instance that doesn't have a valid 
+    ``reload`` was called on a ConfigObj instance that doesn't have a valid
     filename attribute.
 
 When parsing a configspec, ConfigObj will stop on the first error it
@@ -1616,10 +1616,10 @@ Validation
 
     The system of configspecs can seem confusing at first, but is actually
     quite simple and powerful. The best reference is my article on ConfigObj:
-    
+
     * `An Introduction to ConfigObj`_
-    
-    
+
+
 Validation is done through a combination of the configspec_ and a ``Validator``
 object. For this you need *validate.py* [#]_. See downloading_ if you don't
 have a copy.
@@ -1673,25 +1673,25 @@ An example configspec is going to look something like::
 You can specify default values, and also have the same configspec applied to
 several sections. This is called `repeated sections`_.
 
-For full details on writing configspecs, please refer to the `validate.py
-documentation`_.
+For full details on writing configspecs, please refer to the
+:doc:`validate.py documentation <validate>`.
 
 .. important::
 
     Your configspec is read by ConfigObj in the same way as a config file.
-    
+
     That means you can do interpolation *within* your configspec.
-    
+
     In order to allow this, checks in the 'DEFAULT' section (of the root level
     of your configspec) are *not* used.
-    
+
     If you want to use a configspec *without* interpolation being done in it
     you can create your configspec manually and switch off interpolation:
-    
+
     .. code-block:: python
-    
+
         from configobj import ConfigObj
-        
+
         configspec = ConfigObj(spec_filename, interpolation=False, list_values=False,
                                _inspec=True)
         conf = ConfigObj(config_filename, configspec=configspec)
@@ -1707,8 +1707,6 @@ configspec values then you must also pass in ``_inspec=True``.
     configspec = ConfigObj(configspecfilename, encoding='UTF8',
                            list_values=False, _inspec=True)
     config = ConfigObj(filename, configspec=configspec)
-
-.. _validate.py documentation: :ref:`validate_doc`
 
 
 Type Conversion
@@ -1758,8 +1756,8 @@ List Values
 ~~~~~~~~~~~
 
 It's possible that you will want to specify a list as a default value. To avoid
-confusing syntax with commas and quotes you use a list constructor to specify 
-that keyword arguments are lists. This includes the ``default`` value. This 
+confusing syntax with commas and quotes you use a list constructor to specify
+that keyword arguments are lists. This includes the ``default`` value. This
 makes checks look something like::
 
     checkname(default=list('val1', 'val2', 'val3'))
@@ -1808,7 +1806,7 @@ example, to specify that all values in a section should be integers::
 
     [section]
     __many__ = integer
-	
+
 If you want to use repeated values alongside repeated sections you can call one ``__many__`` and the
 other ``___many___`` (with three underscores).
 
@@ -1836,7 +1834,7 @@ will be copied into your ConfigObj instance.
     config.filename = 'new_default.ini'
     config.validate(vdt, copy=True)
     config.write()
-    
+
 If you need to support hashes in the configspec values then you must create
 it with ``_inspec=True``. This has the side effect of switching off the parsing
 of inline comments, meaning that they won't be copied into the new config file.
@@ -1848,12 +1846,12 @@ Validation and Interpolation
 ----------------------------
 
 String interpolation and validation don't play well together. When validation
-changes type it sets the value. If the value uses interpolation, then the 
+changes type it sets the value. If the value uses interpolation, then the
 interpolation reference would normally be overwritten. Calling ``write`` would
 then use the absolute value and the interpolation reference would be lost.
 
 As a compromise - if the value is unchanged by validation then it is not reset.
-This means strings that pass through validation unmodified will not be 
+This means strings that pass through validation unmodified will not be
 overwritten. If validation changes type - the value has to be overwritten, and
 any interpolation references are lost.
 
@@ -1942,12 +1940,12 @@ ConfigObj to write empty strings as empty values.
     config = ConfigObj(cfg)
     print config
     ConfigObj({'key': '', 'key2': ''})
-    
+
     config.write_empty_values = True
     for line in config.write():
         print line
-    
-    key = 
+
+    key =
     key2 =     # a comment
 
 
@@ -1967,7 +1965,7 @@ The types that ``unrepr`` can work with are :
     | None, True, False
     | dictionaries, integers, floats
     | longs and complex numbers
-    
+
 You can't store classes, types or instances.
 
 ``unrepr`` uses ``repr(object)`` to write out values, so it currently *doesn't*
@@ -1997,7 +1995,7 @@ String Interpolation
 ====================
 
 .. note::
-    
+
     String interpolation can slow down (slightly) the fetching of values
     from your config object. If you aren't using interpolation and it
     is performance critical then create your instance with
@@ -2050,7 +2048,7 @@ interpolation loop, an ``InterpolationLoopError`` is raised.
 Both of these errors are subclasses of ``InterpolationError``, which is a
 subclass of ``ConfigObjError``.
 
-String interpolation and validation don't play well together. This is because 
+String interpolation and validation don't play well together. This is because
 validation overwrites values - and so may erase the interpolation references.
 See `Validation and Interpolation`_. (This can only happen if validation
 has to *change* the value).
@@ -2074,7 +2072,7 @@ original list:
 
     >>> c = ConfigObj()
     >>> c['foo'] = 'boo'
-    >>> c['bar'] = ['%(foo)s'] 
+    >>> c['bar'] = ['%(foo)s']
     >>> c['bar']
     ['boo']
     >>> c['bar'].append('fish')
@@ -2196,7 +2194,7 @@ ConfigObj.
 ``get_extra_values`` returns a list of tuples where each tuple represents
 either an extra section, or an extra value.
 
-The tuples contain two values, a tuple representing the section the value 
+The tuples contain two values, a tuple representing the section the value
 is in and the name of the extra values. For extra values in the top level
 section the first member will be an empty tuple. For values in the 'foo'
 section the first member will be ``('foo',)``. For members in the 'bar'
@@ -2222,25 +2220,25 @@ Here is an example of how you could present this information to the user.
     # ini is your config file - cs is the configspec
     cfg = ConfigObj(ini, configspec=cs)
     cfg.validate(vtor, preserve_errors=True)
-    
+
     for sections, name in get_extra_values(cfg):
-    
+
         # this code gets the extra values themselves
         the_section = cfg
         for section in sections:
             the_section = cfg[section]
-            
+
         # the_value may be a section or a value
         the_value = the_section[name]
-        
+
         section_or_value = 'value
         if isinstance(the_value, dict):
             # Sections are subclasses of dict
             section_or_value = 'section'
-        
+
         section_string = ', '.join(sections) or "top level"
         print 'Extra entry in section: %s. Entry %r is a %s' % (section_string, name, section_or_value)
-        
+
 
 
 CREDITS
@@ -2348,12 +2346,12 @@ you create a ConfigObj instance and provide a configspec, the configspec
 attribute is only set on the ConfigObj instance - it isn't set on the sections until you validate. You also can't set the configspec attribute to be a dictionary. This wasn't documented but did work previously.
 
 In order to fix the problem with hashes in configspecs I had to turn off the parsing of inline comments in configspecs. This will only affect you if you are using ``copy=True`` when validating and expecting inline comments to be copied from the configspec into the ConfigObj instance (all other comments will be copied as usual).
-    
+
 If you *create* the configspec by passing in a ConfigObj instance (usual way is to pass in a filename or list of lines) then you should pass in ``_inspec=True`` to the constructor to allow hashes in values. This is the magic that switches off inline comment parsing.
 
 When using ``copy`` mode for validation, it won't copy ``DEFAULT``
 sections. This is so that you *can* use interpolation in configspec
-files. This is probably true even if interpolation is off in the 
+files. This is probably true even if interpolation is off in the
 configspec.
 
 You can't have a keyword with the same name as a section (in the same
@@ -2434,7 +2432,7 @@ From version 4 it lists all releases and changes.
   now be repr'd.
 * BUGFIX: Fix to avoid writing '\\r\\r\\n' on Windows when given a file opened in
   text write mode ('w').
-  
+
 See `String Interpolation and List Values`_ for information about the problem with lists and interpolation.
 
 
@@ -2487,21 +2485,21 @@ See `String Interpolation and List Values`_ for information about the problem wi
 * Removed the deprecated ``istrue``, ``encode`` and ``decode`` methods
 * Running test_configobj.py now also runs the doctests in the configobj module
 
-As a consequence of the changes to configspec handling, when you create a ConfigObj instance and provide 
-a configspec, the configspec attribute is only set on the ConfigObj instance - it isn't set on the 
-sections until you validate. You also can't set the configspec attribute to be a dictionary. This wasn't 
+As a consequence of the changes to configspec handling, when you create a ConfigObj instance and provide
+a configspec, the configspec attribute is only set on the ConfigObj instance - it isn't set on the
+sections until you validate. You also can't set the configspec attribute to be a dictionary. This wasn't
 documented but did work previously.
 
-In order to fix the problem with hashes in configspecs I had to turn off the parsing of inline comments 
-in configspecs. This will only affect you if you are using ``copy=True`` when validating and expecting 
-inline comments to be copied from the configspec into the ConfigObj instance (all other comments will be 
+In order to fix the problem with hashes in configspecs I had to turn off the parsing of inline comments
+in configspecs. This will only affect you if you are using ``copy=True`` when validating and expecting
+inline comments to be copied from the configspec into the ConfigObj instance (all other comments will be
 copied as usual).
-    
-If you *create* the configspec by passing in a ConfigObj instance (usual way is to pass in a filename or 
-list of lines) then you should pass in ``_inspec=True`` to the constructor to allow hashes in values. 
+
+If you *create* the configspec by passing in a ConfigObj instance (usual way is to pass in a filename or
+list of lines) then you should pass in ``_inspec=True`` to the constructor to allow hashes in values.
 This is the magic that switches off inline comment parsing.
 
-    
+
 2008/06/27 - Version 4.5.3
 --------------------------
 
@@ -2529,18 +2527,18 @@ Unicode configspecs now work.
 ConfigObj will now guarantee that files will be written terminated with a
 newline.
 
-ConfigObj will no longer attempt to import the ``validate`` module, until/unless 
-you call ``ConfigObj.validate`` with ``preserve_errors=True``. This makes it 
+ConfigObj will no longer attempt to import the ``validate`` module, until/unless
+you call ``ConfigObj.validate`` with ``preserve_errors=True``. This makes it
 faster to import.
 
 New methods ``restore_default`` and ``restore_defaults``. ``restore_default``
 resets an entry to its default value (and returns that value). ``restore_defaults``
-resets all entries to their default value. It doesn't modify entries without a 
+resets all entries to their default value. It doesn't modify entries without a
 default value. You must have validated a ConfigObj (which populates the
 ``default_values`` dictionary) before calling these methods.
 
-BUGFIX: Proper quoting of keys, values and list values that contain hashes 
-(when writing).  When ``list_values=False``, values containing hashes are 
+BUGFIX: Proper quoting of keys, values and list values that contain hashes
+(when writing).  When ``list_values=False``, values containing hashes are
 triple quoted.
 
 Added the ``reload`` method. This reloads a ConfigObj from file. If the filename
@@ -2732,7 +2730,7 @@ Added ``preserve_errors`` to ``validate`` and the ``flatten_errors``
 example function.
 
 Thanks to Matthew Brett for suggestions and helping me iron out bugs.
-    
+
 Fixed bug where a config file is *all* comment, the comment will now be
 ``initial_comment`` rather than ``final_comment``.
 
@@ -2768,7 +2766,7 @@ List values are written as ``item, item`` rather than ``item,item``.
 **ConfigObj 4.0.0 Final**
 
 Fixed bug in ``setdefault``. When creating a new section with setdefault the
-reference returned would be to the dictionary passed in *not* to the new 
+reference returned would be to the dictionary passed in *not* to the new
 section. Bug fixed and behaviour documented.
 
 Obscure typo/bug fixed in ``write``. Wouldn't have affected anyone though.
@@ -2787,7 +2785,7 @@ Fixed bug with commas in comments. (matched as a list value)
 2005/09/07 - Version 4.0.0 beta 4
 ---------------------------------
 
-Fixed bug in ``__delitem__``. Deleting an item no longer deletes the 
+Fixed bug in ``__delitem__``. Deleting an item no longer deletes the
 ``inline_comments`` attribute.
 
 Fixed bug in initialising ConfigObj from a ConfigObj.
@@ -2864,7 +2862,7 @@ It also preserves the original casing of keywords when writing them back out.
 
 Comments are also saved using a ``caselessDict``.
 
-Using a non-string key will now raise a ``TypeError`` rather than converting 
+Using a non-string key will now raise a ``TypeError`` rather than converting
 the key.
 
 Added an exceptions keyword for *much* better handling of errors.
@@ -2874,7 +2872,7 @@ Made ``creatempty=False`` the default.
 Now checks indict *and* any keyword args. Keyword args take precedence over
 indict.
 
-``' ', ':', '=', ','`` and ``'\t'`` are now all valid dividers where the 
+``' ', ':', '=', ','`` and ``'\t'`` are now all valid dividers where the
 keyword is unquoted.
 
 ConfigObj now does no type checking against configspec when you set items.
@@ -2953,13 +2951,9 @@ Footnotes
     the seek method of any file like object you pass in. You may want to call
     ``file_object.seek(0)`` yourself, first.
 
-.. [#] A side effect of this is that it enables you to copy a ConfigObj :
-
-    .. code-block:: python
-
-        # only copies members
-        # not attributes/comments
-        config2 = ConfigObj(config1)
+.. [#] A side effect of this is that it enables you to copy a ConfigObj
+    by using ``config2 = ConfigObj(config1)``; be aware this only copies members,
+    but not attributes/comments.
 
     Since ConfigObj 4.7.0 the order of members and sections will be
     preserved when copying a ConfigObj instance.
@@ -2968,7 +2962,7 @@ Footnotes
 
 .. [#] The exception is if it detects a ``UTF16`` encoded file which it
     must decode before parsing.
-     
+
 .. [#] The method signature shows that this method takes
     two arguments. The second is the section to be written. This is because the
     ``write`` method is called recursively.
@@ -2983,4 +2977,3 @@ Footnotes
     access to the *rename* method of the section.
 
 .. [#] Minimum required version of *validate.py* 0.2.0 .
-
