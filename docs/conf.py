@@ -195,10 +195,11 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
-latex_documents = [
-  ('index', 'configobj.tex', u'configobj Documentation',
-   u'Michael Foord, Nicola Larosa, Rob Dennis, Eli Courtwright', 'manual'),
-]
+# XXX: fails on RTD right now, reactivate later (PDF in the cloud isn't that essential)
+#latex_documents = [
+#  ('index', 'configobj.tex', u'configobj Documentation',
+#   u'Michael Foord, Nicola Larosa, Rob Dennis, Eli Courtwright', 'manual'),
+#]
 
 # The name of an image file (relative to this directory) to place at the top of
 # the title page.
