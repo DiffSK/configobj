@@ -6,7 +6,7 @@ invoke==0.11.1
 #rituals==0.3.0
 -e git+https://github.com/jhermann/rituals.git#egg=rituals
 
-Sphinx==1.3.3
+Sphinx==1.3.4
 sphinx-autobuild==0.5.2
 
 pylint==1.5.1
