@@ -1,11 +1,8 @@
 .. _validate_doc:
 
-===================================
- Validation Schema with validate.py
-===================================
---------------------------
+---------------------------
  Using the Validator class
---------------------------
+---------------------------
 
 
 :Authors: Michael Foord, Nicola Larosa, Rob Dennis, Eli Courtwright, Mark Andrews
@@ -122,14 +119,14 @@ The full set of standard checks are :
             dotted-quad string, i.e. '1.2.3.4'.
 
 :'list': matches any list. Takes optional keyword args 'min', and 'max' to
-         specify min and max sizes of the list. The list checks always 
+         specify min and max sizes of the list. The list checks always
          return a list.
-         
+
 :force_list: matches any list, but if a single value is passed in will
              coerce it into a list containing that value. Useful for
              configobj if the user forgot the trailing comma to turn
              a single value into a list.
-         
+
 :'tuple': matches any list. This check returns a tuple rather than a list.
 
 :'int_list': Matches a list of integers. Takes the same arguments as list.
@@ -320,7 +317,7 @@ that this check contains no useful value when missing, i.e. the value is
 optional, and may be omitted without harm.
 
 
-.. note:: 
+.. note::
 
     As of version 0.3.0, if you specify ``default='None'`` (note the quote marks
     around ``None``) then it will be interpreted as the string ``'None'``.
@@ -343,12 +340,12 @@ This makes checks look something like::
 get_default_value
 -----------------
 
-``Validator`` instances have a ``get_default_value`` method. It takes a ``check`` string 
+``Validator`` instances have a ``get_default_value`` method. It takes a ``check`` string
 (the same string you would pass to the ``check`` method) and returns the default value,
 converted to the right type. If the check doesn't define a default value then this method
 raises a ``KeyError``.
 
-If the ``check`` has been seen before then it will have been parsed and cached already, 
+If the ``check`` has been seen before then it will have been parsed and cached already,
 so this method is not expensive to call (however the conversion is done each time).
 
 
@@ -365,7 +362,7 @@ Validator Exceptions
 ``vtor.check`` indicates that the check has failed by raising an exception.
 The appropriate error should be raised in the check function.
 
-The base error class is ``ValidateError``. All errors (except for ``VdtParamError``) 
+The base error class is ``ValidateError``. All errors (except for ``VdtParamError``)
 raised are sub-classes of this.
 
 If an unrecognised check is specified then ``VdtUnknownCheckError`` is
@@ -375,7 +372,7 @@ There are also ``VdtTypeError`` and ``VdtValueError``.
 
 If incorrect parameters are passed to a check function then it will (or should)
 raise ``VdtParamError``. As this indicates *programmer* error, rather than an error
-in the value, it is a subclass of ``SyntaxError`` instead of ``ValidateError``. 
+in the value, it is a subclass of ``SyntaxError`` instead of ``ValidateError``.
 
 .. note::
 
@@ -424,7 +421,7 @@ All parameters and keyword arguments are *always* passed as strings. (Parsed
 from the check string).
 
 The value might be a string (or list of strings) and need
-converting to the right type - alternatively it might already be a list of 
+converting to the right type - alternatively it might already be a list of
 integers. Our function needs to be able to handle either.
 
 If the check passes then it should return the value (possibly converted to the
@@ -500,21 +497,21 @@ Any other type is a ``VdtTypeError``, any other value is a
         # return the new list
         return out
 
-If you are only using validate from ConfigObj then the error type (*TooBig*, 
+If you are only using validate from ConfigObj then the error type (*TooBig*,
 *TooSmall*, etc) is lost - so you may only want to raise ``VdtValueError``.
 
 .. caution::
 
-    If your function raises an exception that isn't a subclass of 
-    ``ValidateError``, then ConfigObj won't trap it. This means validation will 
+    If your function raises an exception that isn't a subclass of
+    ``ValidateError``, then ConfigObj won't trap it. This means validation will
     fail.
-    
-    This is why our function starts by checking the type of the value. If we 
-    are passed the wrong type (e.g. an integer rather than a list) we get a 
-    ``VdtTypeError`` rather than bombing out when we try to iterate over 
+
+    This is why our function starts by checking the type of the value. If we
+    are passed the wrong type (e.g. an integer rather than a list) we get a
+    ``VdtTypeError`` rather than bombing out when we try to iterate over
     the value.
 
-If you are using validate in another circumstance you may want to create your 
+If you are using validate in another circumstance you may want to create your
 own subclasses of ``ValidateError`` which convey more specific information.
 
 
@@ -525,11 +522,11 @@ The following parses and then blows up. The resulting error message
 is confusing:
 
     ``checkname(default=list(1, 2, 3, 4)``
-    
+
 This is because it parses as: ``checkname(default="list(1", 2, 3, 4)``.
 That isn't actually unreasonable, but the error message won't help you
 work out what has happened.
-    
+
 
 TODO
 ====
@@ -658,5 +655,3 @@ Does type conversion as well.
 -----------------------------
 
 Initial version developed by Michael Foord and Mark Andrews.
-
-

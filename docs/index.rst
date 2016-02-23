@@ -6,7 +6,13 @@
 Welcome to configobj's documentation!
 =====================================
 
-Contents:
+This manual consists of two parts,
+the first shows you how to :doc:`read and write config files <configobj>`,
+the second covers :doc:`using a validation schema <validate>`,
+to verify that a given config file adheres to defined rules.
+
+
+**Contents**
 
 .. toctree::
    :numbered:
@@ -21,4 +27,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
