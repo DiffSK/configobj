@@ -1,0 +1,13 @@
+/* Custom styles */
+
+@import url("theme.css");
+
+code, .rst-content tt, .rst-content code {
+    font-size: 95%;
+}
+.note p code, .note div div pre {
+    background-color: #E7F2FC;
+}
+.warning p code, .warning div div pre {
+    background-color: #FFF8DD;
+}
