@@ -3,5 +3,5 @@
 #
 include README.md LICENSE *.txt *.ini test_*.py .travis.yml .coveragerc
 recursive-include tests *.py *.spec *.ini
-recursive-include docs Makefile *.bat *.conf *.css *.html *.py *.rst
+recursive-include docs Makefile *.bat *.conf *.css *.html *.py *.rst *.txt
 prune docs/_build
