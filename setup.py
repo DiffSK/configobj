@@ -81,6 +81,7 @@ It has lots of other features though :
 | fixes some bugs."""
 
 CLASSIFIERS = [
+    # Details at http://pypi.python.org/pypi?:action=list_classifiers
     'Development Status :: 6 - Mature',
     'Intended Audience :: Developers',
     'License :: OSI Approved :: BSD License',
@@ -89,8 +90,8 @@ CLASSIFIERS = [
     'Programming Language :: Python :: 2.6',
     'Programming Language :: Python :: 2.7',
     'Programming Language :: Python :: 3',
-    'Programming Language :: Python :: 3.2',
     'Programming Language :: Python :: 3.3',
+    'Programming Language :: Python :: 3.4',
     'Operating System :: OS Independent',
     'Topic :: Software Development :: Libraries',
     'Topic :: Software Development :: Libraries :: Python Modules',
