@@ -1656,26 +1656,24 @@ class ConfigObj(Section):
                             comment = ''
                             try:
                                 value = unrepr(value)
-                            except Exception as e:
-                                if type(e) == UnknownType:
+                            except Exception as cause:
+                                if isinstance(cause, UnknownType):
                                     msg = 'Unknown name or type in value'
                                 else:
                                     msg = 'Parse error from unrepr-ing multiline value'
-                                self._handle_error(msg, UnreprError, infile,
-                                    cur_index)
+                                self._handle_error(msg, UnreprError, infile, cur_index)
                                 continue
                 else:
                     if self.unrepr:
                         comment = ''
                         try:
                             value = unrepr(value)
-                        except Exception as e:
-                            if isinstance(e, UnknownType):
+                        except Exception as cause:
+                            if isinstance(cause, UnknownType):
                                 msg = 'Unknown name or type in value'
                             else:
                                 msg = 'Parse error from unrepr-ing value'
-                            self._handle_error(msg, UnreprError, infile,
-                                cur_index)
+                            self._handle_error(msg, UnreprError, infile, cur_index)
                             continue
                     else:
                         # extract comment and lists
@@ -1946,12 +1944,12 @@ class ConfigObj(Section):
                                        raise_errors=True,
                                        file_error=True,
                                        _inspec=True)
-            except ConfigObjError as e:
+            except ConfigObjError as cause:
                 # FIXME: Should these errors have a reference
                 #        to the already parsed ConfigObj ?
-                raise ConfigspecError('Parsing configspec failed: %s' % e)
-            except IOError as e:
-                raise IOError('Reading configspec failed: %s' % e)
+                raise ConfigspecError('Parsing configspec failed: %s' % cause)
+            except IOError as cause:
+                raise IOError('Reading configspec failed: %s' % cause)
 
         self.configspec = configspec
 
@@ -2210,12 +2208,12 @@ class ConfigObj(Section):
                                         val,
                                         missing=missing
                                         )
-            except validator.baseErrorClass as e:
-                if not preserve_errors or isinstance(e, self._vdtMissingValue):
+            except validator.baseErrorClass as cause:
+                if not preserve_errors or isinstance(cause, self._vdtMissingValue):
                     out[entry] = False
                 else:
                     # preserve the error
-                    out[entry] = e
+                    out[entry] = cause
                     ret_false = False
                 ret_true = False
             else:
