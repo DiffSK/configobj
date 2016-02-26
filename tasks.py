@@ -37,9 +37,7 @@ import tempfile
 from rituals.easy import *  # pylint: disable=redefined-builtin
 
 
-@task(help={
-    'pty': "Whether to run commands under a pseudo-tty",
-})  # pylint: disable=invalid-name
+@task
 def ci(ctx):
     """Perform continuous integration tasks."""
     opts = ['']
