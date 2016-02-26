@@ -830,7 +830,8 @@ def is_integer(value, min=None, max=None):
     >>> vtor.check('integer(0, 9)', False)
     0
     """
-    (min_val, max_val) = _is_num_param(('min', 'max'), (min, max))
+    (min_val, max_val) = _is_num_param(  # pylint: disable=unbalanced-tuple-unpacking
+        ('min', 'max'), (min, max))
     if not isinstance(value, (int, long, string_type)):
         raise VdtTypeError(value)
     if isinstance(value, string_type):
@@ -881,7 +882,7 @@ def is_float(value, min=None, max=None):
     Traceback (most recent call last):
     VdtValueTooBigError: the value "35.0" is too big.
     """
-    (min_val, max_val) = _is_num_param(
+    (min_val, max_val) = _is_num_param(  # pylint: disable=unbalanced-tuple-unpacking
         ('min', 'max'), (min, max), to_float=True)
     if not isinstance(value, (int, long, float, string_type)):
         raise VdtTypeError(value)
@@ -1032,7 +1033,8 @@ def is_list(value, min=None, max=None):
     Traceback (most recent call last):
     VdtTypeError: the value "12" is of the wrong type.
     """
-    (min_len, max_len) = _is_num_param(('min', 'max'), (min, max))
+    (min_len, max_len) = _is_num_param(  # pylint: disable=unbalanced-tuple-unpacking
+        ('min', 'max'), (min, max))
     if isinstance(value, string_type):
         raise VdtTypeError(value)
     try:
@@ -1104,7 +1106,8 @@ def is_string(value, min=None, max=None):
     """
     if not isinstance(value, string_type):
         raise VdtTypeError(value)
-    (min_len, max_len) = _is_num_param(('min', 'max'), (min, max))
+    (min_len, max_len) = _is_num_param(  # pylint: disable=unbalanced-tuple-unpacking
+        ('min', 'max'), (min, max))
     try:
         num_members = len(value)
     except TypeError:
