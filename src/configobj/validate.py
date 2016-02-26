@@ -387,13 +387,21 @@ class VdtUnknownCheckError(ValidateError):
 class VdtParamError(SyntaxError):
     """An incorrect parameter was passed"""
 
-    def __init__(self, name, value):
+    NOT_GIVEN = object()
+
+    def __init__(self, name_or_msg, value=NOT_GIVEN):
         """
         >>> raise VdtParamError('yoda', 'jedi')
         Traceback (most recent call last):
         VdtParamError: passed an incorrect value "jedi" for parameter "yoda".
+        >>> raise VdtParamError('preformatted message')
+        Traceback (most recent call last):
+        VdtParamError: preformatted message
         """
-        SyntaxError.__init__(self, 'passed an incorrect value "%s" for parameter "%s".' % (value, name))
+        if value is self.NOT_GIVEN:
+            SyntaxError.__init__(self, name_or_msg)
+        else:
+            SyntaxError.__init__(self, 'passed an incorrect value "%s" for parameter "%s".' % (value, name_or_msg))
 
 
 class VdtTypeError(ValidateError):
