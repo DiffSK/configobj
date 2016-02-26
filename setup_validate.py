@@ -12,7 +12,7 @@
 # http://opensource.org/licenses/BSD-3-Clause
 
 import sys
-from distutils.core import setup
+from setuptools import setup
 from validate import __version__ as VERSION
 
 NAME = 'validate'
