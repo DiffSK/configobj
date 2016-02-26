@@ -48,7 +48,7 @@ cd "configobj"
 invoke build --docs test check
 ```
 
-To start a watchdog that auto-rebuilds documenation and reloads the opened browser tab on any change,
+To start a watchdog that auto-rebuilds documentation and reloads the opened browser tab on any change,
 call ``invoke docs -w -b`` (stop the watchdog using the ``-k`` option).
 
 You might also need to follow some
