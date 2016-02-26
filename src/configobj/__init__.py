@@ -146,9 +146,10 @@ class UnknownType(Exception):
 class Builder(object):
 
     def build(self, o):
-        if m is None:
+        # XXX: There is no 'm' anywhere?! (and the name really sucks)
+        if m is None:  # pylint: disable=undefined-variable
             raise UnknownType(o.__class__.__name__)
-        return m(o)
+        return m(o)  # pylint: disable=undefined-variable
 
     def build_List(self, o):
         return list(map(self.build, o.getChildren()))
