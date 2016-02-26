@@ -1,6 +1,6 @@
 # configobj_test.py
 # -*- coding: utf-8 -*-
-# pylint: disable=wildcard-import, unused-wildcard-import, invalid-name
+# pylint: disable=wildcard-import, unused-wildcard-import, unused-import, invalid-name
 
 """doctests for ConfigObj"""
 
@@ -975,7 +975,7 @@ if __name__ == '__main__':
         m, globs=globs,
         optionflags=doctest.IGNORE_EXCEPTION_DETAIL | doctest.ELLIPSIS)
 
-    import configobj
+    import configobj  # pylint: disable=wrong-import-position
     post_failures, post_tests = doctest.testmod(
         configobj, globs=globs,
         optionflags=doctest.IGNORE_EXCEPTION_DETAIL | doctest.ELLIPSIS)
