@@ -1,6 +1,9 @@
 # configobj_test.py
-# doctests for ConfigObj
-# A config file reader/writer that supports nested sections in config files.
+# -*- coding: utf-8 -*-
+# pylint: disable=wildcard-import, unused-wildcard-import, invalid-name
+
+"""doctests for ConfigObj"""
+
 # Copyright (C) 2005-2014:
 # (name) : (email)
 # Michael Foord: fuzzyman AT voidspace DOT org DOT uk
@@ -15,6 +18,9 @@
 # https://github.com/DiffSK/configobj
 
 import sys
+import doctest
+from codecs import BOM_UTF8
+
 # StringIO is used to simulate config files during doctests
 if sys.version_info >= (3,):
     # Python 3.x case (io does exist in 2.7, but better to use the 2.x case):
@@ -24,16 +30,12 @@ else:
     # Python 2.x case, explicitly NOT using cStringIO due to unicode edge cases
     from StringIO import StringIO
 
-import os
-import sys
+from configobj import *
+from validate import Validator, VdtValueTooSmallError
+
 INTP_VER = sys.version_info[:2]
 if INTP_VER < (2, 2):
     raise RuntimeError("Python v.2.2 or later needed")
-
-from codecs import BOM_UTF8
-
-from configobj import *
-from validate import Validator, VdtValueTooSmallError
 
 
 def _test_validate():
@@ -963,7 +965,6 @@ if __name__ == '__main__':
     # twoTabsCfg = ['[sect]', '\t\t[[sect]]', '\t\t\t\tfoo = bar']
     # tabsAndSpacesCfg = [b'[sect]', b'\t \t [[sect]]', b'\t \t \t \t foo = bar']
     #
-    import doctest
     m = sys.modules.get('__main__')
     globs = m.__dict__.copy()
     a = ConfigObj(testconfig1.split('\n'), raise_errors=True)

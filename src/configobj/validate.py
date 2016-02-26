@@ -1,5 +1,9 @@
 # validate.py
-# A Validator object
+# -*- coding: utf-8 -*-
+# pylint: disable=
+#
+# A Validator object.
+#
 # Copyright (C) 2005-2014:
 # (name) : (email)
 # Michael Foord: fuzzyman AT voidspace DOT org DOT uk
@@ -125,9 +129,11 @@
 
     A badly formatted set of arguments will raise a ``VdtParamError``.
 """
+import re
+import sys
+from pprint import pprint
 
 __version__ = '1.0.1'
-
 
 __all__ = (
     'dottedQuadToNum',
@@ -160,10 +166,6 @@ __all__ = (
     # '__docformat__',  -- where is this supposed to come from? [jhe 2015-04-11]
 )
 
-
-import re
-import sys
-from pprint import pprint
 
 #TODO - #21 - six is part of the repo now, but we didn't switch over to it here
 # this could be replaced if six is used for compatibility, or there are no

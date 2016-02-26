@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# pylint: disable=wildcard-import, unused-wildcard-import, bad-continuation
+# pylint: disable=wildcard-import, unused-wildcard-import, bad-continuation, invalid-name
 """ Project automation for Invoke.
 """
 # Copyright ©  2015 Jürgen Hermann <jh@web.de>
@@ -31,8 +31,6 @@
 from __future__ import absolute_import, unicode_literals
 
 import os
-import shutil
-import tempfile
 
 from rituals.easy import *  # pylint: disable=redefined-builtin
 

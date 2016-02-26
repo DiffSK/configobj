@@ -1,6 +1,7 @@
 # *- coding: utf-8 -*-
 # pylint: disable=wildcard-import, missing-docstring, no-self-use, bad-continuation
 # pylint: disable=invalid-name, redefined-outer-name, too-few-public-methods
+"""Validator tests"""
 
 from configobj import ConfigObj
 import pytest

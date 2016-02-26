@@ -1,5 +1,9 @@
 # validate.py
-# A Validator object
+# -*- coding: utf-8 -*-
+# pylint: disable=wildcard-import, unused-wildcard-import
+#
+# A Validator object (deprecation shim)
+#
 # Copyright (C) 2005-2014:
 # (name) : (email)
 # Michael Foord: fuzzyman AT voidspace DOT org DOT uk
@@ -25,10 +29,10 @@ from __future__ import absolute_import, unicode_literals
 
 import warnings
 
+from configobj.validate import *
+
 # version of the shim, just to satisfy the old API surface
 __version__ = '1.1.0'
 
 warnings.warn("top-level 'validate' moved to 'configobj.validate',"
               " please adapt your imports", ImportWarning)
-
-from configobj.validate import *  # pylint: disable=wildcard-import

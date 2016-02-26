@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # setup.py
-# Install script for ConfigObj
+# -*- coding: utf-8 -*-
+# pylint: disable=invalid-name
+
+"""Install script for ConfigObj"""
+
 # Copyright (C) 2005-2014:
 # (name) : (email)
 # Michael Foord: fuzzyman AT voidspace DOT org DOT uk

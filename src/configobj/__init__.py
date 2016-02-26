@@ -1,5 +1,9 @@
 # configobj.py
-# A config file reader/writer that supports nested sections in config files.
+# -*- coding: utf-8 -*-
+# pylint: disable=bad-continuation
+
+"""A config file reader/writer that supports nested sections in config files."""
+
 # Copyright (C) 2005-2014:
 # (name) : (email)
 # Michael Foord: fuzzyman AT voidspace DOT org DOT uk

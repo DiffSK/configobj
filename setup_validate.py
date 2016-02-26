@@ -1,5 +1,7 @@
 # setup.py
-# Install script for validate
+
+"""Install script for validate shim"""
+
 # Copyright (C) 2005-2014:
 # (name) : (email)
 # Michael Foord: fuzzyman AT voidspace DOT org DOT uk
@@ -11,7 +13,6 @@
 # This software is licensed under the terms of the BSD license.
 # http://opensource.org/licenses/BSD-3-Clause
 
-import sys
 from setuptools import setup
 from validate import __version__ as VERSION
 
