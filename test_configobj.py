@@ -55,7 +55,7 @@ def _test_validate():
     3
 
     Now testing with repeated sections : BIG TEST
-    
+
     >>> repeated_1 = '''
     ... [dogs]
     ...     [[__many__]] # spec for a dog
@@ -76,7 +76,7 @@ def _test_validate():
     ...         '''.split('\\n')
     >>> repeated_2 = '''
     ... [dogs]
-    ... 
+    ...
     ...     # blank dogs with puppies
     ...     # should be filled in by the configspec
     ...     [[dog1]]
@@ -92,7 +92,7 @@ def _test_validate():
     ...         [[[puppy2]]]
     ...         [[[puppy3]]]
     ... [cats]
-    ... 
+    ...
     ...     # blank cats with kittens
     ...     # should be filled in by the configspec
     ...     [[cat1]]
@@ -110,19 +110,19 @@ def _test_validate():
     ... '''.split('\\n')
     >>> repeated_3 = '''
     ... [dogs]
-    ... 
+    ...
     ...     [[dog1]]
     ...     [[dog2]]
     ...     [[dog3]]
     ... [cats]
-    ... 
+    ...
     ...     [[cat1]]
     ...     [[cat2]]
     ...     [[cat3]]
     ... '''.split('\\n')
     >>> repeated_4 = '''
     ... [__many__]
-    ... 
+    ...
     ...     name = string(default=Michael)
     ...     age = float(default=0.0)
     ...     sex = option(m, f, default=m)
@@ -267,7 +267,7 @@ def _test_validate():
     ...     },
     ... }
     1
-    
+
     Test that interpolation is preserved for validated string values.
     Also check that interpolation works in configspecs.
     >>> t = ConfigObj(configspec=['test = string'])
@@ -333,7 +333,7 @@ def _test_validate():
     >>> o = ConfigObj(configspec=configspec)
     >>> o.validate(val)
     0
-    
+
     Test Flatten Errors
     >>> vtor = Validator()
     >>> my_ini = '''
@@ -433,7 +433,7 @@ def _test_errors():
     1
     >>> the_error = e.errors[0]
     >>> assert(isinstance(the_error, UnreprError))
-    
+
     >>> multiple_bad_syntax = '''
     ... key = "value"
     ... key2 = "value
@@ -472,7 +472,7 @@ def _test_errors():
     1
     >>> the_error = e.errors[1]
     >>> assert(isinstance(the_error, UnreprError))
-    
+
     >>> unknown_name = '''
     ... key = "value"
     ... key2 = value
@@ -504,7 +504,7 @@ def _test_validate_with_copy_and_many():
     >>> c['section']['something']['value'] == 'nothing'
     True
     """
-    
+
 def _test_configspec_with_hash():
     """
     >>> spec = ['stuff = string(default="#ff00dd")']
@@ -517,8 +517,8 @@ def _test_configspec_with_hash():
     1
     >>> c['stuff']
     '#ff00dd'
-    
-    
+
+
     >>> spec = ['stuff = string(default="fish") # wooble']
     >>> c = ConfigObj(spec, _inspec=True)
     >>> c['stuff']
@@ -537,8 +537,8 @@ def _test_many_check():
     True
     >>> isinstance(c['b'], int)
     True
-    
-    
+
+
     >>> spec = ['[name]', '__many__ = integer()']
     >>> config = ['[name]', 'a = 6', 'b = 7']
     >>> c = ConfigObj(config, configspec=spec)
@@ -549,8 +549,8 @@ def _test_many_check():
     True
     >>> isinstance(c['name']['b'], int)
     True
-    
-    
+
+
     >>> spec = ['[__many__]', '__many__ = integer()']
     >>> config = ['[name]', 'hello = 7', '[thing]', 'fish = 0']
     >>> c = ConfigObj(config, configspec=spec)
@@ -561,8 +561,8 @@ def _test_many_check():
     True
     >>> isinstance(c['thing']['fish'], int)
     True
-    
-    
+
+
     >>> spec = '''
     ... ___many___ = integer
     ... [__many__]
@@ -610,8 +610,8 @@ def _test_many_check():
     True
     >>> isinstance(c['bye']['lots']['whoops'], float)
     True
-    
-    
+
+
     >>> spec = ['___many___ = integer()']
     >>> config = ['a = 6', 'b = 7']
     >>> c = ConfigObj(config, configspec=spec)
@@ -623,7 +623,7 @@ def _test_many_check():
     >>> isinstance(c['b'], int)
     True
 
-    
+
     >>> spec = '''
     ... [__many__]
     ... [[__many__]]
@@ -651,10 +651,10 @@ def _test_many_check():
     True
     >>> isinstance(c['bye']['lots']['whoops'], float)
     True
-    
-    >>> s = ['[dog]', '[[cow]]', 'something = boolean', '[[__many__]]', 
+
+    >>> s = ['[dog]', '[[cow]]', 'something = boolean', '[[__many__]]',
     ...      'fish = integer']
-    >>> c = ['[dog]', '[[cow]]', 'something = true', '[[ob]]', 
+    >>> c = ['[dog]', '[[cow]]', 'something = true', '[[ob]]',
     ...      'fish = 3', '[[bo]]', 'fish = 6']
     >>> ini = ConfigObj(c, configspec=s)
     >>> v = Validator()
@@ -666,11 +666,11 @@ def _test_many_check():
     3
     >>> ini['dog']['bo']['fish']
     6
-    
-    
-    >>> s = ['[cow]', 'something = boolean', '[__many__]', 
+
+
+    >>> s = ['[cow]', 'something = boolean', '[__many__]',
     ...      'fish = integer']
-    >>> c = ['[cow]', 'something = true', '[ob]', 
+    >>> c = ['[cow]', 'something = true', '[ob]',
     ...      'fish = 3', '[bo]', 'fish = 6']
     >>> ini = ConfigObj(c, configspec=s)
     >>> v = Validator()
@@ -684,14 +684,14 @@ def _test_many_check():
     6
     """
 
-    
+
 def _unexpected_validation_errors():
     """
-    Although the input is nonsensical we should not crash but correctly 
+    Although the input is nonsensical we should not crash but correctly
     report the failure to validate
-    
+
     # section specified, got scalar
-    >>> from validate import ValidateError 
+    >>> from validate import ValidateError
     >>> s = ['[cow]', 'something = boolean']
     >>> c = ['cow = true']
     >>> ini = ConfigObj(c, configspec=s)
@@ -707,7 +707,7 @@ def _unexpected_validation_errors():
     ...     print(str(entry[2]))
     True
     Section 'cow' was provided as a single value
-    
+
 
     # scalar specified, got section
     >>> s = ['something = boolean']
@@ -716,7 +716,7 @@ def _unexpected_validation_errors():
     >>> v = Validator()
     >>> ini.validate(v)
     0
-    
+
     >>> ini = ConfigObj(c, configspec=s)
     >>> res = ini.validate(v, preserve_errors=True)
     >>> check = flatten_errors(ini, res)
@@ -725,7 +725,7 @@ def _unexpected_validation_errors():
     ...     print(str(entry[2]))
     True
     Value 'something' was provided as a section
-    
+
     # unexpected section
     >>> s = []
     >>> c = ['[cow]', 'dog = true']
@@ -733,8 +733,8 @@ def _unexpected_validation_errors():
     >>> v = Validator()
     >>> ini.validate(v)
     1
-    
-    
+
+
     >>> s = ['[cow]', 'dog = boolean']
     >>> c = ['[cow]', 'dog = true']
     >>> ini = ConfigObj(c, configspec=s)
@@ -742,7 +742,7 @@ def _unexpected_validation_errors():
     >>> ini.validate(v, preserve_errors=True)
     1
     """
-    
+
 def _test_pickle():
     """
     >>> import pickle
@@ -928,7 +928,7 @@ if __name__ == '__main__':
                         keys21 = val1
                         keys22 = val2
                         keys23 = val3
-                        
+
                             [['section 2 sub 1']]
                             fish = 3
     """

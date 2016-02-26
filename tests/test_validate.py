@@ -1,4 +1,6 @@
-# coding=utf-8
+# *- coding: utf-8 -*-
+# pylint: disable=wildcard-import, missing-docstring, no-self-use, bad-continuation
+# pylint: disable=invalid-name, redefined-outer-name, too-few-public-methods
 
 from configobj import ConfigObj
 import pytest
@@ -63,7 +65,7 @@ class TestBasic(object):
         with pytest.raises(VdtValueTooSmallError) as excinfo:
             val.check(c1.configspec['test4'], c1['test4'])
         assert str(excinfo.value) == 'the value "5.0" is too small.'
-    
+
     def test_values(self, val):
         val_test_config = '''
             key = 0
@@ -88,7 +90,7 @@ class TestBasic(object):
         val_test['key'] = 'text not a digit'
         val_res = val_test.validate(val)
         assert val_res == {'key2': True, 'section': True, 'key': False}
-        
+
     def test_defaults(self, val):
         configspec = '''
             test1=integer(30,50, default=40)

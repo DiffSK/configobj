@@ -1,4 +1,6 @@
-# coding=utf-8
+# *- coding: utf-8 -*-
+# pylint: disable=wildcard-import, missing-docstring, no-self-use, bad-continuation
+# pylint: disable=invalid-name, redefined-outer-name, too-few-public-methods
 from __future__ import unicode_literals
 import os
 import re
@@ -368,7 +370,7 @@ def test_configobj_dict_representation(a, b, cfg_contents):
             'key1': 'val',
             },
         }
-    
+
     assert b.depth == 0
     assert b == {
         'key3': 'val3',
@@ -764,7 +766,7 @@ def test_reset_a_configobj():
     cfg.defaults = something
     cfg.default_values = something
     cfg.reset()
-    
+
     assert cfg.filename is None
     assert cfg.raise_errors is False
     assert cfg.list_values is True
@@ -874,7 +876,7 @@ class TestDuplicates(object):
         with pytest.raises(DuplicateError) as excinfo:
             ConfigObj(cfg.splitlines(), raise_errors=True)
         assert str(excinfo.value) == 'Duplicate section name at line 6.'
-    
+
     def test_duplicate_members(self):
         d = '''
         [hello]
@@ -1009,7 +1011,7 @@ class TestQuotes(object):
     def test_handle_unallowed_open_quote(self, i):
         open_quote = ' "\' '
         self.assert_bad_quote_message(i, open_quote, multiline=False)
-        
+
     def test_handle_multiple_bad_quote_values(self):
         testconfig5 = '''
         config = "hello   # comment
@@ -1076,7 +1078,7 @@ class TestValues(object):
         assert cfg['b'] == 'test,'
         assert cfg['c'] == 'test1, test2   , test3'
         assert cfg['d'] == 'test1, test2, test3,'
-        
+
     def test_handle_multiple_list_value_errors(self):
         testconfig4 = '''
         config = 3,4,,
@@ -1088,8 +1090,8 @@ class TestValues(object):
             ConfigObj(testconfig4.splitlines())
         assert len(excinfo.value.errors) == 4
 
-        
-        
+
+
 def test_creating_with_a_dictionary():
     dictionary_cfg_content = {
         'key1': 'val1',
@@ -1229,7 +1231,7 @@ def test_interpolation_using_default_sections():
     c['DEFAULT'] = {'a' : 'fish'}
     c['a'] = '%(a)s'
     assert c.write() == ['a = %(a)s', '[DEFAULT]', 'a = fish']
-    
+
 
 class TestIndentation(object):
     @pytest.fixture
@@ -1276,7 +1278,7 @@ class TestEdgeCasesWhenWritingOut(object):
         collector = six.BytesIO()
         empty_cfg.write(collector)
         assert collector.getvalue() == b'"#a" = "b # something"\n'
-        
+
         empty_cfg = ConfigObj()
         empty_cfg.newlines = '\n'
         empty_cfg['a'] = 'b # something', 'c # something'
