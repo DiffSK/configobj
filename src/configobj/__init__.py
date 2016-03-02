@@ -478,6 +478,7 @@ class Section(dict):
         self.default_values = {}
         self.extra_values = []
         self._created = False
+        self.source_map = {}
 
 
     def _interpolate(self, key, value):
@@ -520,7 +521,7 @@ class Section(dict):
         return val
 
 
-    def __setitem__(self, key, value, unrepr=False):
+    def __setitem__(self, key, value, unrepr=False, line_range=None):
         """
         Correctly set a value.
 
@@ -577,7 +578,8 @@ class Section(dict):
                 else:
                     raise TypeError('Value is not a string "%s".' % value)
             dict.__setitem__(self, key, value)
-
+            if line_range:
+                self.source_map[key] = line_range
 
     def __delitem__(self, key):
         """Remove items from the sequence when deleting."""
@@ -588,6 +590,8 @@ class Section(dict):
             self.sections.remove(key)
         del self.comments[key]
         del self.inline_comments[key]
+        if key in self.source_map:
+            del self.source_map[key]
 
 
     def get(self, key, default=None):
@@ -1027,6 +1031,7 @@ class Section(dict):
 
         for section in self.sections:
             self[section].restore_defaults()
+
 
 
 def _get_triple_quote(value):
@@ -1602,6 +1607,7 @@ class ConfigObj(Section):
             # it's not a section marker,
             # so it should be a valid ``key = value`` line
             mat = self._keyword.match(line)
+            start_line = cur_index
             if mat is None:
                 self._handle_error(
                     'Invalid line ({!r}) (matched as neither section nor keyword)'.format(line),
@@ -1665,7 +1671,7 @@ class ConfigObj(Section):
                 # add the key.
                 # we set unrepr because if we have got this far we will never
                 # be creating a new section
-                this_section.__setitem__(key, value, unrepr=True)
+                this_section.__setitem__(key, value, unrepr=True, line_range=(start_line, cur_index))
                 this_section.inline_comments[key] = comment
                 this_section.comments[key] = comment_list
                 continue
