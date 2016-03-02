@@ -131,6 +131,7 @@ OPTION_DEFAULTS = {
     'default_encoding': None,
     'unrepr': False,
     'write_empty_values': False,
+    'invalid': False
 }
 
 # this could be replaced if six is used for compatibility, or there are no
@@ -1151,7 +1152,7 @@ class ConfigObj(Section):
                  interpolation=True, raise_errors=False, list_values=True,
                  create_empty=False, file_error=False, stringify=True,
                  indent_type=None, default_encoding=None, unrepr=False,
-                 write_empty_values=False, _inspec=False):
+                 write_empty_values=False, invalid=False, _inspec=False):
         """
         Parse a config file or create a config file object.
 
@@ -1173,7 +1174,7 @@ class ConfigObj(Section):
                     'create_empty': create_empty, 'file_error': file_error,
                     'stringify': stringify, 'indent_type': indent_type,
                     'default_encoding': default_encoding, 'unrepr': unrepr,
-                    'write_empty_values': write_empty_values}
+                    'write_empty_values': write_empty_values, 'invalid':invalid}
 
         if options is None:
             options = _options
@@ -1328,6 +1329,7 @@ class ConfigObj(Section):
         self.BOM = False
         self.newlines = None
         self.write_empty_values = options['write_empty_values']
+        self.invalid = options['invalid']
         self.unrepr = options['unrepr']
 
         self.initial_comment = []
@@ -1603,9 +1605,10 @@ class ConfigObj(Section):
             # so it should be a valid ``key = value`` line
             mat = self._keyword.match(line)
             if mat is None:
-                self._handle_error(
-                    'Invalid line ({!r}) (matched as neither section nor keyword)'.format(line),
-                    ParseError, infile, cur_index)
+                if not self.invalid:
+                    self._handle_error(
+                        'Invalid line ({!r}) (matched as neither section nor keyword)'.format(line),
+                        ParseError, infile, cur_index)
             else:
                 # is a keyword value
                 # value will include any inline comment
