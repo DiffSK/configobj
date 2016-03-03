@@ -33,6 +33,7 @@ Other versions may work, but this is what travis and tox uses to run the tests o
 - Fixing any issues introduced as a result of the added Python 3 support
 - Moving tests away from doctests in favor of pytest (reasonable now that versions older than 2.6 are dropped)
 - Considering new features that work in a backwards-compatible way (feel free to open an issue with your suggestion)
+- Also see the [milestones](https://github.com/DiffSK/configobj/milestones)
 
 
 ## Contributing
