@@ -11,7 +11,8 @@ Python 3+ compatible port of the [configobj](https://pypi.python.org/pypi/config
 
 ## Documentation
 
-You can find a full manual at [readthedocs](http://configobj.readthedocs.org/).
+You can find a full manual on how to use ConfigObj at [readthedocs](http://configobj.readthedocs.org/).
+If you want to *work on the project*, please see the [Contributing](#contributing) section below.
 
 
 ## Status
