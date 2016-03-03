@@ -44,7 +44,7 @@ You don’t need to be a developer to contribute.
 See [CONTRIBUTING](https://github.com/DiffSK/configobj/blob/master/CONTRIBUTING.md) for more.
 
 As a documentation author or developer,
-to create a working directory for this project,
+to **create a working directory** for this project,
 call these commands:
 
 ```sh
@@ -54,9 +54,14 @@ cd "configobj"
 invoke build --docs test check
 ```
 
-To start a watchdog that auto-rebuilds documentation and reloads the opened browser tab on any change,
-call ``invoke docs -w -b`` (stop the watchdog using the ``-k`` option).
-
-You might also need to follow some
+For this to work, you might also need to follow some
 [setup procedures](https://py-generic-project.readthedocs.org/en/latest/installing.html#quick-setup)
 to make the necessary basic commands available on *Linux*, *Mac OS X*, and *Windows*.
+
+**Running the test suite** can be done several ways, just call ``invoke test`` for a quick check,
+or ``invoke test.tox`` for testing with all supported Python versions
+(if you [have them available](https://github.com/jhermann/priscilla/tree/master/pyenv)).
+Use ``invoke check`` to **run a code-quality scan**.
+
+To **start a watchdog that auto-rebuilds documentation** and reloads the opened browser tab on any change,
+call ``invoke docs -w -b`` (stop the watchdog using the ``-k`` option).
