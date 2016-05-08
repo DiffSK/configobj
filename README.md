@@ -11,7 +11,7 @@ Python 3+ compatible port of the [configobj](https://pypi.python.org/pypi/config
 
 ## Documentation
 
-You can find a full manual on how to use ConfigObj at [readthedocs](http://configobj.readthedocs.org/).
+You can find a full manual on how to use ConfigObj at [readthedocs](http://configobj.readthedocs.io/).
 If you want to *work on the project*, please see the [Contributing](#contributing) section below.
 
 
@@ -56,7 +56,7 @@ invoke build --docs test check
 ```
 
 For this to work, you might also need to follow some
-[setup procedures](https://py-generic-project.readthedocs.org/en/latest/installing.html#quick-setup)
+[setup procedures](https://py-generic-project.readthedocs.io/en/latest/installing.html#quick-setup)
 to make the necessary basic commands available on *Linux*, *Mac OS X*, and *Windows*.
 
 **Running the test suite** can be done several ways, just call ``invoke test`` for a quick check,
