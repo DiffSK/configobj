@@ -1506,6 +1506,8 @@ class ConfigObj(Section):
         if is a string, it also needs converting to a list.
         """
         if isinstance(infile, six.string_types):
+            if six.PY2 and encoding is not None:
+                return infile.decode(encoding).splitlines(True)
             return infile.splitlines(True)
         if isinstance(infile, six.binary_type):
             # NOTE: Could raise a ``UnicodeDecodeError``
