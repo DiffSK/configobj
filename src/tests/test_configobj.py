@@ -397,7 +397,7 @@ def test_configobj_dict_representation(a, b, cfg_contents):
     """)
     t2 = ConfigObj(t)
     assert t2 == {'a': 'b', 'b': 'b'}
-    t2.inline_comments['b'] = ''
+    t2.inline_comments['b'] = ''  # pylint: disable=unsubscriptable-object
     del t2['a']
     assert t2.write() == ['','b = b', '']
 
@@ -1177,7 +1177,7 @@ class TestComments(object):
     def test_inline_comments(self):
         c = ConfigObj()
         c['foo'] = 'bar'
-        c.inline_comments['foo'] = 'Nice bar'
+        c.inline_comments['foo'] = 'Nice bar'  # pylint: disable=unsubscriptable-object
         assert c.write() == ['foo = bar # Nice bar']
 
     def test_unrepr_comments(self, comment_filled_cfg):

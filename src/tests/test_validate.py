@@ -140,7 +140,7 @@ class TestBasic(object):
         }
         assert default_test.restore_default('test1') == 40
         assert default_test['test1'] == 40
-        assert 'test1' in default_test.defaults
+        assert 'test1' in default_test.defaults  # pylint: disable=unsupported-membership-test
 
         def change(section, key):
             section[key] = 3

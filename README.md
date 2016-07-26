@@ -52,7 +52,7 @@ call these commands:
 git clone "https://github.com/DiffSK/configobj.git"
 cd "configobj"
 . .env --yes --develop
-invoke build --docs test check
+invoke build --docs test doctest check
 ```
 
 For this to work, you might also need to follow some

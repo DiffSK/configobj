@@ -32,7 +32,17 @@ from __future__ import absolute_import, unicode_literals
 
 import os
 
+from rituals import config
 from rituals.easy import *  # pylint: disable=redefined-builtin
+
+
+@task
+def doctest(ctx):
+    """Run doc tests."""
+    # TODO: integrate into py.test run
+    ctx.run("python src/tests/configobj_doctests.py")
+
+namespace.add_task(doctest)
 
 
 @task
@@ -46,6 +56,6 @@ def ci(ctx):
     else:
         opts += ['test.tox']
 
-    ctx.run("invoke --echo --pty clean --all build --docs check --reports{}".format(' '.join(opts)))
+    ctx.run("invoke --echo --pty clean --all build --docs check --reports doctest{}".format(' '.join(opts)))
 
 namespace.add_task(ci)

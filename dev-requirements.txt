@@ -15,6 +15,7 @@ pylint==1.5.4
 bpython==0.15
 yolk3k==0.8.8
 
+pytest==2.9.2
 tox==2.3.1
 twine==1.6.5
 wheel==0.29.0
