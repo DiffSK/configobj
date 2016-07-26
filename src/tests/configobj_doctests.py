@@ -982,6 +982,6 @@ if __name__ == '__main__':
     print('{0} {1} failures out of {2} tests'
           .format("FAIL" if post_failures or pre_failures else "*OK*",
                   post_failures + pre_failures, post_tests + pre_tests))
-
+    sys.exit(bool(post_failures or pre_failures))
 
 # Man alive I prefer unittest ;-)

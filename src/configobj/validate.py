@@ -1484,3 +1484,4 @@ if __name__ == '__main__':
         optionflags=doctest.IGNORE_EXCEPTION_DETAIL | doctest.ELLIPSIS)
     print('{0} {1} failures out of {2} tests'
           .format("FAIL" if failures else "*OK*", failures, tests))
+    sys.exit(bool(failures))
