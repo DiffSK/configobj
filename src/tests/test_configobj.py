@@ -15,7 +15,7 @@ import six
 
 import configobj as co
 from configobj import ConfigObj, flatten_errors, ReloadError, DuplicateError, MissingInterpolationOption, InterpolationLoopError, ConfigObjError
-from validate import Validator, VdtValueTooSmallError
+from configobj.validate import Validator, VdtValueTooSmallError
 
 
 def cfg_lines(config_string_representation):

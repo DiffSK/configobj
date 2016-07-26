@@ -5,7 +5,7 @@
 
 from configobj import ConfigObj
 import pytest
-from validate import Validator, VdtValueTooSmallError
+from configobj.validate import Validator, VdtValueTooSmallError
 
 
 class TestBasic(object):
