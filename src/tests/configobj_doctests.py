@@ -979,8 +979,9 @@ if __name__ == '__main__':
     post_failures, post_tests = doctest.testmod(
         configobj, globs=globs,
         optionflags=doctest.IGNORE_EXCEPTION_DETAIL | doctest.ELLIPSIS)
-    print('doctests: {} failures out of {} tests'
-          .format(post_failures + pre_failures, post_tests + pre_tests))
+    print('{0} {1} failures out of {2} tests'
+          .format("FAIL" if post_failures or pre_failures else "*OK*",
+                  post_failures + pre_failures, post_tests + pre_tests))
 
 
 # Man alive I prefer unittest ;-)

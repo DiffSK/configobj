@@ -1482,4 +1482,5 @@ if __name__ == '__main__':
     failures, tests = doctest.testmod(
         m, globs=globs,
         optionflags=doctest.IGNORE_EXCEPTION_DETAIL | doctest.ELLIPSIS)
-    assert not failures, '{} failures out of {} tests'.format(failures, tests)
+    print('{0} {1} failures out of {2} tests'
+          .format("FAIL" if failures else "*OK*", failures, tests))
