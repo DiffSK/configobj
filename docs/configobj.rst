@@ -2094,6 +2094,15 @@ Every key or section marker may have lines of comments immediately above it.
 These are saved as the ``comments`` attribute of the section. Each member is a
 list of lines.
 
+You can customize the line comment markers by changing the ``COMMENT_MARKERS``
+class variable of ``ConfigObj``, one way to do that is to inherit from it:
+
+.. code-block:: python
+
+    class ConfigObjPHP(ConfigObj):
+        """Handle classic INI style comments to read 'php.ini'."""
+        COMMENT_MARKERS = ['#', ';']
+
 You can also have a comment inline with a value. These are saved as the
 ``inline_comments`` attribute of the section, with one entry per member of the
 section.

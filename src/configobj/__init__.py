@@ -1077,6 +1077,10 @@ class Section(dict):
 class ConfigObj(Section):
     """An object to read, create, and write config files."""
 
+    # Override/append to this class variable for alternative comment markers
+    # TODO: also support inline comments (needs dynamic compiling of the regex below)
+    COMMENT_MARKERS = ['#']
+
     _keyword = re.compile(r'''^ # line start
         (\s*)                   # indentation
         (                       # keyword
@@ -1566,7 +1570,7 @@ class ConfigObj(Section):
             line = infile[cur_index]
             sline = line.strip()
             # do we have anything on the line ?
-            if not sline or sline.startswith('#'):
+            if not sline or any(sline.startswith(x) for x in self.COMMENT_MARKERS):
                 reset_comment = False
                 comment_list.append(line)
                 continue

@@ -1121,6 +1121,10 @@ def test_creating_with_a_dictionary():
     assert dictionary_cfg_content is not cfg.dict()
 
 
+class ConfigObjPHP(ConfigObj):
+    COMMENT_MARKERS = ['#', ';']
+
+
 class TestComments(object):
     @pytest.fixture
     def comment_filled_cfg(self, cfg_contents):
@@ -1206,6 +1210,20 @@ class TestComments(object):
         assert c['section'].comments == { 'key': ['# key comment']}
         assert c.final_comment == ['', '# final comment', '# with two lines']
 
+    def test_comment_markers(self, cfg_contents):
+        cfgfile = cfg_contents("""; comment
+            [php] # section marker
+            ;INLINE NOT SUPPORTED YET [php] ; section marker
+            ; Boolean: true, on, yes or false, off, no, none
+            switch = off
+            track_errors = yes
+
+            ; string in double-quotes
+            include_path = ".:/usr/local/lib/php"
+            """)
+        c = ConfigObjPHP(cfgfile)
+        assert c == dict(php=dict(switch='off', track_errors='yes', include_path=".:/usr/local/lib/php"))
+        assert c.initial_comment == ['; comment']
 
 
 def test_overwriting_filenames(a, b, i):
