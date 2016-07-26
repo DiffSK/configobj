@@ -41,6 +41,7 @@ def doctest(ctx):
     """Run doc tests."""
     # TODO: integrate into py.test run
     ctx.run("python src/tests/configobj_doctests.py")
+    ctx.run("python -m configobj.validate")
 
 namespace.add_task(doctest)
 
