@@ -1252,22 +1252,23 @@ def test_interpolation_using_default_sections():
 
 
 class TestIndentation(object):
+    MAX_TABBED_CFG = ['[sect]', '    [[sect]]', '        foo = bar']
+
     @pytest.fixture
     def max_tabbed_cfg(self):
-        return ['[sect]', '    [[sect]]', '        foo = bar']
+        return self.MAX_TABBED_CFG
 
     def test_write_dictionary(self):
         assert ConfigObj({'sect': {'sect': {'foo': 'bar'}}}).write() == [
             '[sect]', '    [[sect]]', '        foo = bar'
         ]
 
-    def test_indentation_preserved(self, max_tabbed_cfg):
-        for cfg_content in (
-            ['[sect]', '[[sect]]', 'foo = bar'],
-            ['[sect]', '  [[sect]]', '    foo = bar'],
-            max_tabbed_cfg
-        ):
-            assert ConfigObj(cfg_content).write() == cfg_content
+    @pytest.mark.parametrize('cfg_content', (
+        ['[sect]', '[[sect]]', 'foo = bar'],
+        ['[sect]', '  [[sect]]', '    foo = bar'],
+        MAX_TABBED_CFG))
+    def test_indentation_preserved(self, cfg_content):
+        assert ConfigObj(cfg_content).write() == cfg_content
 
     def test_handle_tabs_vs_spaces(self, max_tabbed_cfg):
         one_tab = ['[sect]', '\t[[sect]]', '\t\tfoo = bar']
