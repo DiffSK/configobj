@@ -542,7 +542,7 @@ class TestWritingConfigs(object):
             '# key2 comment',
             'key2 = boolean(default=True)',
             '# subsection comment',
-            '[[sub-section]] # inline comment',
+            '[[sub-section]]# snug inline comment',
             '# another key1 comment',
             'key1 = float(default=3.0)'
         ]
@@ -558,13 +558,13 @@ class TestWritingConfigs(object):
             'key1 = Hello',
             '',
             '# section comment',
-            '[section]# inline comment',
+            '[section] # inline comment',
             '# key1 comment',
             'key1 = 6',
             '# key2 comment',
             'key2 = True',
             '# subsection comment',
-            '[[sub-section]]# inline comment',
+            '[[sub-section]]# snug inline comment',
             '# another key1 comment',
             'key1 = 3.0'
         ]
@@ -1192,7 +1192,7 @@ class TestComments(object):
         ]
         assert c.comments == {'section': ['# section comment'], 'key': []}
         assert c.inline_comments == {
-            'section': '# inline section comment', 'key': ''
+            'section': ' # inline section comment', 'key': ''
         }
         assert c['section'].comments == { 'key': ['# key comment']}
         assert c.final_comment == ['', '# final comment', '# with two lines']
@@ -1205,7 +1205,7 @@ class TestComments(object):
         ]
         assert c.comments == {'section': ['# section comment'], 'key': []}
         assert c.inline_comments == {
-            'section': '# inline section comment', 'key': None
+            'section': ' # inline section comment', 'key': ''
         }
         assert c['section'].comments == { 'key': ['# key comment']}
         assert c.final_comment == ['', '# final comment', '# with two lines']
@@ -1253,6 +1253,15 @@ def test_interpolation_using_default_sections():
 
 class TestIndentation(object):
     MAX_TABBED_CFG = ['[sect]', '    [[sect]]', '        foo = bar']
+    COMMENT_SPACING = [
+        '# left',
+        ' # indented',
+        'trailspace = whitespace after value    ',
+        'foo = 1# snug',
+        '[section]  # section indented',
+        'bar = 1 # inline',
+        'baz = 3  # inline indented',
+    ]
 
     @pytest.fixture
     def max_tabbed_cfg(self):
@@ -1266,7 +1275,7 @@ class TestIndentation(object):
     @pytest.mark.parametrize('cfg_content', (
         ['[sect]', '[[sect]]', 'foo = bar'],
         ['[sect]', '  [[sect]]', '    foo = bar'],
-        MAX_TABBED_CFG))
+        MAX_TABBED_CFG, COMMENT_SPACING))
     def test_indentation_preserved(self, cfg_content):
         assert ConfigObj(cfg_content).write() == cfg_content
 

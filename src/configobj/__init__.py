@@ -1103,7 +1103,7 @@ class ConfigObj(Section):
             (?:[^'"\s].*?)        # at least one non-space unquoted
         )                         # section name close
         ((?:\s*\])+)              # 4: section marker close
-        \s*(\#.*)?                # 5: optional comment
+        (\s*(?:\#.*)?)?           # 5: optional comment
         $''',
         re.VERBOSE)
 
@@ -1133,7 +1133,7 @@ class ConfigObj(Section):
             )|
             (,)             # alternatively a single comma - empty list
         )
-        \s*(\#.*)?          # optional comment
+        (\s*(?:\#.*)?)?     # optional comment
         $''',
         re.VERBOSE)
 
@@ -1142,7 +1142,7 @@ class ConfigObj(Section):
         (
             (?:".*?")|          # double quotes
             (?:'.*?')|          # single quotes
-            (?:[^'",\#]?.*?)       # unquoted
+            (?:[^'",\#]?.*?)    # unquoted
         )
         \s*,\s*                 # comma
         ''',
@@ -1157,15 +1157,16 @@ class ConfigObj(Section):
             (?:[^'"\#].*?)|     # unquoted
             (?:)                # Empty value
         )
-        \s*(\#.*)?              # optional comment
+        (\s*(?:\#.*)?)?         # optional comment
         $''',
         re.VERBOSE)
 
     # regexes for finding triple quoted values on one line
-    _single_line_single = re.compile(r"^'''(.*?)'''\s*(#.*)?$")
-    _single_line_double = re.compile(r'^"""(.*?)"""\s*(#.*)?$')
-    _multi_line_single = re.compile(r"^(.*?)'''\s*(#.*)?$")
-    _multi_line_double = re.compile(r'^(.*?)"""\s*(#.*)?$')
+    _triple_trailer = r"(\s*(?:#.*)?)?$"
+    _single_line_single = re.compile(r"^'''(.*?)'''" + _triple_trailer)
+    _single_line_double = re.compile(r'^"""(.*?)"""' + _triple_trailer)
+    _multi_line_single = re.compile(r"^(.*?)'''" + _triple_trailer)
+    _multi_line_double = re.compile(r'^(.*?)"""' + _triple_trailer)
 
     _triple_quote = {
         "'''": (_single_line_single, _multi_line_single),
@@ -2012,10 +2013,10 @@ class ConfigObj(Section):
 
     def _handle_comment(self, comment):
         """Deal with a comment."""
-        if not comment:
-            return ''
+        if not comment.strip():
+            return comment or ''  # return trailing whitespace as-is
         start = self.indent_type
-        if not comment.startswith('#'):
+        if not comment.lstrip().startswith('#'):
             start += self._a_to_u(' # ')
         return (start + comment)
 
