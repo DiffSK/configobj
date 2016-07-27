@@ -122,10 +122,10 @@ The full set of standard checks are :
          specify min and max sizes of the list. The list checks always
          return a list.
 
-:force_list: matches any list, but if a single value is passed in will
-             coerce it into a list containing that value. Useful for
-             configobj if the user forgot the trailing comma to turn
-             a single value into a list.
+:'force_list': is the same as 'list', but if anything but a list or tuple is passed in,
+             it will coerce it into a list containing that value. Useful to avoid
+             confusion for users not accustomed to Python idioms and thus forget the
+             trailing comma to turn a single value into a list.
 
 :'tuple': matches any list. This check returns a tuple rather than a list.
 

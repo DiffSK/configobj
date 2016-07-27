@@ -919,7 +919,9 @@ or comma, then it should be surrounded by quotes. Quotes are not necessary if
 whitespace is surrounded by non-whitespace.
 
 Values can also be lists. Lists are comma separated. You indicate a single
-member list by a trailing comma. An empty list is shown by a single comma::
+member list by a trailing comma, unless you have a config spec that uses ``force_list``,
+which implies an automatic conversion of scalar values to a single-element list.
+An empty list is shown by a single comma::
 
     keyword1 = value1, value2, value3
     keyword2 = value1, # a single member list
