@@ -143,65 +143,6 @@ class UnknownType(Exception):
     pass
 
 
-class Builder(object):
-
-    def build(self, o):
-        # XXX: There is no 'm' anywhere?! (and the name really sucks)
-        if m is None:  # pylint: disable=undefined-variable
-            raise UnknownType(o.__class__.__name__)
-        return m(o)  # pylint: disable=undefined-variable
-
-    def build_List(self, o):
-        return list(map(self.build, o.getChildren()))
-
-    def build_Const(self, o):
-        return o.value
-
-    def build_Dict(self, o):
-        d = {}
-        i = iter(map(self.build, o.getChildren()))
-        for el in i:
-            d[el] = next(i)
-        return d
-
-    def build_Tuple(self, o):
-        return tuple(self.build_List(o))
-
-    def build_Name(self, o):
-        if o.name == 'None':
-            return None
-        if o.name == 'True':
-            return True
-        if o.name == 'False':
-            return False
-
-        # An undefined Name
-        raise UnknownType('Undefined Name')
-
-    def build_Add(self, o):
-        real, imag = list(map(self.build_Const, o.getChildren()))
-        try:
-            real = float(real)
-        except TypeError:
-            raise UnknownType('Add')
-        if not isinstance(imag, complex) or imag.real != 0.0:
-            raise UnknownType('Add')
-        return real+imag
-
-    def build_Getattr(self, o):
-        parent = self.build(o.expr)
-        return getattr(parent, o.attrname)
-
-    def build_UnarySub(self, o):
-        return -self.build_Const(o.getChildren()[0])
-
-    def build_UnaryAdd(self, o):
-        return self.build_Const(o.getChildren()[0])
-
-
-_builder = Builder()
-
-
 def unrepr(s):
     if not s:
         return s
