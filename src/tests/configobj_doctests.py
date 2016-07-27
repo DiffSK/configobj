@@ -400,7 +400,7 @@ def _test_validate():
 
 
 def _test_errors():
-    """
+    r"""
     Test the error messages and objects, in normal mode and unrepr mode.
     >>> bad_syntax = '''
     ... key = "value"
@@ -445,7 +445,7 @@ def _test_errors():
     ...     c = ConfigObj(multiple_bad_syntax)
     ... except ConfigObjError as e:
     ...     str(e)
-    'Parsing failed with several errors.\\nFirst error at line 3.'
+    'Parsing failed with 2 errors.\n    Parse error in value at line 3.\n    Parse error in value at line 4.'
     >>> c = ConfigObj(multiple_bad_syntax, raise_errors=True)
     Traceback (most recent call last):
     ParseError: Parse error in value at line 3.
@@ -458,8 +458,9 @@ def _test_errors():
     ...     e = exc
     >>> assert(isinstance(e, ConfigObjError))
     >>> print(e)
-    Parsing failed with several errors.
-    First error at line 3.
+    Parsing failed with 2 errors.
+        Parse error in value at line 3.
+        Parse error in value at line 4.
     >>> len(e.errors) == 2
     1
     >>> try:
@@ -468,8 +469,9 @@ def _test_errors():
     ...     e = exc
     >>> assert(isinstance(e, ConfigObjError))
     >>> print(e)
-    Parsing failed with several errors.
-    First error at line 3.
+    Parsing failed with 2 errors.
+        Parse error from unrepr-ing value at line 3.
+        Parse error from unrepr-ing value at line 4.
     >>> len(e.errors) == 2
     1
     >>> the_error = e.errors[1]
