@@ -1077,6 +1077,8 @@ class Section(dict):
 class ConfigObj(Section):
     """An object to read, create, and write config files."""
 
+    MAX_PARSE_ERROR_DETAILS = 5
+
     # Override/append to this class variable for alternative comment markers
     # TODO: also support inline comments (needs dynamic compiling of the regex below)
     COMMENT_MARKERS = ['#']
@@ -1315,10 +1317,14 @@ class ConfigObj(Section):
         self._parse(content)
         # if we had any errors, now is the time to raise them
         if self._errors:
-            info = "at line %s." % self._errors[0].line_number
             if len(self._errors) > 1:
-                msg = "Parsing failed with several errors.\nFirst error %s" % info
-                error = ConfigObjError(msg)
+                msg = ["Parsing failed with {0} errors.".format(len(self._errors))]
+                for error in self._errors[:self.MAX_PARSE_ERROR_DETAILS]:
+                    msg.append(str(error))
+                if len(self._errors) > self.MAX_PARSE_ERROR_DETAILS:
+                    msg.append("{0} more error(s)!"
+                               .format(len(self._errors) - self.MAX_PARSE_ERROR_DETAILS))
+                error = ConfigObjError('\n    '.join(msg))
             else:
                 error = self._errors[0]
             # set the errors attribute; it's a list of tuples:

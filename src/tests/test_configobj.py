@@ -1251,7 +1251,38 @@ def test_interpolation_using_default_sections():
     assert c.write() == ['a = %(a)s', '[DEFAULT]', 'a = fish']
 
 
-class TestIndentation(object):
+class TestErrorReporting(object):
+    MULTI_ERROR = [
+        '[]',
+        'a = b',
+        '[]',
+        'c = d',
+    ]
+
+    @pytest.mark.parametrize('cfg_content', (MULTI_ERROR, MULTI_ERROR * 2))
+    def test_multi_error(self, cfg_content):
+        try:
+            ConfigObj(cfg_content)
+        except ConfigObjError as cause:
+            msg = str(cause)
+            first = cause.errors[0]
+            ##print(msg); assert False
+            assert type(cause.config) is ConfigObj
+            assert re.search(r'failed with \d+ errors', msg)
+            assert first.line == '[]'
+            assert first.line_number == 1
+            if len(cause.errors) < 3:
+                assert "2 errors" in msg
+                assert 'at line 3' in msg
+                assert 'at line 5' not in msg
+            else:
+                assert "6 errors" in msg
+                assert 'at line 5' in msg
+                assert 'Duplicate keyword name' in msg
+                assert '1 more error' in msg
+
+
+class TestIndentationAndFormatting(object):
     MAX_TABBED_CFG = ['[sect]', '    [[sect]]', '        foo = bar']
     COMMENT_SPACING = [
         '# left',
