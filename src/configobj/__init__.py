@@ -20,6 +20,7 @@
 import os
 import re
 import sys
+import copy
 import collections
 
 from codecs import BOM_UTF8, BOM_UTF16, BOM_UTF16_BE, BOM_UTF16_LE
@@ -729,9 +730,14 @@ class Section(dict):
         return newdict
 
 
-    def merge(self, indict):
+    def merge(self, indict, decoupled=False):
         """
         A recursive update - useful for merging config files.
+
+        Note: if ``decoupled`` is ``True``, then the target object (self)
+        gets its own copy of any mutable objects in the source dictionary
+        (both sections and values), paid for by more work for ``merge()``
+        and more memory usage.
 
         >>> a = '''[section1]
         ...     option1 = True
@@ -749,9 +755,11 @@ class Section(dict):
         ConfigObj({'section1': {'option1': 'False', 'subsection': {'more_options': 'False'}}})
         """
         for key, val in list(indict.items()):
+            if decoupled:
+                val = copy.deepcopy(val)
             if (key in self and isinstance(self[key], collections.Mapping) and
                                 isinstance(val, collections.Mapping)):
-                self[key].merge(val)
+                self[key].merge(val, decoupled=decoupled)
             else:
                 self[key] = val
 

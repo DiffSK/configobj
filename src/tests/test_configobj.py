@@ -1251,6 +1251,18 @@ def test_interpolation_using_default_sections():
     assert c.write() == ['a = %(a)s', '[DEFAULT]', 'a = fish']
 
 
+class TestMerging(object):
+
+    @pytest.mark.parametrize('data', ((False, 42), (True, '3')))
+    def test_merge_coupling(self, data):
+        c1 = ConfigObj("foo = 1,2|[sect]|val=3".split('|'))
+        c2 = ConfigObj("bar = 3".split('|'))
+        c2.merge(c1, decoupled=data[0])
+        assert c2['sect']['val'] == '3'
+        c1['sect']['val'] = 42
+        assert c2['sect']['val'] == data[1]
+
+
 class TestErrorReporting(object):
     MULTI_ERROR = [
         '[]',
