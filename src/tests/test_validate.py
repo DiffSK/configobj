@@ -3,9 +3,10 @@
 # pylint: disable=invalid-name, redefined-outer-name, too-few-public-methods
 """Validator tests"""
 
-from configobj import ConfigObj
 import pytest
-from configobj.validate import Validator, VdtValueTooSmallError
+
+from configobj import ConfigObj
+from configobj.validate import *
 
 
 class TestBasic(object):
@@ -164,6 +165,21 @@ class TestBasic(object):
                     'test3': 3,
                     'test4': 6.0
         }}}
+
+
+class TestStringChecks(object):
+
+    def test_required_string_cannot_be_none(self, val):  # issue #93
+        val.check('string(min=1)', None)
+        with pytest.raises(VdtMissingValue):
+            val.check('string(min=1)', None, missing=True)
+
+    @pytest.mark.parametrize('text', ("text = ", ""))
+    def test_required_string_cannot_be_empty_or_missing(self, val, text):  # issue #93
+        config = [text]
+        configspec = ["text = string(min=1)"]
+        configobj = ConfigObj(config, configspec=configspec)
+        assert configobj.validate(val, preserve_errors=True) is not True, "Validation should've failed"
 
 
 class TestListChecks(object):
