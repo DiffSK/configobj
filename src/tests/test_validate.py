@@ -164,3 +164,35 @@ class TestBasic(object):
                     'test3': 3,
                     'test4': 6.0
         }}}
+
+
+class TestListChecks(object):
+
+    TYPESPECS = (
+        "'integer', 'string', 'boolean', 'float'",
+        "'int', 'str', 'bool', 'float'",
+        "int, str, bool, float",
+    )
+
+    def test_force_list(self, val):
+        config = '''
+            scalar = 1
+            '''.splitlines()
+        configspec = '''
+            scalar = force_list
+            '''.splitlines()
+        configobj = ConfigObj(config, configspec=configspec)
+        assert configobj.validate(val, preserve_errors=True) is True, "Validation failed unexpectedly"
+        assert configobj['scalar'] == ['1']
+
+    @pytest.mark.parametrize('typespec', TYPESPECS)
+    def test_mixed_list(self, val, typespec):
+        config = '''
+            mixed = 1, 2, yes, 3.1415
+            '''.splitlines()
+        configspec = '''
+            mixed = mixed_list({})
+            '''.format(typespec).splitlines()
+        configobj = ConfigObj(config, configspec=configspec)
+        assert configobj.validate(val, preserve_errors=True) is True, "Validation failed unexpectedly"
+        assert configobj['mixed'] == [1, '2', True, 3.1415]
