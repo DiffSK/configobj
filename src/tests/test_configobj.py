@@ -1262,6 +1262,10 @@ class TestIndentation(object):
         'bar = 1 # inline',
         'baz = 3  # inline indented',
     ]
+    GIT_SECTIONS = [
+        '[branch "master"]',
+        'remote = origin',
+    ]
 
     @pytest.fixture
     def max_tabbed_cfg(self):
@@ -1275,8 +1279,8 @@ class TestIndentation(object):
     @pytest.mark.parametrize('cfg_content', (
         ['[sect]', '[[sect]]', 'foo = bar'],
         ['[sect]', '  [[sect]]', '    foo = bar'],
-        MAX_TABBED_CFG, COMMENT_SPACING))
-    def test_indentation_preserved(self, cfg_content):
+        MAX_TABBED_CFG, COMMENT_SPACING, GIT_SECTIONS))
+    def test_formatting_preserved(self, cfg_content):
         assert ConfigObj(cfg_content).write() == cfg_content
 
     def test_handle_tabs_vs_spaces(self, max_tabbed_cfg):

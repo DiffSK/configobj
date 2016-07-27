@@ -2004,9 +2004,14 @@ class ConfigObj(Section):
 
     def _write_marker(self, indent_string, depth, entry, comment):
         """Write a section marker line"""
+        entry_str = self._decode_element(entry)
+        title = self._quote(entry_str, multiline=False)
+        if entry_str and title[0] in '\'"' and title[1:-1] == entry_str:
+            # titles are in '[]' already, so quoting for contained quotes is not necessary (#74)
+            title = entry_str
         return '%s%s%s%s%s' % (indent_string,
                                self._a_to_u('[' * depth),
-                               self._quote(self._decode_element(entry), multiline=False),
+                               title,
                                self._a_to_u(']' * depth),
                                self._decode_element(comment))
 
