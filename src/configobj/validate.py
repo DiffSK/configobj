@@ -1261,10 +1261,17 @@ def force_list(value, min=None, max=None):
 
 
 fun_dict = {
+    int: is_integer,
+    'int': is_integer,
     'integer': is_integer,
+    float: is_float,
     'float': is_float,
     'ip_addr': is_ip_addr,
+    str: is_string,
+    'str': is_string,
     'string': is_string,
+    bool: is_boolean,
+    'bool': is_boolean,
     'boolean': is_boolean,
 }
 
