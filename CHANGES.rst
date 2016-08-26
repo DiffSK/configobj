@@ -4,7 +4,15 @@ Changelog
 Release 5.1.0
 """""""""""""
 
-* TODO
+* Unified modules into the 'configobj' package (#72, #31, #32)
+* Added ``validate`` v1.1.0 shim to allow a gradual migration,
+  rewrite your imports as ``from configobj.validate import …``
+* Alternative line comment markers for more INI compatibility (#79)
+* More detailed multi-error reports (#73)
+* Added 'decoupled' mode to merge() (#115)
+* fix: ``mixed_list`` accepts type name variants (#110)
+* fix: Don't quote git-style section titles (#74)
+* docs: Explicit mention of ``force_list`` and its pitfalls (#112)
 
 
 Older Releases
