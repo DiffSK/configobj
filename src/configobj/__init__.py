@@ -22,6 +22,7 @@ import re
 import sys
 import copy
 import collections
+import string
 
 from codecs import BOM_UTF8, BOM_UTF16, BOM_UTF16_BE, BOM_UTF16_LE
 
@@ -1140,7 +1141,7 @@ class ConfigObj(Section):
                  interpolation=True, raise_errors=False, list_values=True,
                  create_empty=False, file_error=False, stringify=True,
                  indent_type=None, default_encoding=None, unrepr=False,
-                 write_empty_values=False, _inspec=False, dividers=None):
+                 write_empty_values=False, _inspec=False, dividers='='):
         """
         Parse a config file or create a config file object.
 
@@ -1148,13 +1149,15 @@ class ConfigObj(Section):
                     interpolation=True, raise_errors=False, list_values=True,
                     create_empty=False, file_error=False, stringify=True,
                     indent_type=None, default_encoding=None, unrepr=False,
-                    write_empty_values=False, _inspec=False)``
+                    write_empty_values=False, _inspec=False, dividers='=')``
         """
 
         # Dividers, see issue #83.
-        self._dividers = ['=', ]  # Defaults to equal (=) sign.
-        if dividers is not None:
-            self._dividers = dividers  # Custom values.
+        self._dividers = [x for x in dividers if x in string.printable]
+        if not self._dividers:
+            raise AttributeError("No valide characters found for dividers.")
+
+        # Inspect.
         self._inspec = _inspec
 
         # init the superclass

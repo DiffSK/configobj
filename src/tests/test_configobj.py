@@ -1377,9 +1377,26 @@ class TestEdgeCasesWhenWritingOut(object):
         assert c.write() == ["thing = {'a': 1}"]
 
 
-def test_curlon_instead_of_equal(cfg_contents):
+def test_dividers_happy(cfg_contents):
     cfg = cfg_contents("""
 [section]
     ook : 'eek'
+    monkey = True
+    beast + 666
     """)
-    c = ConfigObj(cfg, dividers=[':'])
+    c = ConfigObj(cfg, dividers=':=+')
+    assert c['section'] is not None
+    assert c['section']['ook'] == 'eek'
+    assert c['section']['monkey'] == 'True'
+    assert c['section']['beast'] == '666'
+
+
+def test_dividers_unhappy(cfg_contents):
+    cfg = cfg_contents(u"""
+[section]
+    ook … 'eek'
+    """)
+    try:
+        c = ConfigObj(cfg, dividers=u'…')
+    except AttributeError as err:
+        assert str(err) == "No valide characters found for dividers."
