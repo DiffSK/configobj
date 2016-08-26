@@ -121,6 +121,7 @@ project = dict(
     install_requires=[i.strip() for i in REQUIRES.splitlines() if i.strip()],
     classifiers=CLASSIFIERS,
     keywords=KEYWORDS,
+    license='BSD (2 clause)',
 )
 
 if __name__ == '__main__':
