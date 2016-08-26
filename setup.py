@@ -30,7 +30,7 @@ if sys.version_info < (2, 6):
 __here__ = os.path.abspath(os.path.dirname(__file__))
 
 NAME = 'configobj'
-MODULES = ['validate']
+MODULES = []
 PACKAGES = ['configobj']
 DESCRIPTION = 'Config file reading, writing and validation.'
 URL = 'https://github.com/DiffSK/configobj'
