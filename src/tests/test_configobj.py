@@ -1375,3 +1375,11 @@ class TestEdgeCasesWhenWritingOut(object):
         c = ConfigObj(cfg, unrepr=True)
         assert repr(c) == "ConfigObj({'thing': {'a': 1}})"
         assert c.write() == ["thing = {'a': 1}"]
+
+
+def test_curlon_instead_of_equal(cfg_contents):
+    cfg = cfg_contents("""
+[section]
+    ook : 'eek'
+    """)
+    c = ConfigObj(cfg, dividers=[':'])
