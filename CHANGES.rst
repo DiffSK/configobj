@@ -7,6 +7,7 @@ Release 5.1.0
 * Unified modules into the 'configobj' package (#72, #31, #32)
 * Added ``validate`` v1.1.0 shim to allow a gradual migration,
   rewrite your imports as ``from configobj.validate import …``
+  to get rid of it
 * Alternative line comment markers for more INI compatibility (#79)
 * More detailed multi-error reports (#73)
 * Added 'decoupled' mode to merge() (#115)
