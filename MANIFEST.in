@@ -1,7 +1,7 @@
 #
 # Additional files for source distribution
 #
-include README.md LICENSE *.txt *.md *.ini *.py .travis.yml .coveragerc .env
+include *.md *.rst *.txt *.ini *.py LICENSE .travis.yml .coveragerc .env
 recursive-include src/tests *.py *.spec *.ini
 recursive-include docs Makefile *.bat *.conf *.css *.html *.py *.rst *.txt
 prune docs/_build
