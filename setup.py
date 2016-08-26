@@ -76,7 +76,7 @@ try:
         LONG_DESCRIPTION += handle.read()
 except EnvironmentError as exc:
     # Build / install anyway
-    print("WARNING: Cannot open/read CHANGES.rst ({})".format(exc))
+    print("WARNING: Cannot open/read CHANGES.rst due to {0}".format(exc))
 
 CLASSIFIERS = [
     # Details at http://pypi.python.org/pypi?:action=list_classifiers
