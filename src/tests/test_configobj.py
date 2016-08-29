@@ -1225,6 +1225,15 @@ class TestComments(object):
         assert c == dict(php=dict(switch='off', track_errors='yes', include_path=".:/usr/local/lib/php"))
         assert c.initial_comment == ['; comment']
 
+    def test_write_back_comment_markers(self, cfg_contents):
+        lines = (
+            '# initial comment', '; 2nd line',
+            '[sect_name]', '; section comment', 'foo = bar',
+            '', '; final comment')
+        c = ConfigObjPHP(lines)
+        for expected, got in zip(lines, c.write()):
+            assert expected == got
+
 
 def test_overwriting_filenames(a, b, i):
     #TODO: I'm not entirely sure what this test is actually asserting
