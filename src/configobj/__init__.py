@@ -2003,8 +2003,8 @@ class ConfigObj(Section):
             self.indent_type = DEFAULT_INDENT_TYPE
 
         out = []
-        cs = self._a_to_u('#')
-        csp = self._a_to_u('# ')
+        comment_markers = [self._a_to_u(x) for x in self.COMMENT_MARKERS]
+        comment_marker_default = self._a_to_u(self.COMMENT_MARKERS[0] + ' ')
         if section is None:
             int_val = self.interpolation
             self.interpolation = False
@@ -2012,8 +2012,8 @@ class ConfigObj(Section):
             for line in self.initial_comment:
                 line = self._decode_element(line)
                 stripped_line = line.strip()
-                if stripped_line and not stripped_line.startswith(cs):
-                    line = csp + line
+                if stripped_line and not any(stripped_line.startswith(x) for x in comment_markers):
+                    line = comment_marker_default + line
                 out.append(line)
 
         indent_string = self.indent_type * section.depth
@@ -2023,8 +2023,8 @@ class ConfigObj(Section):
                 continue
             for comment_line in section.comments[entry]:
                 comment_line = self._decode_element(comment_line.lstrip())
-                if comment_line and not comment_line.startswith(cs):
-                    comment_line = csp + comment_line
+                if comment_line and not any(comment_line.startswith(x) for x in comment_markers):
+                    comment_line = comment_marker_default + comment_line
                 out.append(indent_string + comment_line)
             this_entry = section[entry]
             comment = self._handle_comment(section.inline_comments[entry])
@@ -2048,8 +2048,8 @@ class ConfigObj(Section):
             for line in self.final_comment:
                 line = self._decode_element(line)
                 stripped_line = line.strip()
-                if stripped_line and not stripped_line.startswith(cs):
-                    line = csp + line
+                if stripped_line and not any(stripped_line.startswith(x) for x in comment_markers):
+                    line = comment_marker_default + line
                 out.append(line)
             self.interpolation = int_val
 
