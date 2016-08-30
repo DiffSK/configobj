@@ -23,7 +23,6 @@ import sys
 import copy
 import collections
 import string
-from copy import copy
 
 from codecs import BOM_UTF8, BOM_UTF16, BOM_UTF16_BE, BOM_UTF16_LE
 
@@ -758,7 +757,7 @@ class Section(dict):
         """
         for key, val in list(indict.items()):
             if decoupled:
-                val = copy(val)
+                val = copy.deepcopy(val)
             if (key in self and isinstance(self[key], collections.Mapping) and
                                 isinstance(val, collections.Mapping)):
                 self[key].merge(val, decoupled=decoupled)
@@ -1038,20 +1037,21 @@ class ConfigObj(Section):
 
     @property
     def _keyword(self):
-        if self.__keyword is None:
-            self.__keyword = re.compile(r'''^ # line start
-                (\s*)                   # indentation
-                (                       # keyword
-                    (?:".*?")|          # double quotes
-                    (?:'.*?')|          # single quotes
-                    (?:[^'"{0}].*?)     # no quotes
-                )
-                \s*[{0}]\s*             # dividers
-                (.*)                    # value (including list values and comments)
-                $   # line end
-                '''.format(''.join(self._dividers)),
-                re.VERBOSE)
-        return self.__keyword
+        #if self.__keyword is None:
+        #    self.__keyword = re.compile(r'''^ # line start
+        return re.compile(r'''^ # line start
+            (\s*)                   # indentation
+            (                       # keyword
+                (?:".*?")|          # double quotes
+                (?:'.*?')|          # single quotes
+                (?:[^'"{0}].*?)     # no quotes
+            )
+            \s*[{0}]\s*             # dividers
+            (.*)                    # value (including list values and comments)
+            $   # line end
+            '''.format(''.join(self._dividers)),
+            re.VERBOSE)
+        #return self.__keyword
 
     _sectionmarker = re.compile(r'''^
         (\s*)                     # 1: indentation
