@@ -1390,6 +1390,20 @@ def test_dividers_happy(cfg_contents):
     assert c['section']['monkey'] == 'True'
     assert c['section']['beast'] == '666'
 
+def test_dividers_many(cfg_contents):
+    cfg = cfg_contents("""
+[section]
+    ook =: 'eek'
+    monkey := True
+    Fred := some weird string
+    Alice == in Wonderland
+    """)
+    c = ConfigObj(cfg, dividers=':=')
+    assert c['section'] is not None
+    assert c['section']['ook'] == ": 'eek'"
+    assert c['section']['monkey'] == '= True'
+    assert c['section']['Fred'] == '= some weird string'
+    assert c['section']['Alice'] == '= in Wonderland'
 
 def test_dividers_unhappy(cfg_contents):
     cfg = cfg_contents(u"""
@@ -1399,4 +1413,4 @@ def test_dividers_unhappy(cfg_contents):
     try:
         c = ConfigObj(cfg, dividers=u'…')
     except AttributeError as err:
-        assert str(err) == "No valide characters found for dividers."
+        assert str(err) == "No valid characters found for dividers."

@@ -447,9 +447,17 @@ ConfigObj takes the following arguments (with the default values shown) :
 * 'dividers': ``'='``
 
     A string of character to use as dividers. It defaults to the equal sign
-    (`=`). For compatibility with `ConfigParser`, you can set it to
-    `diverders='=:'`. All characters not in `string.printable` will be
-    silently ignored.  Setting it to something strange is not advisable.
+    (`=`).  All characters not in `string.printable` will be silently ignored
+    and if no valid characters are found, an `AttributeError` will be raised.
+    
+    If multiple dividers are present on the same line, the *first one on that
+    line* will be taken as canon. Thus::
+
+        `Alice == in Wonderland` will become `'= in Wonderland'`.
+    
+    For compatibility with `ConfigParser`, you can set `dividers='=:'`. 
+
+    Setting it to something strange is not advisable.
 
 
 Methods

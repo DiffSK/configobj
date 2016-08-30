@@ -1033,9 +1033,12 @@ class ConfigObj(Section):
     # TODO: also support inline comments (needs dynamic compiling of the regex below)
     COMMENT_MARKERS = ['#']
 
+    __keyword = None
 
     @property
     def _keyword(self):
+        #if self.__keyword is None:
+        #    self.__keyword = re.compile(r'''^ # line start
         return re.compile(r'''^ # line start
             (\s*)                   # indentation
             (                       # keyword
@@ -1048,6 +1051,7 @@ class ConfigObj(Section):
             $   # line end
             '''.format(''.join(self._dividers)),
             re.VERBOSE)
+        #return self.__keyword
 
     _sectionmarker = re.compile(r'''^
         (\s*)                     # 1: indentation
@@ -1155,7 +1159,7 @@ class ConfigObj(Section):
         # Dividers, see issue #83.
         self._dividers = [x for x in dividers if x in string.printable]
         if not self._dividers:
-            raise AttributeError("No valide characters found for dividers.")
+            raise AttributeError("No valid characters found for dividers.")
 
         # Inspect.
         self._inspec = _inspec
