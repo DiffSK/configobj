@@ -51,7 +51,7 @@ call these commands:
 ```sh
 git clone "https://github.com/DiffSK/configobj.git"
 cd "configobj"
-. .env --yes --develop
+source .env --yes --develop
 invoke build --docs test doctest check
 ```
 
