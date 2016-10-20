@@ -2146,7 +2146,8 @@ class ConfigObj(Section):
             if preserve_errors:
                 # We do this once to remove a top level dependency on the validate module
                 # Which makes importing configobj faster
-                from configobj.validate import VdtMissingValue
+                from configobj.validate import VdtMissingDefinition, VdtMissingValue
+                self._vdtMissingDefinition = VdtMissingDefinition
                 self._vdtMissingValue = VdtMissingValue
 
             section = self
@@ -2277,7 +2278,7 @@ class ConfigObj(Section):
                 else:
                     ret_false = False
                     msg = 'Value %r was unrecognized' % entry
-                    out[entry] = validator.baseErrorClass(msg)
+                    out[entry] = self._vdtMissingDefinition(msg)
 
 
         # Missing sections will have been created as empty ones when the
