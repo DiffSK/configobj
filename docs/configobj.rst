@@ -522,7 +522,7 @@ validate
 
 .. code-block:: python
 
-    validate(validator, preserve_errors=False, copy=False)
+    validate(validator, preserve_errors=False, copy=False, strict_spec=False)
 
 .. code-block:: python
 
