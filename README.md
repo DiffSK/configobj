@@ -24,6 +24,8 @@ For long time ConfigObj users, the biggest change is in the officially supported
 - 2.7
 - 3.3
 - 3.4
+- 3.5
+- 3.6
 
 (notably adding Python 3 support; previously this was 2.3 - 2.6)
 Other versions may work, but this is what travis and tox uses to run the tests on commit.
