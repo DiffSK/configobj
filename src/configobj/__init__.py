@@ -1800,10 +1800,11 @@ class ConfigObj(Section):
         return quot
 
 
-    def _get_triple_quote(self, value):
+    @staticmethod
+    def _get_triple_quote(value):
         if (value.find('"""') != -1) and (value.find("'''") != -1):
             raise ConfigObjError('Value "%s" cannot be safely quoted.' % value)
-        if value.find('"""') == -1:
+        if value.find("'''") == -1:
             quot = tdquot
         else:
             quot = tsquot

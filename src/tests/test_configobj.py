@@ -992,7 +992,7 @@ class TestInterpolation(object):
 
 class TestQuotes(object):
     """
-    tests what happens whn dealing with quotes
+    tests what happens when dealing with quotes
     """
     def assert_bad_quote_message(self, empty_cfg, to_quote, **kwargs):
         #TODO: this should be use repr instead of str
@@ -1023,6 +1023,23 @@ class TestQuotes(object):
             ConfigObj(testconfig5.splitlines())
         assert len(excinfo.value.errors) == 4
 
+    def test_triple_quote_newline_roundtrip(self):
+        """
+        Values with one kind of triple quote should save and load again.
+
+        From bzr bug lp:710410 and unit test written by bialix.
+        """
+        initial_conf = ConfigObj()
+        initial_conf['single'] = "single triple '''\n"
+        initial_conf['double'] = 'double triple """\n'
+
+        io = six.BytesIO()
+        initial_conf.write(outfile=io)
+        io.seek(0)
+
+        loaded_conf = ConfigObj(io)
+        assert loaded_conf['single'] == "single triple '''\n"
+        assert loaded_conf['double'] == 'double triple """\n'
 
 
 def test_handle_stringify_off():
