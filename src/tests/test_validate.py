@@ -212,3 +212,26 @@ class TestListChecks(object):
         configobj = ConfigObj(config, configspec=configspec)
         assert configobj.validate(val, preserve_errors=True) is True, "Validation failed unexpectedly"
         assert configobj['mixed'] == [1, '2', True, 3.1415]
+
+
+class TestDottedQuadToNum(object):
+
+    def test_stripped(self):
+        assert dottedQuadToNum('192.0.2.0') == 3221225984
+        assert dottedQuadToNum('192.0.2.1 ') == 3221225985
+        assert dottedQuadToNum(' 192.0.2.2') == 3221225986
+        assert dottedQuadToNum('\t\t192.0.2.3\n') == 3221225987
+        with pytest.raises(ValueError) as excinfo:
+            dottedQuadToNum('192. 0. 2. 4')
+        assert str(excinfo.value) == 'Not a good dotted-quad IP: 192. 0. 2. 4'
+
+    def test_boundaries(self):
+        assert dottedQuadToNum('0.0.0.0') == 0
+        assert dottedQuadToNum('255.255.255.255') == 4294967295
+        with pytest.raises(ValueError) as excinfo:
+            dottedQuadToNum('255.255.255.256')
+        assert str(excinfo.value) == (
+            'Not a good dotted-quad IP: 255.255.255.256')
+        with pytest.raises(ValueError) as excinfo:
+            dottedQuadToNum('-1')
+        assert str(excinfo.value) == 'Not a good dotted-quad IP: -1'

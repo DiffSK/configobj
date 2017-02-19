@@ -278,17 +278,8 @@ def dottedQuadToNum(ip):
 
     >>> int(dottedQuadToNum('1 '))
     1
-    >>> int(dottedQuadToNum(' 1.2'))
-    16777218
-    >>> int(dottedQuadToNum(' 1.2.3 '))
-    16908291
     >>> int(dottedQuadToNum('1.2.3.4'))
     16909060
-    >>> dottedQuadToNum('255.255.255.255')
-    4294967295
-    >>> dottedQuadToNum('255.255.255.256')
-    Traceback (most recent call last):
-    ValueError: Not a good dotted-quad IP: 255.255.255.256
     """
 
     # import here to avoid it when ip_addr values are not used
