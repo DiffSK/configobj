@@ -240,6 +240,30 @@ class TestEncoding(object):
         assert isinstance(cfg['tags']['bug']['translated'], six.text_type)
         cfg.write()
 
+    #issue #18
+    def test_encoding_from_filelike(self):
+
+        class Filelike(object):
+            """Simple object that implements read() to return bytes"""
+
+            def __init__(self, data):
+                self.data = data
+
+            def read(self):
+                return self.data
+
+        c = ConfigObj(Filelike(b'string = \xc2\xa7'), encoding='utf-8')
+
+        string = c['string']
+
+        if six.PY2:
+            assert isinstance(string, unicode)
+        else:
+            assert isinstance(string, str)
+
+        assert string  == '\u00a7'
+
+
 @pytest.fixture
 def testconfig1():
     """
