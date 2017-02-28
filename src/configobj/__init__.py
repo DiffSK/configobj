@@ -1023,6 +1023,14 @@ class Section(dict):
             self[section].restore_defaults()
 
 
+def _get_triple_quote(value):
+    """Helper for triple-quoting round-trips."""
+    if ('"""' in value) and ("'''" in value):
+        raise ConfigObjError('Value cannot be safely quoted: {0!r}'.format(value))
+
+    return tsquot if "'''" in value else tdquot
+
+
 class ConfigObj(Section):
     """An object to read, create, and write config files."""
 
@@ -1773,7 +1781,7 @@ class ConfigObj(Section):
             # for normal values either single or double quotes will do
             elif '\n' in value:
                 # will only happen if multiline is off - e.g. '\n' in key
-                raise ConfigObjError('Value "%s" cannot be safely quoted.' % value)
+                raise ConfigObjError('Value cannot be safely quoted: {0!r}'.format(value))
             elif ((value[0] not in wspace_plus) and
                     (value[-1] not in wspace_plus) and
                     (',' not in value)):
@@ -1782,7 +1790,7 @@ class ConfigObj(Section):
                 quot = self._get_single_quote(value)
         else:
             # if value has '\n' or "'" *and* '"', it will need triple quotes
-            quot = self._get_triple_quote(value)
+            quot = _get_triple_quote(value)
 
         if quot == noquot and '#' in value and self.list_values:
             quot = self._get_single_quote(value)
@@ -1792,22 +1800,11 @@ class ConfigObj(Section):
 
     def _get_single_quote(self, value):
         if ("'" in value) and ('"' in value):
-            raise ConfigObjError('Value "%s" cannot be safely quoted.' % value)
+            raise ConfigObjError('Value cannot be safely quoted: {0!r}'.format(value))
         elif '"' in value:
             quot = squot
         else:
             quot = dquot
-        return quot
-
-
-    @staticmethod
-    def _get_triple_quote(value):
-        if (value.find('"""') != -1) and (value.find("'''") != -1):
-            raise ConfigObjError('Value "%s" cannot be safely quoted.' % value)
-        if value.find("'''") == -1:
-            quot = tdquot
-        else:
-            quot = tsquot
         return quot
 
 

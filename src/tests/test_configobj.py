@@ -1007,8 +1007,7 @@ class TestQuotes(object):
     tests what happens when dealing with quotes
     """
     def assert_bad_quote_message(self, empty_cfg, to_quote, **kwargs):
-        #TODO: this should be use repr instead of str
-        message = 'Value "{0}" cannot be safely quoted.'
+        message = 'Value cannot be safely quoted: {0!r}'
         with pytest.raises(ConfigObjError) as excinfo:
             empty_cfg._quote(to_quote, **kwargs)
         assert str(excinfo.value) == message.format(to_quote)
