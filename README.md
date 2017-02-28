@@ -57,9 +57,11 @@ For this to work, you might also need to follow some
 [setup procedures](https://py-generic-project.readthedocs.io/en/latest/installing.html#quick-setup)
 to make the necessary basic commands available on *Linux*, *Mac OS X*, and *Windows*.
 
-**Running the test suite** can be done several ways, just call ``invoke test`` for a quick check,
-or ``invoke test.tox`` for testing with all supported Python versions
-(if you [have them available](https://github.com/jhermann/priscilla/tree/master/pyenv)).
+**Running the test suite** can be done several ways, just call ``invoke test`` for a quick check.
+Run ``invoke test.tox`` for testing with *all* supported Python versions
+(if you [have them available](https://github.com/jhermann/priscilla/tree/master/pyenv)),
+or be more selective by e.g. calling ``invoke test.tox -e py27,py34``.
+
 Use ``invoke check`` to **run a code-quality scan**.
 
 To **start a watchdog that auto-rebuilds documentation** and reloads the opened browser tab on any change,
