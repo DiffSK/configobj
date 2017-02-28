@@ -19,16 +19,12 @@ If you want to *work on the project*, please see the [Contributing](#contributin
 
 This project is now maintained by [Eli Courtwright](https://github.com/EliAndrewC) and [Rob Dennis](https://github.com/robdennis) with the blessing of original creator [Michael Foord](http://www.voidspace.org.uk/).
 
-For long time ConfigObj users, the biggest change is in the officially supported Python versions:
-- 2.6
-- 2.7
-- 3.3
-- 3.4
-- 3.5
-- 3.6
+For long time ConfigObj users, the biggest change is in the officially supported Python versions (it *was* 2.3 … 2.6):
 
-(notably adding Python 3 support; previously this was 2.3 - 2.6)
-Other versions may work, but this is what travis and tox uses to run the tests on commit.
+* 2.6 … 2.7
+* 3.3 … 3.6
+
+Other Python3 versions may work, but this is what *Travis* and ``tox`` use to run the tests on commit.
 
 
 ## Roadmap
