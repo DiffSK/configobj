@@ -53,7 +53,7 @@ call these commands:
 ```sh
 git clone "https://github.com/DiffSK/configobj.git"
 cd "configobj"
-. .env --yes --develop
+command . .env --yes --develop  # add '--virtualenv /usr/bin/virtualenv' for Python2
 invoke build --docs test doctest check
 ```
 
