@@ -1469,14 +1469,6 @@ class ConfigObj(Section):
             return self._decode(infile, 'utf-8')
 
 
-    def _a_to_u(self, aString):
-        """Decode ASCII strings to unicode if a self.encoding is specified."""
-        if isinstance(aString, six.binary_type) and self.encoding:
-            return aString.decode(self.encoding)
-        else:
-            return aString
-
-
     def _decode(self, infile, encoding):
         """
         Decode infile to unicode. Using the specified encoding.
@@ -1960,7 +1952,7 @@ class ConfigObj(Section):
             val = repr(this_entry)
         return '%s%s%s%s%s' % (indent_string,
                                self._decode_element(self._quote(entry, multiline=False)),
-                               self._a_to_u(' = '),
+                               ' = ',
                                val,
                                self._decode_element(comment))
 
@@ -1973,9 +1965,9 @@ class ConfigObj(Section):
             # titles are in '[]' already, so quoting for contained quotes is not necessary (#74)
             title = entry_str
         return '%s%s%s%s%s' % (indent_string,
-                               self._a_to_u('[' * depth),
+                               '[' * depth,
                                title,
-                               self._a_to_u(']' * depth),
+                               ']' * depth,
                                self._decode_element(comment))
 
 
@@ -1985,7 +1977,7 @@ class ConfigObj(Section):
             return comment or ''  # return trailing whitespace as-is
         start = self.indent_type
         if not comment.lstrip().startswith('#'):
-            start += self._a_to_u(' # ')
+            start += ' # '
         return (start + comment)
 
 
@@ -2011,8 +2003,8 @@ class ConfigObj(Section):
             self.indent_type = DEFAULT_INDENT_TYPE
 
         out = []
-        comment_markers = [self._a_to_u(x) for x in self.COMMENT_MARKERS]
-        comment_marker_default = self._a_to_u(self.COMMENT_MARKERS[0] + ' ')
+        comment_markers = [x for x in self.COMMENT_MARKERS]
+        comment_marker_default = self.COMMENT_MARKERS[0] + ' '
         if section is None:
             int_val = self.interpolation
             self.interpolation = False
@@ -2084,7 +2076,7 @@ class ConfigObj(Section):
             and sys.platform == 'win32' and newline == '\r\n'):
             # Windows specific hack to avoid writing '\r\r\n'
             newline = '\n'
-        output = self._a_to_u(newline).join(out)
+        output = newline.join(out)
         if not output.endswith(newline):
             output += newline
 
