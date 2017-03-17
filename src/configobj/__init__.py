@@ -656,34 +656,34 @@ class Section(dict):
 
     def items(self):
         """D.items() -> list of D's (key, value) pairs, as 2-tuples"""
-        return list(zip((self.scalars + self.sections), list(self.values())))
+        return [(key, self[key]) for key in self.keys()]
 
 
     def keys(self):
         """D.keys() -> list of D's keys"""
-        return (self.scalars + self.sections)
+        return self.scalars + self.sections
 
 
     def values(self):
         """D.values() -> list of D's values"""
-        return [self[key] for key in (self.scalars + self.sections)]
+        return [self[key] for key in self.keys()]
 
 
     def iteritems(self):
         """D.iteritems() -> an iterator over the (key, value) items of D"""
-        return iter(list(self.items()))
+        return iter(self.items())
 
 
     def iterkeys(self):
         """D.iterkeys() -> an iterator over the keys of D"""
-        return iter((self.scalars + self.sections))
+        return iter(self.keys())
 
     __iter__ = iterkeys
 
 
     def itervalues(self):
         """D.itervalues() -> an iterator over the values of D"""
-        return iter(list(self.values()))
+        return iter(self.values())
 
 
     def __repr__(self):
@@ -754,7 +754,7 @@ class Section(dict):
         >>> c2
         ConfigObj({'section1': {'option1': 'False', 'subsection': {'more_options': 'False'}}})
         """
-        for key, val in list(indict.items()):
+        for key, val in indict.items():
             if decoupled:
                 val = copy.deepcopy(val)
             if (key in self and isinstance(self[key], collections.Mapping) and
