@@ -260,17 +260,6 @@ _paramstring = r'''
 
 _matchstring = '^%s*' % _paramstring
 
-# Python pre 2.2.1 doesn't have bool
-try:
-    bool
-except NameError:
-    def bool(val):
-        """Simple boolean equivalent function. """
-        if val:
-            return 1
-        else:
-            return 0
-
 
 def dottedQuadToNum(ip):
     """
