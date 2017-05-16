@@ -110,6 +110,9 @@ __all__ = (
 DEFAULT_INTERPOLATION = 'configparser'
 DEFAULT_INDENT_TYPE = '    '
 MAX_INTERPOL_DEPTH = 10
+DUPLICATE_VALUES_THROW_ERROR = 0
+DUPLICATE_VALUES_FIRST = 1
+DUPLICATE_VALUES_LAST = 2
 
 OPTION_DEFAULTS = {
     'interpolation': True,
@@ -125,6 +128,7 @@ OPTION_DEFAULTS = {
     'default_encoding': None,
     'unrepr': False,
     'write_empty_values': False,
+    'duplicate_values' : DUPLICATE_VALUES_THROW_ERROR,
 }
 
 # this could be replaced if six is used for compatibility, or there are no
@@ -1145,7 +1149,7 @@ class ConfigObj(Section):
                  interpolation=True, raise_errors=False, list_values=True,
                  create_empty=False, file_error=False, stringify=True,
                  indent_type=None, default_encoding=None, unrepr=False,
-                 write_empty_values=False, _inspec=False):
+                 write_empty_values=False, _inspec=False, duplicate_values=DUPLICATE_VALUES_THROW_ERROR):
         """
         Parse a config file or create a config file object.
 
@@ -1167,7 +1171,7 @@ class ConfigObj(Section):
                     'create_empty': create_empty, 'file_error': file_error,
                     'stringify': stringify, 'indent_type': indent_type,
                     'default_encoding': default_encoding, 'unrepr': unrepr,
-                    'write_empty_values': write_empty_values}
+                    'write_empty_values': write_empty_values, 'duplicate_values': duplicate_values}
 
         if options is None:
             options = _options
@@ -1315,6 +1319,7 @@ class ConfigObj(Section):
         self.indent_type = options['indent_type']
         self.encoding = options['encoding']
         self.default_encoding = options['default_encoding']
+        self.duplicate_values = options['duplicate_values']
         self.BOM = False
         self.newlines = None
         self.write_empty_values = options['write_empty_values']
@@ -1655,11 +1660,19 @@ class ConfigObj(Section):
                 #
                 key = self._unquote(key)
                 if key in this_section:
-                    self._handle_error(
-                        'Duplicate keyword name',
-                        DuplicateError, infile, cur_index)
-                    continue
-                # add the key.
+                    if self.duplicate_values == DUPLICATE_VALUES_THROW_ERROR :
+                        self._handle_error(
+                            'Duplicate keyword name',
+                            DuplicateError, infile, cur_index)
+                        continue
+                    if self.duplicate_values == DUPLICATE_VALUES_FIRST :
+                        continue
+                    if self.duplicate_values == DUPLICATE_VALUES_LAST :
+                        this_section.__setitem__(key, value, unrepr=True)
+                        this_section.inline_comments[key] = comment
+                        this_section.comments[key] = comment_list
+                        continue
+               # add the key.
                 # we set unrepr because if we have got this far we will never
                 # be creating a new section
                 this_section.__setitem__(key, value, unrepr=True)
