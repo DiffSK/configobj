@@ -1198,8 +1198,12 @@ class ConfigObj(Section):
         self._original_configspec = configspec
         self._load(infile, configspec)
 
-
     def _load(self, infile, configspec):
+        try:
+            infile = infile.__fspath__()
+        except AttributeError:
+            pass
+
         if isinstance(infile, six.string_types):
             self.filename = infile
             if os.path.isfile(infile):
@@ -1250,7 +1254,7 @@ class ConfigObj(Section):
             # needs splitting into lines - but needs doing *after* decoding
             # in case it's not an 8 bit encoding
         else:
-            raise TypeError('infile must be a filename, file like object, or list of lines.')
+            raise TypeError('infile must be a path-like object, file like object, or list of lines.')
 
         if content:
             # don't do it for the empty ConfigObj
