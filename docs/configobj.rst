@@ -2239,12 +2239,12 @@ Here is an example of how you could present this information to the user.
         # this code gets the extra values themselves
         the_section = cfg
         for section in sections:
-            the_section = cfg[section]
+            the_section = the_section[section]
 
         # the_value may be a section or a value
         the_value = the_section[name]
 
-        section_or_value = 'value
+        section_or_value = 'value'
         if isinstance(the_value, dict):
             # Sections are subclasses of dict
             section_or_value = 'section'
