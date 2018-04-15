@@ -1412,3 +1412,42 @@ class TestEdgeCasesWhenWritingOut(object):
         c = ConfigObj(cfg, unrepr=True)
         assert repr(c) == "ConfigObj({'thing': {'a': 1}})"
         assert c.write() == ["thing = {'a': 1}"]
+
+
+def test_dividers_happy(cfg_contents):
+    cfg = cfg_contents("""
+[section]
+    ook : 'eek'
+    monkey = True
+    beast + 666
+    """)
+    c = ConfigObj(cfg, dividers=':=+')
+    assert c['section'] is not None
+    assert c['section']['ook'] == 'eek'
+    assert c['section']['monkey'] == 'True'
+    assert c['section']['beast'] == '666'
+
+def test_dividers_many(cfg_contents):
+    cfg = cfg_contents("""
+[section]
+    ook =: 'eek'
+    monkey := True
+    Fred := some weird string
+    Alice == in Wonderland
+    """)
+    c = ConfigObj(cfg, dividers=':=')
+    assert c['section'] is not None
+    assert c['section']['ook'] == ": 'eek'"
+    assert c['section']['monkey'] == '= True'
+    assert c['section']['Fred'] == '= some weird string'
+    assert c['section']['Alice'] == '= in Wonderland'
+
+def test_dividers_unhappy(cfg_contents):
+    cfg = cfg_contents(u"""
+[section]
+    ook … 'eek'
+    """)
+    try:
+        c = ConfigObj(cfg, dividers=u'…')
+    except AttributeError as err:
+        assert str(err) == "No valid characters found for dividers."

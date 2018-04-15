@@ -22,6 +22,7 @@ import re
 import sys
 import copy
 import collections
+import string
 
 from codecs import BOM_UTF8, BOM_UTF16, BOM_UTF16_BE, BOM_UTF16_LE
 
@@ -1040,18 +1041,25 @@ class ConfigObj(Section):
     # TODO: also support inline comments (needs dynamic compiling of the regex below)
     COMMENT_MARKERS = ['#']
 
-    _keyword = re.compile(r'''^ # line start
-        (\s*)                   # indentation
-        (                       # keyword
-            (?:".*?")|          # double quotes
-            (?:'.*?')|          # single quotes
-            (?:[^'"=].*?)       # no quotes
-        )
-        \s*=\s*                 # divider
-        (.*)                    # value (including list values and comments)
-        $   # line end
-        ''',
-        re.VERBOSE)
+    __keyword = None
+
+    @property
+    def _keyword(self):
+        #if self.__keyword is None:
+        #    self.__keyword = re.compile(r'''^ # line start
+        return re.compile(r'''^ # line start
+            (\s*)                   # indentation
+            (                       # keyword
+                (?:".*?")|          # double quotes
+                (?:'.*?')|          # single quotes
+                (?:[^'"{0}].*?)     # no quotes
+            )
+            \s*[{0}]\s*             # dividers
+            (.*)                    # value (including list values and comments)
+            $   # line end
+            '''.format(''.join(self._dividers)),
+            re.VERBOSE)
+        #return self.__keyword
 
     _sectionmarker = re.compile(r'''^
         (\s*)                     # 1: indentation
@@ -1145,7 +1153,7 @@ class ConfigObj(Section):
                  interpolation=True, raise_errors=False, list_values=True,
                  create_empty=False, file_error=False, stringify=True,
                  indent_type=None, default_encoding=None, unrepr=False,
-                 write_empty_values=False, _inspec=False):
+                 write_empty_values=False, _inspec=False, dividers='='):
         """
         Parse a config file or create a config file object.
 
@@ -1153,9 +1161,17 @@ class ConfigObj(Section):
                     interpolation=True, raise_errors=False, list_values=True,
                     create_empty=False, file_error=False, stringify=True,
                     indent_type=None, default_encoding=None, unrepr=False,
-                    write_empty_values=False, _inspec=False)``
+                    write_empty_values=False, _inspec=False, dividers='=')``
         """
+
+        # Dividers, see issue #83.
+        self._dividers = [x for x in dividers if x in string.printable]
+        if not self._dividers:
+            raise AttributeError("No valid characters found for dividers.")
+
+        # Inspect.
         self._inspec = _inspec
+
         # init the superclass
         Section.__init__(self, self, 0, self)
 
@@ -1197,6 +1213,7 @@ class ConfigObj(Section):
         configspec = options['configspec']
         self._original_configspec = configspec
         self._load(infile, configspec)
+
 
 
     def _load(self, infile, configspec):
