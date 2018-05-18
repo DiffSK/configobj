@@ -166,7 +166,7 @@ functions yourself.
 
 .. code-block:: python
 
-    from configobj.validate import Validator
+    from validate import Validator
     #
     vtor = Validator()
     newval1 = vtor.check('integer', value1)
@@ -196,14 +196,14 @@ Instantiate
 
 .. code-block:: python
 
-    from configobj.validate import Validator
+    from validate import Validator
     vtor = Validator()
 
 or even :
 
 .. code-block:: python
 
-    from configobj.validate import Validator
+    from validate import Validator
     #
     fdict = {
         'check_name1': function1,
@@ -231,7 +231,7 @@ same effect as the following code :
 
 .. code-block:: python
 
-    from configobj.validate import Validator
+    from validate import Validator
     #
     vtor = Validator()
     vtor.functions['check_name1'] = function1
@@ -267,7 +267,7 @@ that. Here's the basic example :
 
 .. code-block:: python
 
-    from configobj.validate import Validator, ValidateError
+    from validate import Validator, ValidateError
     #
     vtor = Validator()
     check = "integer(0, 9)"
@@ -453,6 +453,8 @@ Any other type is a ``VdtTypeError``, any other value is a
 .. code-block:: python
 
     def special_list(value, length):
+        #Make sure to import all exceptions that will be used
+        from validate import VdtParamError, VdtTypeError, VdtValueTooLongError, VdtValueTooShortError,VdtTypeError, VdtValueTooSmallError, VdtValueTooBigError
         """
         Check that the supplied value is a list of integers,
         with 'length' entries, and each entry between 0 and 99.
@@ -481,16 +483,16 @@ Any other type is a ``VdtTypeError``, any other value is a
             if not isinstance(entry, (str, unicode, int)):
                 # a value in the list
                 # is neither an integer nor a string
-                raise VdtTypeError(value)
+                raise VdtTypeError(entry)
             elif isinstance(entry, (str, unicode)):
                 if not entry.isdigit():
-                    raise VdtTypeError(value)
+                    raise VdtTypeError(entry)
                 else:
                     entry = int(entry)
             if entry < 0:
-                raise VdtValueTooSmallError(value)
+                raise VdtValueTooSmallError(entry)
             elif entry > 99:
-                raise VdtValueTooBigError(value)
+                raise VdtValueTooBigError(entry)
             out.append(entry)
         #
         # if we got this far, all is well
