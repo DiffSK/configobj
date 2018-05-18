@@ -531,7 +531,7 @@ validate
     # (which could also be hardcoded into your program)
     config = ConfigObj(filename, configspec=filename2)
     #
-    from configobj.validate import Validator
+    from validate import Validator
     val = Validator()
     test = config.validate(val)
     if test == True:
@@ -1832,7 +1832,7 @@ will be copied into your ConfigObj instance.
 .. code-block:: python
 
     from configobj import ConfigObj
-    from configobj.validate import Validator
+    from validate import Validator
     vdt = Validator()
     config = ConfigObj(configspec='default.ini')
     config.filename = 'new_default.ini'

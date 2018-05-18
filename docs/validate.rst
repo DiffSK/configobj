@@ -166,7 +166,7 @@ functions yourself.
 
 .. code-block:: python
 
-    from configobj.validate import Validator
+    from validate import Validator
     #
     vtor = Validator()
     newval1 = vtor.check('integer', value1)
@@ -196,14 +196,14 @@ Instantiate
 
 .. code-block:: python
 
-    from configobj.validate import Validator
+    from validate import Validator
     vtor = Validator()
 
 or even :
 
 .. code-block:: python
 
-    from configobj.validate import Validator
+    from validate import Validator
     #
     fdict = {
         'check_name1': function1,
@@ -231,7 +231,7 @@ same effect as the following code :
 
 .. code-block:: python
 
-    from configobj.validate import Validator
+    from validate import Validator
     #
     vtor = Validator()
     vtor.functions['check_name1'] = function1
@@ -267,7 +267,7 @@ that. Here's the basic example :
 
 .. code-block:: python
 
-    from configobj.validate import Validator, ValidateError
+    from validate import Validator, ValidateError
     #
     vtor = Validator()
     check = "integer(0, 9)"
