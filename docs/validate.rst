@@ -453,6 +453,8 @@ Any other type is a ``VdtTypeError``, any other value is a
 .. code-block:: python
 
     def special_list(value, length):
+        #Make sure to import all exceptions that will be used
+        from validate import VdtParamError, VdtTypeError, VdtValueTooLongError, VdtValueTooShortError,VdtTypeError, VdtValueTooSmallError, VdtValueTooBigError
         """
         Check that the supplied value is a list of integers,
         with 'length' entries, and each entry between 0 and 99.
