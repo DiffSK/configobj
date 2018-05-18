@@ -483,16 +483,16 @@ Any other type is a ``VdtTypeError``, any other value is a
             if not isinstance(entry, (str, unicode, int)):
                 # a value in the list
                 # is neither an integer nor a string
-                raise VdtTypeError(value)
+                raise VdtTypeError(entry)
             elif isinstance(entry, (str, unicode)):
                 if not entry.isdigit():
-                    raise VdtTypeError(value)
+                    raise VdtTypeError(entry)
                 else:
                     entry = int(entry)
             if entry < 0:
-                raise VdtValueTooSmallError(value)
+                raise VdtValueTooSmallError(entry)
             elif entry > 99:
-                raise VdtValueTooBigError(value)
+                raise VdtValueTooBigError(entry)
             out.append(entry)
         #
         # if we got this far, all is well
