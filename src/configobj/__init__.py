@@ -281,7 +281,8 @@ class InterpolationEngine(object):
                     replacement = v
                 else:
                     # Further interpolation may be needed to obtain final value
-                    replacement = recursive_interpolate(k, v, s, backtrail)
+                    replacement = recursive_interpolate(
+                            k, s.main._write_value(v), s, backtrail)
                 # Replace the matched string with its final value
                 start, end = match.span()
                 value = ''.join((value[:start], replacement, value[end:]))
@@ -1943,17 +1944,20 @@ class ConfigObj(Section):
 
     def _write_line(self, indent_string, entry, this_entry, comment):
         """Write an individual line, for the write method"""
-        # NOTE: the calls to self._quote here handles non-StringType values.
-        if not self.unrepr:
-            val = self._decode_element(self._quote(this_entry))
-        else:
-            val = repr(this_entry)
+        val = self._write_value(this_entry)
         return '%s%s%s%s%s' % (indent_string,
                                self._decode_element(self._quote(entry, multiline=False)),
                                self._a_to_u(' = '),
                                val,
                                self._decode_element(comment))
 
+    def _write_value(self, this_entry):
+        # NOTE: the calls to self._quote here handles non-StringType values.
+        if not self.unrepr:
+            val = self._decode_element(self._quote(this_entry))
+        else:
+            val = repr(this_entry)
+        return val
 
     def _write_marker(self, indent_string, depth, entry, comment):
         """Write a section marker line"""
