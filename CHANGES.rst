@@ -1,6 +1,12 @@
 Changelog
 ---------
 
+Unreleased
+""""""""""
+
+* Drop support for EOL Python 2.6 and 3.3
+
+
 Release 5.1.0
 """""""""""""
 
