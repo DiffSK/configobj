@@ -5,6 +5,7 @@ Unreleased
 """"""""""
 
 * Drop support for EOL Python 2.6 and 3.3
+* Add support for Python 3.7
 
 
 Release 5.1.0
