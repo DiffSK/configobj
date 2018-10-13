@@ -21,9 +21,15 @@ import os
 import re
 import sys
 import copy
-import collections
 
 from codecs import BOM_UTF8, BOM_UTF16, BOM_UTF16_BE, BOM_UTF16_LE
+
+try:
+    # Python 3
+    from collections.abc import Mapping
+except ImportError:
+    # Python 2.7
+    from collections import Mapping
 
 import six
 from ._version import __version__
@@ -543,7 +549,7 @@ class Section(dict):
             if key not in self:
                 self.sections.append(key)
             dict.__setitem__(self, key, value)
-        elif isinstance(value, collections.Mapping) and not unrepr:
+        elif isinstance(value, Mapping) and not unrepr:
             # First create the new depth level,
             # then create the section
             if key not in self:
@@ -757,8 +763,8 @@ class Section(dict):
         for key, val in list(indict.items()):
             if decoupled:
                 val = copy.deepcopy(val)
-            if (key in self and isinstance(self[key], collections.Mapping) and
-                                isinstance(val, collections.Mapping)):
+            if (key in self and isinstance(self[key], Mapping) and
+                                isinstance(val, Mapping)):
                 self[key].merge(val, decoupled=decoupled)
             else:
                 self[key] = val
@@ -2407,7 +2413,7 @@ def flatten_errors(cfg, res, levels=None, results=None):
     for (key, val) in list(res.items()):
         if val == True:
             continue
-        if isinstance(cfg.get(key), collections.Mapping):
+        if isinstance(cfg.get(key), Mapping):
             # Go down one level
             levels.append(key)
             flatten_errors(cfg[key], val, levels, results)
