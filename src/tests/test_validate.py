@@ -207,7 +207,7 @@ class TestListChecks(object):
             mixed = 1, 2, yes, 3.1415
             '''.splitlines()
         configspec = '''
-            mixed = mixed_list({0})
+            mixed = mixed_list({})
             '''.format(typespec).splitlines()
         configobj = ConfigObj(config, configspec=configspec)
         assert configobj.validate(val, preserve_errors=True) is True, "Validation failed unexpectedly"
