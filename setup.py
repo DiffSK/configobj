@@ -24,8 +24,12 @@ from contextlib import closing
 from setuptools import setup
 
 if sys.version_info < (2, 6):
-    print('for python versions < 2.6 use configobj '
+    print('for Python versions < 2.6 use configobj '
           'version 4.7.2')
+    sys.exit(1)
+elif sys.version_info < (2, 7):
+    print('for Python version 2.6 use configobj '
+          'version 5.0.5')
     sys.exit(1)
 
 __here__ = os.path.abspath(os.path.dirname(__file__))
@@ -76,7 +80,7 @@ try:
         LONG_DESCRIPTION += handle.read()
 except EnvironmentError as exc:
     # Build / install anyway
-    print("WARNING: Cannot open/read CHANGES.rst due to {0}".format(exc))
+    print("WARNING: Cannot open/read CHANGES.rst due to {}".format(exc))
 
 CLASSIFIERS = [
     # Details at http://pypi.python.org/pypi?:action=list_classifiers
@@ -85,10 +89,8 @@ CLASSIFIERS = [
     'License :: OSI Approved :: BSD License',
     'Programming Language :: Python',
     'Programming Language :: Python :: 2',
-    'Programming Language :: Python :: 2.6',
     'Programming Language :: Python :: 2.7',
     'Programming Language :: Python :: 3',
-    'Programming Language :: Python :: 3.3',
     'Programming Language :: Python :: 3.4',
     'Programming Language :: Python :: 3.5',
     'Programming Language :: Python :: 3.6',
@@ -115,6 +117,7 @@ project = dict(
     package_dir={'': 'src'},
     packages=PACKAGES,
     install_requires=[i.strip() for i in REQUIRES.splitlines() if i.strip()],
+    python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*',
     classifiers=CLASSIFIERS,
     keywords=KEYWORDS,
     license='BSD (2 clause)',

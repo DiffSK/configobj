@@ -20,8 +20,8 @@ This project is now maintained by [Eli Courtwright](https://github.com/EliAndrew
 
 For long time ConfigObj users, the biggest change is in the officially supported Python versions (it *was* 2.3 … 2.6):
 
-* 2.6 … 2.7
-* 3.3 … 3.6
+* 2.7
+* 3.4 … 3.6
 
 Other Python3 versions may work, but this is what *Travis* and ``tox`` use to run the tests on commit.
 
