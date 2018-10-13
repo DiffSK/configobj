@@ -693,7 +693,7 @@ class Section(dict):
                 return self[key]
             except MissingInterpolationOption:
                 return dict.__getitem__(self, key)
-        return '{%s}' % ', '.join([('%s: %s' % (repr(key), repr(_getval(key))))
+        return '{%s}' % ', '.join([('{}: {}'.format(repr(key), repr(_getval(key))))
             for key in (self.scalars + self.sections)])
 
     __str__ = __repr__
@@ -1026,7 +1026,7 @@ class Section(dict):
 def _get_triple_quote(value):
     """Helper for triple-quoting round-trips."""
     if ('"""' in value) and ("'''" in value):
-        raise ConfigObjError('Value cannot be safely quoted: {0!r}'.format(value))
+        raise ConfigObjError('Value cannot be safely quoted: {!r}'.format(value))
 
     return tsquot if "'''" in value else tdquot
 
@@ -1275,11 +1275,11 @@ class ConfigObj(Section):
         # if we had any errors, now is the time to raise them
         if self._errors:
             if len(self._errors) > 1:
-                msg = ["Parsing failed with {0} errors.".format(len(self._errors))]
+                msg = ["Parsing failed with {} errors.".format(len(self._errors))]
                 for error in self._errors[:self.MAX_PARSE_ERROR_DETAILS]:
                     msg.append(str(error))
                 if len(self._errors) > self.MAX_PARSE_ERROR_DETAILS:
-                    msg.append("{0} more error(s)!"
+                    msg.append("{} more error(s)!"
                                .format(len(self._errors) - self.MAX_PARSE_ERROR_DETAILS))
                 error = ConfigObjError('\n    '.join(msg))
             else:
@@ -1337,8 +1337,8 @@ class ConfigObj(Section):
                 return self[key]
             except MissingInterpolationOption:
                 return dict.__getitem__(self, key)
-        return ('%s({%s})' % (self.__class__.__name__,
-                ', '.join([('%s: %s' % (repr(key), repr(_getval(key))))
+        return ('{}({{{}}})'.format(self.__class__.__name__,
+                ', '.join([('{}: {}'.format(repr(key), repr(_getval(key))))
                 for key in (self.scalars + self.sections)])))
 
 
@@ -1601,7 +1601,7 @@ class ConfigObj(Section):
             mat = self._keyword.match(line)
             if mat is None:
                 self._handle_error(
-                    'Invalid line ({0!r}) (matched as neither section nor keyword)'.format(line),
+                    'Invalid line ({!r}) (matched as neither section nor keyword)'.format(line),
                     ParseError, infile, cur_index)
             else:
                 # is a keyword value
@@ -1707,7 +1707,7 @@ class ConfigObj(Section):
         """
         line = infile[cur_index]
         cur_index += 1
-        message = '{0} at line {1}.'.format(text, cur_index)
+        message = '{} at line {}.'.format(text, cur_index)
         error = ErrorClass(message, cur_index, line)
         if self.raise_errors:
             # raise the error - parsing stops here
@@ -1781,7 +1781,7 @@ class ConfigObj(Section):
             # for normal values either single or double quotes will do
             elif '\n' in value:
                 # will only happen if multiline is off - e.g. '\n' in key
-                raise ConfigObjError('Value cannot be safely quoted: {0!r}'.format(value))
+                raise ConfigObjError('Value cannot be safely quoted: {!r}'.format(value))
             elif ((value[0] not in wspace_plus) and
                     (value[-1] not in wspace_plus) and
                     (',' not in value)):
@@ -1800,7 +1800,7 @@ class ConfigObj(Section):
 
     def _get_single_quote(self, value):
         if ("'" in value) and ('"' in value):
-            raise ConfigObjError('Value cannot be safely quoted: {0!r}'.format(value))
+            raise ConfigObjError('Value cannot be safely quoted: {!r}'.format(value))
         elif '"' in value:
             quot = squot
         else:

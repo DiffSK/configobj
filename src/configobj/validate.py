@@ -372,7 +372,7 @@ class VdtUnknownCheckError(ValidateError):
         Traceback (most recent call last):
         VdtUnknownCheckError: the check "yoda" is unknown.
         """
-        ValidateError.__init__(self, 'the check "%s" is unknown.' % (value,))
+        ValidateError.__init__(self, 'the check "{}" is unknown.'.format(value))
 
 
 class VdtParamError(SyntaxError):
@@ -392,7 +392,7 @@ class VdtParamError(SyntaxError):
         if value is self.NOT_GIVEN:
             SyntaxError.__init__(self, name_or_msg)
         else:
-            SyntaxError.__init__(self, 'passed an incorrect value "%s" for parameter "%s".' % (value, name_or_msg))
+            SyntaxError.__init__(self, 'passed an incorrect value "{}" for parameter "{}".'.format(value, name_or_msg))
 
 
 class VdtTypeError(ValidateError):
@@ -404,7 +404,7 @@ class VdtTypeError(ValidateError):
         Traceback (most recent call last):
         VdtTypeError: the value "jedi" is of the wrong type.
         """
-        ValidateError.__init__(self, 'the value "%s" is of the wrong type.' % (value,))
+        ValidateError.__init__(self, 'the value "{}" is of the wrong type.'.format(value))
 
 
 class VdtValueError(ValidateError):
@@ -416,7 +416,7 @@ class VdtValueError(ValidateError):
         Traceback (most recent call last):
         VdtValueError: the value "jedi" is unacceptable.
         """
-        ValidateError.__init__(self, 'the value "%s" is unacceptable.' % (value,))
+        ValidateError.__init__(self, 'the value "{}" is unacceptable.'.format(value))
 
 
 class VdtValueTooSmallError(VdtValueError):
@@ -428,7 +428,7 @@ class VdtValueTooSmallError(VdtValueError):
         Traceback (most recent call last):
         VdtValueTooSmallError: the value "0" is too small.
         """
-        ValidateError.__init__(self, 'the value "%s" is too small.' % (value,))
+        ValidateError.__init__(self, 'the value "{}" is too small.'.format(value))
 
 
 class VdtValueTooBigError(VdtValueError):
@@ -440,7 +440,7 @@ class VdtValueTooBigError(VdtValueError):
         Traceback (most recent call last):
         VdtValueTooBigError: the value "1" is too big.
         """
-        ValidateError.__init__(self, 'the value "%s" is too big.' % (value,))
+        ValidateError.__init__(self, 'the value "{}" is too big.'.format(value))
 
 
 class VdtValueTooShortError(VdtValueError):
@@ -454,7 +454,7 @@ class VdtValueTooShortError(VdtValueError):
         """
         ValidateError.__init__(
             self,
-            'the value "%s" is too short.' % (value,))
+            'the value "{}" is too short.'.format(value))
 
 
 class VdtValueTooLongError(VdtValueError):
@@ -466,7 +466,7 @@ class VdtValueTooLongError(VdtValueError):
         Traceback (most recent call last):
         VdtValueTooLongError: the value "jedie" is too long.
         """
-        ValidateError.__init__(self, 'the value "%s" is too long.' % (value,))
+        ValidateError.__init__(self, 'the value "{}" is too long.'.format(value))
 
 
 class Validator(object):
@@ -644,7 +644,7 @@ class Validator(object):
             fun_kwargs = dict(fun_kwargs)
         else:
             fun_name, fun_args, fun_kwargs, default = self._parse_check(check)
-            fun_kwargs = dict([(str(key), value) for (key, value) in list(fun_kwargs.items())])
+            fun_kwargs = {str(key): value for (key, value) in list(fun_kwargs.items())}
             self._cache[check] = fun_name, list(fun_args), dict(fun_kwargs), default
         return fun_name, fun_args, fun_kwargs, default
 
@@ -1480,6 +1480,6 @@ if __name__ == '__main__':
     failures, tests = doctest.testmod(
         m, globs=globs,
         optionflags=doctest.IGNORE_EXCEPTION_DETAIL | doctest.ELLIPSIS)
-    print('{0} {1} failures out of {2} tests'
+    print('{} {} failures out of {} tests'
           .format("FAIL" if failures else "*OK*", failures, tests))
     sys.exit(bool(failures))
