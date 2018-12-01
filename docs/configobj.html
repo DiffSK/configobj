@@ -1896,7 +1896,7 @@ and strings <em>must</em> be quoted.</p>
 <p><tt class="docutils literal">unrepr</tt> uses <tt class="docutils literal">repr(object)</tt> to write out values, so it currently <em>doesn't</em>
 check that you are writing valid objects. If you attempt to read an unsupported
 value, ConfigObj will raise a <tt class="docutils literal">configobj.UnknownType</tt> exception.</p>
-<p>Values that are enclosed in triple quotesare handlded as a special case. The triple quotes are removed <em>before</em>
+<p>Values that are enclosed in triple quotes are handlded as a special case. The triple quotes are removed <em>before</em>
 converting. This means that you can use triple quotes to write dictionaries
 over several lines in your config files. They won't be written like this
 though.</p>

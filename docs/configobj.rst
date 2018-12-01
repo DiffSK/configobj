@@ -1958,7 +1958,7 @@ unrepr mode
 
 The ``unrepr`` option allows you to store and retrieve the basic Python
 data-types using config files. It has to use a slightly different syntax as compared to
-normal ConfigObj files thoug it is still Python syntax.
+normal ConfigObj files though it is still Python syntax.
 
 This means that lists are different (they are surrounded by square brackets),
 and strings *must* be quoted.
