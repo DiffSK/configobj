@@ -1518,6 +1518,7 @@ class ConfigObj(Section):
         maxline = len(infile) - 1
         cur_index = -1
         reset_comment = False
+        comment_markers = tuple(self.COMMENT_MARKERS)
 
         while cur_index < maxline:
             if reset_comment:
@@ -1526,7 +1527,7 @@ class ConfigObj(Section):
             line = infile[cur_index]
             sline = line.strip()
             # do we have anything on the line ?
-            if not sline or any(sline.startswith(x) for x in self.COMMENT_MARKERS):
+            if not sline or sline.startswith(comment_markers):
                 reset_comment = False
                 comment_list.append(line)
                 continue
@@ -1993,8 +1994,8 @@ class ConfigObj(Section):
             self.indent_type = DEFAULT_INDENT_TYPE
 
         out = []
-        comment_markers = [x for x in self.COMMENT_MARKERS]
-        comment_marker_default = self.COMMENT_MARKERS[0] + ' '
+        comment_markers = tuple(self.COMMENT_MARKERS)
+        comment_marker_default = comment_markers[0] + ' '
         if section is None:
             int_val = self.interpolation
             self.interpolation = False
@@ -2002,7 +2003,7 @@ class ConfigObj(Section):
             for line in self.initial_comment:
                 line = self._decode_element(line)
                 stripped_line = line.strip()
-                if stripped_line and not any(stripped_line.startswith(x) for x in comment_markers):
+                if stripped_line and not stripped_line.startswith(comment_markers):
                     line = comment_marker_default + line
                 out.append(line)
 
@@ -2013,7 +2014,7 @@ class ConfigObj(Section):
                 continue
             for comment_line in section.comments[entry]:
                 comment_line = self._decode_element(comment_line.lstrip())
-                if comment_line and not any(comment_line.startswith(x) for x in comment_markers):
+                if comment_line and not comment_line.startswith(comment_markers):
                     comment_line = comment_marker_default + comment_line
                 out.append(indent_string + comment_line)
             this_entry = section[entry]
@@ -2038,7 +2039,7 @@ class ConfigObj(Section):
             for line in self.final_comment:
                 line = self._decode_element(line)
                 stripped_line = line.strip()
-                if stripped_line and not any(stripped_line.startswith(x) for x in comment_markers):
+                if stripped_line and not stripped_line.startswith(comment_markers):
                     line = comment_marker_default + line
                 out.append(line)
             self.interpolation = int_val
