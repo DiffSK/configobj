@@ -64,7 +64,7 @@ Downloading
 The current version is **5.0.6**, dated 25th August 2014. ConfigObj 5 is
 stable and mature. We still expect to pick up a few bugs along the way though, particularly with respect to Python 3 compatibility [#]_.
 
-We recommend downloading and installing using pip:
+We recommend downloading and installing using pip::
 
     pip install configobj
 
