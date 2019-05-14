@@ -42,7 +42,7 @@ def cfg_lines(config_string_representation):
     first_content = lines[line_no_with_content]
     if isinstance(first_content, six.binary_type):
         first_content = first_content.decode('utf-8')
-    ws_chars = len(re.search('^(\s*)', first_content).group(1))
+    ws_chars = len(re.search(r'^(\s*)', first_content).group(1))
 
     def yield_stringified_line():
         for line in lines:
@@ -52,7 +52,7 @@ def cfg_lines(config_string_representation):
                 yield line
 
 
-    return [re.sub('^\s{0,%s}' % ws_chars, '', line).encode('utf-8')
+    return [re.sub(r'^\s{0,%s}' % ws_chars, '', line).encode('utf-8')
             for line in yield_stringified_line()]
 
 
@@ -243,7 +243,7 @@ class TestEncoding(object):
 
     def test_encoding_from_filelike(self):
         """Test for fix of #18"""
-        stream = mock.MagicMock()
+        stream = mock.Mock()
         stream.read.return_value = b'text = \xc2\xa7'
         c = ConfigObj(stream, encoding='utf-8')
         text = c['text']
