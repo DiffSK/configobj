@@ -1215,8 +1215,11 @@ class ConfigObj(Section):
         except AttributeError:
             pass
 
-        if isinstance(infile, (six.string_types, Path)):
-            self.filename = str(infile)
+        if isinstance(infile, Path):
+            infile = str(infile)
+
+        if isinstance(infile, six.string_types):
+            self.filename = infile
             if os.path.isfile(infile):
                 with open(infile, 'rb') as h:
                     content = h.readlines() or []
