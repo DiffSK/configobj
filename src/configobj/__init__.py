@@ -1212,7 +1212,7 @@ class ConfigObj(Section):
 
         if isinstance(infile, six.string_types):
             self.filename = infile
-            if os.path.exists(infile):
+            if os.path.exists(infile) and not os.path.isdir(infile):
                 with open(infile, 'rb') as h:
                     content = h.readlines() or []
             elif self.file_error:
