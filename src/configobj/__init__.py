@@ -423,7 +423,7 @@ class Section(dict):
         self.__dict__.update(state[1])
 
     def __reduce__(self):
-        state = (dict(self), self.__dict__)
+        state = (self.copy(), self.__dict__)
         return (__newobj__, (self.__class__,), state)
     
     
@@ -451,8 +451,23 @@ class Section(dict):
         # (rather than just passing to ``dict.__init__``)
         for entry, value in indict.items():
             self[entry] = value
-            
-            
+
+    def copy(self):
+        """
+        This will return a dictionary representation without
+        interpolating strings.
+        """
+        # In py36, dict.copy() was changed
+        # so that it used the subclass's __getitem__,
+        # which causes interpolation to occur.
+        # See github issue #188.
+        orig_interp = self.main.interpolation
+        self.main.interpolation = False
+        try:
+            return dict.copy(self)
+        finally:
+            self.main.interpolation = orig_interp
+
     def _initialise(self):
         # the sequence of scalar values in this Section
         self.scalars = []
