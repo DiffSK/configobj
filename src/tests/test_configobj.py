@@ -196,7 +196,7 @@ class TestCopies(object):
         conf_dict = nested_conf.copy()
         assert conf_dict == {'a': {'foo': 'bar', 'baz': '$foo'}}
 
-    @pytest.mark.xfail(sys.version_info >= (3, 6),
+    @pytest.mark.xfail(sys.version_info >= (3, 6, 7),
                        reason="dict() now uses self.items()"
                               " instead of dict.items()",
                        strict=True)
