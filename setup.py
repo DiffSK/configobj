@@ -37,7 +37,7 @@ __here__ = os.path.abspath(os.path.dirname(__file__))
 NAME = 'configobj'
 MODULES = []
 PACKAGES = ['configobj']
-DESCRIPTION = 'Config file reading, writing and validation.'
+DESCRIPTION = 'Config file reading, writing and validation. DEVELOPMENT VERSION.'
 URL = 'https://github.com/DiffSK/configobj'
 
 REQUIRES = """
@@ -104,6 +104,10 @@ AUTHOR = 'Rob Dennis, Eli Courtwright (Michael Foord & Nicola Larosa original ma
 
 AUTHOR_EMAIL = 'rdennis+configobj@gmail.com, eli@courtwright.org, fuzzyman@voidspace.co.uk, nico@tekNico.net'
 
+MAINTAINER = 'Richard Höchenberger'
+
+MAINTAINER_EMAIL = 'richard.hoechenberger@gmail.com'
+
 KEYWORDS = "config, ini, dictionary, application, admin, sysadmin, configuration, validation".split(', ')
 
 project = dict(
@@ -113,6 +117,8 @@ project = dict(
     long_description=LONG_DESCRIPTION,
     author=AUTHOR,
     author_email=AUTHOR_EMAIL,
+    maintainer=MAINTAINER,
+    maintainer_email=MAINTAINER_EMAIL,
     url=URL,
     py_modules=MODULES,
     package_dir={'': 'src'},
