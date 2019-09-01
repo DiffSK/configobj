@@ -34,7 +34,7 @@ elif sys.version_info < (2, 7):
 
 __here__ = os.path.abspath(os.path.dirname(__file__))
 
-NAME = 'configobj'
+NAME = 'configobj-dev'
 MODULES = []
 PACKAGES = ['configobj']
 DESCRIPTION = 'Config file reading, writing and validation. DEVELOPMENT VERSION.'
