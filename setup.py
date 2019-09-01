@@ -104,7 +104,7 @@ AUTHOR = 'Rob Dennis, Eli Courtwright (Michael Foord & Nicola Larosa original ma
 
 AUTHOR_EMAIL = 'rdennis+configobj@gmail.com, eli@courtwright.org, fuzzyman@voidspace.co.uk, nico@tekNico.net'
 
-MAINTAINER = 'Richard Höchenberger'
+MAINTAINER = 'Richard Hoechenberger'
 
 MAINTAINER_EMAIL = 'richard.hoechenberger@gmail.com'
 
