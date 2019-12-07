@@ -2562,7 +2562,7 @@ BUGFIX: Files are read in with 'rb' mode, so that native/non-native line endings
 
 Minor efficiency improvement in ``unrepr`` mode.
 
-Added missing docstrings for some overidden dictionary methods.
+Added missing docstrings for some overridden dictionary methods.
 
 Added the ``reset`` method. This restores a ConfigObj to a freshly created state.
 
