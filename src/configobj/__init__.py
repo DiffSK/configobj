@@ -1804,6 +1804,10 @@ class ConfigObj(Section):
     def _get_single_quote(self, value):
         if ("'" in value) and ('"' in value):
             raise ConfigObjError('Value cannot be safely quoted: {!r}'.format(value))
+        elif re.match('".*"', value) is not None:
+            quot = noquot
+        elif re.match("'.*'", value) is not None:
+            quot = noquot
         elif '"' in value:
             quot = squot
         else:
