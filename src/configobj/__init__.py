@@ -31,6 +31,11 @@ except ImportError:
     # Python 2.7
     from collections import Mapping
 
+try:
+    from pathlib import Path
+except ImportError:
+    Path = type(None)
+
 import six
 from ._version import __version__
 
@@ -1209,6 +1214,9 @@ class ConfigObj(Section):
             infile = infile.__fspath__()
         except AttributeError:
             pass
+
+        if isinstance(infile, Path):
+            infile = str(infile)
 
         if isinstance(infile, six.string_types):
             self.filename = infile
