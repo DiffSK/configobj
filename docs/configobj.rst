@@ -2383,6 +2383,12 @@ CHANGELOG
 This is an abbreviated changelog showing the major releases up to version 4.
 From version 4 it lists all releases and changes.
 
+2023/01/17 - Version 5.0.7
+--------------------------
+
+* Update documentation to remove some dead links
+* Update unit tests to go against updated versions of Python
+
 2014/08/25 - Version 5.0.6
 --------------------------
 * BUGFIX: Did not correctly handle %-chars in invalid lines
