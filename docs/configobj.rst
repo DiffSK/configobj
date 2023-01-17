@@ -8,8 +8,8 @@
 ----------------------------------------
 
 :Authors: Michael Foord, Nicola Larosa, Rob Dennis, Eli Courtwright
-:Version: ConfigObj 5.0.6
-:Date: 2014/08/25
+:Version: ConfigObj 5.0.7
+:Date: 2023/01/17
 :PyPI Entry: `ConfigObj on PyPI <http://pypi.python.org/pypi/configobj/>`_
 :Homepage: `Github Page`_
 :License: `BSD License`_
@@ -32,7 +32,7 @@
     The best introduction to working with ConfigObj, including the powerful configuration validation system,
     is the article:
     
-    * `An Introduction to ConfigObj <http://www.voidspace.org.uk/python/articles/configobj.shtml>`_
+    * `An Introduction to ConfigObj <https://web.archive.org/web/20200503085339/http://www.voidspace.org.uk/python/articles/configobj.shtml>`_
 
 
 Introduction
@@ -64,7 +64,7 @@ For support and bug reports please use the ConfigObj `Github Page`_.
 Downloading
 ===========
 
-The current version is **5.0.6**, dated 25th August 2014. ConfigObj 5 is
+The current version is **5.0.7**, dated January 2023. ConfigObj 5 is
 stable and mature. We still expect to pick up a few bugs along the way though, particularly with respect to Python 3 compatibility [#]_.
 
 We recommend downloading and installing using pip:
@@ -2271,7 +2271,7 @@ free software: test it, break it, just don't blame us if it eats your data !
 Of course if it does, let us know and we'll fix the problem so it doesn't
 happen to anyone else::
 
-    Copyright (C) 2005-2014:
+    Copyright (C) 2003-2023:
     (name) : (email)
     Michael Foord: fuzzyman AT voidspace DOT org DOT uk
     Nicola Larosa: nico AT tekNico DOT net
@@ -2382,6 +2382,12 @@ CHANGELOG
 
 This is an abbreviated changelog showing the major releases up to version 4.
 From version 4 it lists all releases and changes.
+
+2023/01/17 - Version 5.0.7
+--------------------------
+
+* Update documentation to remove some dead links
+* Update unit tests to go against updated versions of Python
 
 2014/08/25 - Version 5.0.6
 --------------------------
