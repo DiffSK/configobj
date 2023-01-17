@@ -1,5 +1,6 @@
 # configobj
 [![Coverage Status](https://img.shields.io/coveralls/DiffSK/configobj.svg)](https://coveralls.io/r/DiffSK/configobj?branch=master)
+[![PyPI version](http://img.shields.io/pypi/v/configobj.svg)](https://pypi.python.org/pypi/configobj)
 [![License](https://img.shields.io/badge/license-BSD_3--clause-red.svg)](https://github.com/DiffSK/configobj/blob/master/LICENSE)
 
 

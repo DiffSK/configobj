@@ -33,7 +33,7 @@ if INTP_VER < (2, 2):
 from codecs import BOM_UTF8
 
 from configobj import *
-from validate import Validator, VdtValueTooSmallError
+from configobj.validate import Validator, VdtValueTooSmallError
 
 
 def _test_validate():
@@ -45,7 +45,7 @@ def _test_validate():
     >>> c = ConfigObj(a, configspec=b)
     >>> c
     ConfigObj({'foo': 'fish'})
-    >>> from validate import Validator
+    >>> from configobj.validate import Validator
     >>> v = Validator()
     >>> c.validate(v)
     0
@@ -691,7 +691,7 @@ def _unexpected_validation_errors():
     report the failure to validate
     
     # section specified, got scalar
-    >>> from validate import ValidateError 
+    >>> from configobj.validate import ValidateError 
     >>> s = ['[cow]', 'something = boolean']
     >>> c = ['cow = true']
     >>> ini = ConfigObj(c, configspec=s)

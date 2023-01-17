@@ -2,7 +2,7 @@
 import pytest
 
 from configobj import ConfigObj
-from validate import Validator
+from configobj.validate import Validator
 
 @pytest.fixture
 def empty_cfg():

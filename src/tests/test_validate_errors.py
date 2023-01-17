@@ -3,7 +3,7 @@ import os
 import pytest
 
 from configobj import ConfigObj, get_extra_values, ParseError, NestingError
-from validate import Validator
+from configobj.validate import Validator
 
 @pytest.fixture()
 def thisdir():
