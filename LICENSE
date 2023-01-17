@@ -1,9 +1,10 @@
 Copyright (c): 
-2003-2010, Michael Foord
-2014, Eli Courtwright, Rob Dennis
+2003-2010, Michael Foord, Nicola Larosa
+2014-2023, Eli Courtwright, Rob Dennis
 All rights reserved.
 E-mails : 
-fuzzyman AT voidspace DOT org DOT uk
+michael AT python DOT org
+nico AT tekNico DOT net
 eli AT courtwright DOT org
 rdennis AT gmail DOT com
 
@@ -12,7 +13,7 @@ Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
 met:
 
-
+2014
     * Redistributions of source code must retain the above copyright
       notice, this list of conditions and the following disclaimer.
 
