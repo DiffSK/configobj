@@ -21,7 +21,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install pytest coverage
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-          python setup.py develop
+          pip install -e .
       - name: Test with pytest
         run: |
           pytest tests
