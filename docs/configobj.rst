@@ -1604,7 +1604,7 @@ message will be raised.
 Unless you want to format the error message differently from the default, you
 should use ``str(ex)`` or better yet, use the exception in a format where the
 conversion is implicit. This uses the exception's ``__str__()`` method which in all
-likelyhood will output all the information you want to know.
+likelihood will output all the information you want to know.
 
 .. note::
 
