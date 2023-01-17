@@ -493,7 +493,7 @@ def test_flatten_errors(val, cfg_contents):
 def test_unicode_handling():
     u_base = '''
     # initial comment
-       # inital comment 2
+       # initial comment 2
     test1 = some value
     # comment
     test2 = another value    # inline comment
