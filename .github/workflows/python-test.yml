@@ -25,7 +25,10 @@ jobs:
           pip install -e .
       - name: Test with pytest
         run: |
-          pytest tests
+          python src/tests/configobj_doctests.py
+          python -m configobj.validate
+          py.test -c setup.cfg --color=yes --cov=configobj --cov-report=term --cov-report=html --cov-report=xml
+
 
   build-on-legacy:
     runs-on: ubuntu-20.04
