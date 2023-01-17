@@ -32,7 +32,7 @@
     The best introduction to working with ConfigObj, including the powerful configuration validation system,
     is the article:
     
-    * `An Introduction to ConfigObj <http://www.voidspace.org.uk/python/articles/configobj.shtml>`_
+    * `An Introduction to ConfigObj <https://web.archive.org/web/20200503085339/http://www.voidspace.org.uk/python/articles/configobj.shtml>`_
 
 
 Introduction
