@@ -1,6 +1,12 @@
 Changelog
 ---------
 
+Release 5.0.8
+"""""""""""""
+
+* fixing/test for a regression introduced in 5.0.7 that prevented ``import validate`` from working
+
+
 Release 5.0.7
 """""""""""""
 
