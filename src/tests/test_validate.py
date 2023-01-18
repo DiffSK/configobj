@@ -6,14 +6,17 @@ from configobj.validate import Validator, VdtValueTooSmallError
 
 
 class TestImporting(object):
-    def test_top_level(self):
+    def test_top_level(self, val):
         import validate
-        
-    def test_within_configobj_using_from(self):
-        from configobj import validate
+        assert val.__class__ is validate.Validator
 
-    def test_within_configobj(self):
+    def test_within_configobj_using_from(self, val):
+        from configobj import validate
+        assert val.__class__ is validate.Validator
+
+    def test_within_configobj(self, val):
         import configobj.validate
+        assert val.__class__ is configobj.validate.Validator
 
 
 class TestBasic(object):

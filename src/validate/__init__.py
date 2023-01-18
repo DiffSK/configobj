@@ -18,4 +18,5 @@ This is a backwards compatibility-shim to support:
  from configobj import validate
  ```
 """
-import configobj.validate as validate
+from configobj.validate import *
+
