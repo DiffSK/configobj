@@ -409,7 +409,7 @@ keyword9 = value10     # an inline comment
                    <span class="n">interpolation</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">raise_errors</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">list_values</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
                    <span class="n">create_empty</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">file_error</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">stringify</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
                    <span class="n">indent_type</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">default_encoding</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">unrepr</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-                   <span class="n">write_empty_values</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">_inspec</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+                   <span class="n">write_empty_values</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">_inspec</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">duplicate_values</span><span class="o">=</span><span class="bp">DUPLICATE_VALUES_THROW_ERROR</span><span class="p">)</span>
 </pre></div>
 <p>Many of the keyword arguments are available as attributes after the config file has been
 parsed.</p>
@@ -584,6 +584,14 @@ empty values. See <a class="reference internal" href="#empty-values">Empty Value
 <p>Used internally by ConfigObj when parsing configspec files. If you are
 creating a ConfigObj instance from a configspec file you must pass True
 for this argument as well as <tt class="docutils literal">list_values=False</tt>.</p>
+</blockquote>
+</li>
+<li><p class="first">'duplicate_values': <tt class="docutils literal">DUPLICATE_VALUES_THROW_ERROR</tt></p>
+<blockquote>
+<p>Used internally by ConfigObj when handling duplicate keys within config file. Default value is DUPLICATE_VALUES_THROW_ERROR which
+raises exception. To allow processing files with duplicate keys use one of configuration values 
+<tt class="docutils literal">DUPLICATE_VALUES_FIRST</tt> or <tt class="docutils literal">DUPLICATE_VALUES_LAST</tt> where only the
+first or last (respectivelly) occurence of the duplicated key will be taken into account.</p>
 </blockquote>
 </li>
 </ul>
@@ -1541,7 +1549,8 @@ or an excessive level of nesting.</p>
 </li>
 <li><p class="first"><tt class="docutils literal">DuplicateError</tt></p>
 <blockquote>
-<p>The keyword or section specified already exists.</p>
+<p>The keyword or section specified already exists. Raising of this exception can be supressed by setting 
+<tt class="docutils literal">duplicate_values</tt>. </p>
 </blockquote>
 </li>
 <li><p class="first"><tt class="docutils literal">ConfigspecError</tt></p>
