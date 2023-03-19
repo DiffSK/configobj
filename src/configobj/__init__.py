@@ -760,6 +760,14 @@ class Section(dict):
         >>> c2
         ConfigObj({'section1': {'option1': 'False', 'subsection': {'more_options': 'False'}}})
         """
+        if hasattr(indict, "initial_comment") and indict.initial_comment:
+            self.initial_comment = indict.initial_comment
+        if hasattr(indict, "final_comment") and indict.final_comment:
+            self.final_comment = indict.final_comment
+        if hasattr(indict, "comments") and indict.comments:
+            for k, comment_lines in indict.comments.items():
+                if comment_lines:
+                    self.comments[k] = comment_lines
         for key, val in indict.items():
             if decoupled:
                 val = copy.deepcopy(val)
