@@ -1931,6 +1931,13 @@ class ConfigObj(Section):
         for entry in configspec.sections:
             if entry == '__many__':
                 continue
+            if entry.startswith('__optional__'):
+                configspec_entry = configspec[entry]
+                entry = entry[len('__optional__'):]
+                if entry not in section:
+                    continue
+            else:
+                configspec_entry = configspec[entry]
             if entry not in section:
                 section[entry] = {}
                 section[entry]._created = True
@@ -1941,7 +1948,7 @@ class ConfigObj(Section):
 
             # Could be a scalar when we expect a section
             if isinstance(section[entry], Section):
-                section[entry].configspec = configspec[entry]
+                section[entry].configspec = configspec_entry
 
 
     def _write_line(self, indent_string, entry, this_entry, comment):

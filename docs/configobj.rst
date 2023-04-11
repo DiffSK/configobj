@@ -683,6 +683,17 @@ have an explicit configspec.
 See `Repeated Sections`_ for examples.
 
 
+Mentioning Optional Sections
+############################
+
+It is possible to mark sections as optional. This is done by prepending
+``__optional__`` to the section name. If the optional section is present,
+it can be accessed normally (without the ``__optional__`` prefix).
+If it is not present, it won't show up in the validated ``ConfigObj``.
+
+See `Optional Sections`_ for examples.
+
+
 Mentioning SimpleVal
 ####################
 
@@ -1814,6 +1825,30 @@ example, to specify that all values in a section should be integers::
 If you want to use repeated values alongside repeated sections you can call one ``__many__`` and the
 other ``___many___`` (with three underscores).
 
+
+Optional Sections
+-----------------
+
+Optional sections are sections that have to either be fully present,
+or not be in the file at all. This is useful for components that
+require configuration but aren't required. As opposed to single
+values, these can't just have a default of ``None``.
+
+An optional section is created by prepending ``__optional__`` to the
+section name in the configspec. When an optional section is present,
+it is validated normally. If it it not present, validation ignores the
+part of the configspec describing the section.
+
+For example, we might be configuring a planet. It has some attributes and
+*might* have a human settlement. If it has one, we want it to be validated
+according to a spec. To do this, we make the ``settlement`` section optional ::
+
+    [planet]
+        mass = integer
+        radius = integer
+        [[__optional__settlement]]
+            inhabitants = integer
+            name = string
 
 Copy Mode
 ---------
