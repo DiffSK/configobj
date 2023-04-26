@@ -147,6 +147,7 @@ __all__ = (
     'VdtValueTooBigError',
     'VdtValueTooShortError',
     'VdtValueTooLongError',
+    'VdtMissingDefinition',
     'VdtMissingValue',
     'Validator',
     'is_integer',
@@ -346,6 +347,10 @@ class ValidateError(Exception):
     Traceback (most recent call last):
     ValidateError
     """
+
+
+class VdtMissingDefinition(ValidateError):
+    """A check was requested on an undefined entry"""
 
 
 class VdtMissingValue(ValidateError):

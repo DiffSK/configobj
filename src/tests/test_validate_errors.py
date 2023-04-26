@@ -48,6 +48,11 @@ def test_validate_preserve_errors(conf):
     assert not section['missing-subsection']
 
 
+def test_validate_strict_spec(conf):
+    conf['undefined-entry'] = True
+    assert not conf.validate(Validator(), strict_spec=True)
+
+
 def test_validate_extra_values(conf):
     conf.validate(Validator(), preserve_errors=True)
 
