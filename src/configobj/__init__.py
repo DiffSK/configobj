@@ -34,9 +34,6 @@ except ImportError:
 import six
 from ._version import __version__
 
-# imported lazily to avoid startup performance hit if it isn't used
-compiler = None
-
 # A dictionary mapping BOM to
 # the encoding to decode with, and what to set the
 # encoding attribute to.
@@ -108,7 +105,6 @@ __all__ = (
     'RepeatSectionError',
     'ReloadError',
     'UnreprError',
-    'UnknownType',
     'flatten_errors',
     'get_extra_values'
 )
@@ -133,30 +129,23 @@ OPTION_DEFAULTS = {
     'write_empty_values': False,
 }
 
-# this could be replaced if six is used for compatibility, or there are no
-# more assertions about items being a string
+
+_literal_eval = None
 
 
-def getObj(s):
-    global compiler
-    if compiler is None:
-        import compiler
-    s = "a=" + s
-    p = compiler.parse(s)
-    return p.getChildren()[1].getChildren()[0].getChildren()[1]
+def unrepr(string):
+    """Return given string evaluated to a Python literal."""
+    if not string:
+        return string
 
+    # Lazy import of ast - may not really be needed as much lighter than old
+    # compile module was, but unrepr is only required by some configobj users.
+    global _literal_eval
+    if _literal_eval is None:
+        import ast
+        _literal_eval = ast.literal_eval
 
-class UnknownType(Exception):
-    pass
-
-
-def unrepr(s):
-    if not s:
-        return s
-
-    # this is supposed to be safe
-    import ast
-    return ast.literal_eval(s)
+    return _literal_eval(string)
 
 
 class ConfigObjError(SyntaxError):
@@ -1628,10 +1617,7 @@ class ConfigObj(Section):
                             try:
                                 value = unrepr(value)
                             except Exception as cause:
-                                if isinstance(cause, UnknownType):
-                                    msg = 'Unknown name or type in value'
-                                else:
-                                    msg = 'Parse error from unrepr-ing multiline value'
+                                msg = 'Parse error from unrepr-ing multiline value'
                                 self._handle_error(msg, UnreprError, infile, cur_index)
                                 continue
                 else:
@@ -1640,10 +1626,7 @@ class ConfigObj(Section):
                         try:
                             value = unrepr(value)
                         except Exception as cause:
-                            if isinstance(cause, UnknownType):
-                                msg = 'Unknown name or type in value'
-                            else:
-                                msg = 'Parse error from unrepr-ing value'
+                            msg = 'Parse error from unrepr-ing value'
                             self._handle_error(msg, UnreprError, infile, cur_index)
                             continue
                     else:
