@@ -3,7 +3,7 @@ import os
 import pytest
 
 from configobj import ConfigObj, get_extra_values, ParseError, NestingError
-from configobj.validate import Validator
+from configobj.validate import Validator, VdtUnknownCheckError
 
 @pytest.fixture()
 def thisdir():
@@ -77,3 +77,11 @@ def test_no_parent(tmpdir, specpath):
     ini.write('[[haha]]')
     with pytest.raises(NestingError):
         conf = ConfigObj(str(ini), configspec=specpath, file_error=True)
+
+
+def test_re_dos(val):
+    value = "aaa"
+    i = 165100
+    attack = '\x00'*i + ')' + '('*i
+    with pytest.raises(VdtUnknownCheckError):
+        val.check(attack, value)
