@@ -15,25 +15,13 @@
 # https://github.com/DiffSK/configobj
 
 import sys
-# StringIO is used to simulate config files during doctests
-if sys.version_info >= (3,):
-    # Python 3.x case (io does exist in 2.7, but better to use the 2.x case):
-    #http://bugs.python.org/issue8025
-    from io import StringIO
-else:
-    # Python 2.x case, explicitly NOT using cStringIO due to unicode edge cases
-    from StringIO import StringIO
 
-import os
+from io import StringIO
+
 import sys
-INTP_VER = sys.version_info[:2]
-if INTP_VER < (2, 2):
-    raise RuntimeError("Python v.2.2 or later needed")
-
-from codecs import BOM_UTF8
 
 from configobj import *
-from configobj.validate import Validator, VdtValueTooSmallError
+from configobj.validate import Validator
 
 
 def _test_validate():
