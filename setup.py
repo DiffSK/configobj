@@ -40,10 +40,6 @@ PACKAGES = ['configobj', 'validate']
 DESCRIPTION = 'Config file reading, writing and validation.'
 URL = 'https://github.com/DiffSK/configobj'
 
-REQUIRES = """
-    six
-"""
-
 VERSION = ''
 with closing(open(os.path.join(__here__, 'src', PACKAGES[0], '_version.py'), 'r')) as handle:
     for line in handle.readlines():
@@ -88,8 +84,6 @@ CLASSIFIERS = [
     'Intended Audience :: Developers',
     'License :: OSI Approved :: BSD License',
     'Programming Language :: Python',
-    'Programming Language :: Python :: 2',
-    'Programming Language :: Python :: 2.7',
     'Programming Language :: Python :: 3',
     'Programming Language :: Python :: 3.5',
     'Programming Language :: Python :: 3.6',
@@ -120,8 +114,7 @@ project = dict(
     py_modules=MODULES,
     package_dir={'': 'src'},
     packages=PACKAGES,
-    install_requires=[i.strip() for i in REQUIRES.splitlines() if i.strip()],
-    python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*',
+    python_requires='>=3.5',
     classifiers=CLASSIFIERS,
     keywords=KEYWORDS,
     license='BSD (2 clause)',
