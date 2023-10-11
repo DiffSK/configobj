@@ -124,7 +124,7 @@ project = dict(
     python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*',
     classifiers=CLASSIFIERS,
     keywords=KEYWORDS,
-    license='BSD (2 clause)',
+    license='BSD-3-Clause',
 )
 
 if __name__ == '__main__':
