@@ -11,7 +11,7 @@ from warnings import catch_warnings
 from tempfile import NamedTemporaryFile
 
 import pytest
-import six
+import io
 import mock
 
 import configobj as co
@@ -40,13 +40,13 @@ def cfg_lines(config_string_representation):
                          '{!r}'.format(config_string_representation))
 
     first_content = lines[line_no_with_content]
-    if isinstance(first_content, six.binary_type):
+    if isinstance(first_content, bytes):
         first_content = first_content.decode('utf-8')
     ws_chars = len(re.search(r'^(\s*)', first_content).group(1))
 
     def yield_stringified_line():
         for line in lines:
-            if isinstance(line, six.binary_type):
+            if isinstance(line, bytes):
                 yield line.decode('utf-8')
             else:
                 yield line
@@ -74,7 +74,7 @@ def cfg_contents(request):
 
         with NamedTemporaryFile(delete=False, mode='wb') as cfg_file:
             for line in lines:
-                if isinstance(line, six.binary_type):
+                if isinstance(line, bytes):
                     cfg_file.write(line + os.linesep.encode('utf-8'))
                 else:
                     cfg_file.write((line + os.linesep).encode('utf-8'))
@@ -191,11 +191,7 @@ class TestEncoding(object):
 
         c = ConfigObj(cfg, encoding='utf8')
 
-        if six.PY2:
-            assert not isinstance(c['test'], str)
-            assert isinstance(c['test'], unicode)
-        else:
-            assert isinstance(c['test'], str)
+        assert isinstance(c['test'], str)
 
 
     #issue #18
@@ -203,11 +199,7 @@ class TestEncoding(object):
         cfg = cfg_contents(b"test = some string")
 
         c = ConfigObj(cfg)
-        if six.PY2:
-            assert isinstance(c['test'], str)
-            assert not isinstance(c['test'], unicode)
-        else:
-            assert isinstance(c['test'], str)
+        assert isinstance(c['test'], str)
 
     #issue #44
     def test_that_encoding_using_list_of_strings(self):
@@ -215,11 +207,7 @@ class TestEncoding(object):
 
         c = ConfigObj(cfg, encoding='utf8')
 
-        if six.PY2:
-            assert isinstance(c['test'], unicode)
-            assert not isinstance(c['test'], str)
-        else:
-            assert isinstance(c['test'], str)
+        assert isinstance(c['test'], str)
 
         assert c['test'] == '\U0001f41c'
 
@@ -228,7 +216,7 @@ class TestEncoding(object):
         c = cfg_contents(ant_cfg)
         cfg = ConfigObj(c, encoding='utf-8')
 
-        assert isinstance(cfg['tags']['bug']['translated'], six.text_type)
+        assert isinstance(cfg['tags']['bug']['translated'], str)
 
     #issue #44 and #55
     def test_encoding_in_config_files(self, request, ant_cfg):
@@ -238,7 +226,7 @@ class TestEncoding(object):
         request.addfinalizer(lambda : os.unlink(cfg_file.name))
 
         cfg = ConfigObj(cfg_file.name, encoding='utf-8')
-        assert isinstance(cfg['tags']['bug']['translated'], six.text_type)
+        assert isinstance(cfg['tags']['bug']['translated'], str)
         cfg.write()
 
     def test_encoding_from_filelike(self):
@@ -248,7 +236,7 @@ class TestEncoding(object):
         c = ConfigObj(stream, encoding='utf-8')
         text = c['text']
 
-        assert isinstance(text, unicode if six.PY2 else str)
+        assert isinstance(text, str)
         assert text == '\u00a7'
 
 
@@ -516,7 +504,7 @@ def test_unicode_handling():
                   'section': {'test': 'test', 'test2': 'test2'}}
     uc = ConfigObj(u, encoding='utf_8', default_encoding='latin-1')
     assert uc.BOM
-    assert isinstance(uc['test1'], six.text_type)
+    assert isinstance(uc['test1'], str)
     assert uc.encoding == 'utf_8'
     assert uc.newlines == '\n'
     assert len(uc.write()) == 13
@@ -524,14 +512,14 @@ def test_unicode_handling():
     a_list = uc.write()
     assert 'latin1' in str(a_list)
     assert len(a_list) == 14
-    assert isinstance(a_list[0], six.binary_type)
+    assert isinstance(a_list[0], bytes)
     assert a_list[0].startswith(BOM_UTF8)
 
     u = u_base.replace('\n', '\r\n').encode('utf-8').splitlines(True)
     uc = ConfigObj(u)
     assert uc.newlines == '\r\n'
     uc.newlines = '\r'
-    file_like = six.BytesIO()
+    file_like = io.BytesIO()
     uc.write(file_like)
     file_like.seek(0)
     uc2 = ConfigObj(file_like)
@@ -739,7 +727,7 @@ class TestSectionBehavior(object):
                 val = section[key]
                 newkey = key.replace('XXXX', 'CLIENT1')
                 section.rename(key, newkey)
-                if isinstance(val, six.string_types):
+                if isinstance(val, (str, )):
                     val = val.replace('XXXX', 'CLIENT1')
                     section[newkey] = val
 
@@ -827,7 +815,7 @@ class TestReloading(object):
         return content
 
     def test_handle_no_filename(self):
-        for bad_args in ([six.BytesIO()], [], [[]]):
+        for bad_args in ([io.BytesIO()], [], [[]]):
             cfg = ConfigObj(*bad_args)
             with pytest.raises(ReloadError) as excinfo:
                 cfg.reload()
@@ -1044,11 +1032,11 @@ class TestQuotes(object):
         initial_conf['single'] = "single triple '''\n"
         initial_conf['double'] = 'double triple """\n'
 
-        io = six.BytesIO()
-        initial_conf.write(outfile=io)
-        io.seek(0)
+        f = io.BytesIO()
+        initial_conf.write(outfile=f)
+        f.seek(0)
 
-        loaded_conf = ConfigObj(io)
+        loaded_conf = ConfigObj(f)
         assert loaded_conf['single'] == "single triple '''\n"
         assert loaded_conf['double'] == 'double triple """\n'
 
@@ -1380,21 +1368,21 @@ class TestEdgeCasesWhenWritingOut(object):
     def test_newline_terminated(self, empty_cfg):
         empty_cfg.newlines = '\n'
         empty_cfg['a'] = 'b'
-        collector = six.BytesIO()
+        collector = io.BytesIO()
         empty_cfg.write(collector)
         assert collector.getvalue() == b'a = b\n'
 
     def test_hash_escaping(self, empty_cfg):
         empty_cfg.newlines = '\n'
         empty_cfg['#a'] = 'b # something'
-        collector = six.BytesIO()
+        collector = io.BytesIO()
         empty_cfg.write(collector)
         assert collector.getvalue() == b'"#a" = "b # something"\n'
 
         empty_cfg = ConfigObj()
         empty_cfg.newlines = '\n'
         empty_cfg['a'] = 'b # something', 'c # something'
-        collector = six.BytesIO()
+        collector = io.BytesIO()
         empty_cfg.write(collector)
         assert collector.getvalue() == b'a = "b # something", "c # something"\n'
 
