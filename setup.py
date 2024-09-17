@@ -117,7 +117,7 @@ project = dict(
     python_requires='>=3.5',
     classifiers=CLASSIFIERS,
     keywords=KEYWORDS,
-    license='BSD (2 clause)',
+    license='BSD-3-Clause',
 )
 
 if __name__ == '__main__':
