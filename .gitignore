@@ -48,3 +48,6 @@ MANIFEST
 
 # Other stuff
 .cache/
+
+# Backup files
+*~

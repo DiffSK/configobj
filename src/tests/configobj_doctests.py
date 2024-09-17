@@ -37,6 +37,11 @@ INTP_VER = sys.version_info[:2]
 if INTP_VER < (2, 2):
     raise RuntimeError("Python v.2.2 or later needed")
 
+from codecs import BOM_UTF8
+
+from configobj import *
+from configobj.validate import Validator, VdtValueTooSmallError
+
 
 def _test_validate():
     """

@@ -23,6 +23,19 @@ Release 5.1.0
 * docs: Explicit mention of ``force_list`` and its pitfalls (#112)
 
 
+=======
+Release 5.0.8
+"""""""""""""
+
+* fixing/test for a regression introduced in 5.0.7 that prevented ``import validate`` from working
+
+
+Release 5.0.7
+"""""""""""""
+
+* update testing to validate against python version 2.7 and 3.5-3.11
+* update broken links / non-existent services and references
+
 Older Releases
 """"""""""""""
 
