@@ -36,7 +36,7 @@ __here__ = os.path.abspath(os.path.dirname(__file__))
 
 NAME = 'configobj'
 MODULES = []
-PACKAGES = ['configobj']
+PACKAGES = ['configobj', 'validate']
 DESCRIPTION = 'Config file reading, writing and validation.'
 URL = 'https://github.com/DiffSK/configobj'
 
@@ -91,10 +91,13 @@ CLASSIFIERS = [
     'Programming Language :: Python :: 2',
     'Programming Language :: Python :: 2.7',
     'Programming Language :: Python :: 3',
-    'Programming Language :: Python :: 3.4',
     'Programming Language :: Python :: 3.5',
     'Programming Language :: Python :: 3.6',
     'Programming Language :: Python :: 3.7',
+    'Programming Language :: Python :: 3.8',
+    'Programming Language :: Python :: 3.9',
+    'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: 3.11',
     'Operating System :: OS Independent',
     'Topic :: Software Development :: Libraries',
     'Topic :: Software Development :: Libraries :: Python Modules',
@@ -102,7 +105,7 @@ CLASSIFIERS = [
 
 AUTHOR = 'Rob Dennis, Eli Courtwright (Michael Foord & Nicola Larosa original maintainers)'
 
-AUTHOR_EMAIL = 'rdennis+configobj@gmail.com, eli@courtwright.org, fuzzyman@voidspace.co.uk, nico@tekNico.net'
+AUTHOR_EMAIL = 'rdennis+configobj@gmail.com, eli@courtwright.org, michael@python.org, nico@tekNico.net'
 
 KEYWORDS = "config, ini, dictionary, application, admin, sysadmin, configuration, validation".split(', ')
 
@@ -118,7 +121,7 @@ project = dict(
     package_dir={'': 'src'},
     packages=PACKAGES,
     install_requires=[i.strip() for i in REQUIRES.splitlines() if i.strip()],
-    python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*',
+    python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*',
     classifiers=CLASSIFIERS,
     keywords=KEYWORDS,
     license='BSD (2 clause)',
