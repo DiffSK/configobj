@@ -1211,7 +1211,7 @@ class ConfigObj(Section):
 
         if isinstance(infile, (str, )):
             self.filename = infile
-            if os.path.isfile(infile):
+            if os.path.exists(infile) and not os.path.isdir(infile):
                 with open(infile, 'rb') as h:
                     content = h.readlines() or []
             elif self.file_error:
