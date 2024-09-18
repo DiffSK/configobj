@@ -2,8 +2,8 @@
 # Development requirements
 #
 
-invoke==0.12.2
-#rituals==0.3.0
+# invoke==0.12.2
+# rituals==0.3.0
 -e git+https://github.com/jhermann/rituals.git#egg=rituals
 
 Sphinx==1.3.4

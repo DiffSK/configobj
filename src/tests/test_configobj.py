@@ -1287,6 +1287,36 @@ class TestMerging(object):
         c1['sect']['val'] = 42
         assert c2['sect']['val'] == data[1]
 
+    @pytest.mark.parametrize(
+        "lines1,lines2,expected_lines",
+        [
+            (
+                # both c1 and c2 have comments
+                ["# c1 before config", "[main]", "# c1 for foo", "foo = a", "# c1 after config"],
+                ["# c2 before config", "[main]", "# c2 for foo", "foo = b", "# c2 after config"],
+                ["# c2 before config", "[main]", "# c2 for foo", "foo = b", "# c2 after config"],
+            ),
+            (
+                # c1 has comments, c2 does not
+                ["# c1 before config", "[main]", "# c1 for foo", "foo = a", "# c1 after config"],
+                ["[main]", "foo = b"],
+                ["# c1 before config", "[main]", "# c1 for foo", "foo = b", "# c1 after config"],
+            ),
+            (
+                # c2 has comments, c1 does not
+                ["[main]", "foo = a"],
+                ["# c2 before config", "[main]", "# c2 for foo", "foo = b", "# c2 after config"],
+                ["# c2 before config", "[main]", "# c2 for foo", "foo = b", "# c2 after config"],
+            ),
+        ]
+    )
+    def test_merge_comments(self, lines1, lines2, expected_lines):
+        c1 = ConfigObj(lines1)
+        c2 = ConfigObj(lines2)
+        c1.merge(c2)
+        # comments and values from c2 should win
+        actual_lines = c1.write()
+        assert actual_lines == expected_lines
 
 class TestErrorReporting(object):
     MULTI_ERROR = [
