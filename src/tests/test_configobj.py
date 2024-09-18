@@ -1149,8 +1149,6 @@ def test_creating_with_a_dictionary():
     assert dictionary_cfg_content is not cfg.dict()
 
 
-class ConfigObjPHP(ConfigObj):
-    COMMENT_MARKERS = ['#', ';']
 
 
 class TestComments(object):
@@ -1240,27 +1238,36 @@ class TestComments(object):
 
     def test_comment_markers(self, cfg_contents):
         cfgfile = cfg_contents("""; comment
-            [php] # section marker
-            ;INLINE NOT SUPPORTED YET [php] ; section marker
+            [php] # section marker hashtag
             ; Boolean: true, on, yes or false, off, no, none
             switch = off
             track_errors = yes
 
             ; string in double-quotes
             include_path = ".:/usr/local/lib/php"
+            [semicolon] ; section marker semicolon
+            ; Boolean: true, on, yes or false, off, no, none
+            switch = on ; comment_semicolon
+            track_errors = no # comment_hashtag
             """)
-        c = ConfigObjPHP(cfgfile)
-        assert c == dict(php=dict(switch='off', track_errors='yes', include_path=".:/usr/local/lib/php"))
+        ConfigObj.COMMENT_MARKERS = ['#', ';']
+        c = ConfigObj(cfgfile)
+        assert c == dict(php=dict(switch='off', track_errors='yes', include_path=".:/usr/local/lib/php"), semicolon=dict(switch='on', track_errors='no'))
         assert c.initial_comment == ['; comment']
+        assert c.inline_comments == {'php': ' # section marker hashtag', 'semicolon': ' ; section marker semicolon'}
+        ConfigObj.COMMENT_MARKERS = ['#']
+
 
     def test_write_back_comment_markers(self, cfg_contents):
         lines = (
             '# initial comment', '; 2nd line',
-            '[sect_name]', '; section comment', 'foo = bar',
-            '', '; final comment')
-        c = ConfigObjPHP(lines)
+            '[sect_name] # comment', '; section comment', 'foo = bar',
+            '', '; final comment', '[sect_name2] ;comment_semicolon', 'semicolon = yes ;comment_semicolon')
+        ConfigObj.COMMENT_MARKERS = ['#', ';']
+        c = ConfigObj(lines)
         for expected, got in zip(lines, c.write()):
             assert expected == got
+        ConfigObj.COMMENT_MARKERS = ['#']
 
 
 def test_overwriting_filenames(a, b, i):
