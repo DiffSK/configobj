@@ -23,13 +23,9 @@ from contextlib import closing
 
 from setuptools import setup
 
-if sys.version_info < (2, 6):
-    print('for Python versions < 2.6 use configobj '
-          'version 4.7.2')
-    sys.exit(1)
-elif sys.version_info < (2, 7):
-    print('for Python version 2.6 use configobj '
-          'version 5.0.6')
+if sys.version_info[0] < 2:
+    print('for Python versions < 3 use configobj '
+          'version 5.0.8')
     sys.exit(1)
 
 __here__ = os.path.abspath(os.path.dirname(__file__))
