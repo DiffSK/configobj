@@ -7,14 +7,12 @@
 Python 3+ compatible port of the [configobj](https://pypi.python.org/pypi/configobj/) library.
 
 The Github CI/CD Pipeline runs tests on python versions:
-- 2.7
-- 3.5
-- 3.6
 - 3.7
 - 3.8
 - 3.9
 - 3.10
 - 3.11
+- 3.12
 
 
 ## Documentation

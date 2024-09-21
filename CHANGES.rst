@@ -1,6 +1,12 @@
 Changelog
 ---------
 
+Release 5.0.9
+"""""""""""""
+
+* drop support for Python 2 and <3.7
+* fix CVE-2023-26112, ReDoS attack
+
 Release 5.0.8
 """""""""""""
 

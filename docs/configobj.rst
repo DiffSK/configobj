@@ -2383,6 +2383,12 @@ CHANGELOG
 This is an abbreviated changelog showing the major releases up to version 4.
 From version 4 it lists all releases and changes.
 
+2024/09/21 - Version 5.0.9
+--------------------------
+
+* drop support for Python 2 and <3.7
+* fix CVE-2023-26112, ReDoS attack
+
 2023/01/18 - Version 5.0.8
 --------------------------
 

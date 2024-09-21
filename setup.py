@@ -23,13 +23,9 @@ from contextlib import closing
 
 from setuptools import setup
 
-if sys.version_info < (2, 6):
-    print('for Python versions < 2.6 use configobj '
-          'version 4.7.2')
-    sys.exit(1)
-elif sys.version_info < (2, 7):
-    print('for Python version 2.6 use configobj '
-          'version 5.0.6')
+if sys.version_info[0] < 2:
+    print('for Python versions < 3 use configobj '
+          'version 5.0.8')
     sys.exit(1)
 
 __here__ = os.path.abspath(os.path.dirname(__file__))
@@ -39,10 +35,6 @@ MODULES = []
 PACKAGES = ['configobj', 'validate']
 DESCRIPTION = 'Config file reading, writing and validation.'
 URL = 'https://github.com/DiffSK/configobj'
-
-REQUIRES = """
-    six
-"""
 
 VERSION = ''
 with closing(open(os.path.join(__here__, 'src', PACKAGES[0], '_version.py'), 'r')) as handle:
@@ -88,16 +80,13 @@ CLASSIFIERS = [
     'Intended Audience :: Developers',
     'License :: OSI Approved :: BSD License',
     'Programming Language :: Python',
-    'Programming Language :: Python :: 2',
-    'Programming Language :: Python :: 2.7',
     'Programming Language :: Python :: 3',
-    'Programming Language :: Python :: 3.5',
-    'Programming Language :: Python :: 3.6',
     'Programming Language :: Python :: 3.7',
     'Programming Language :: Python :: 3.8',
     'Programming Language :: Python :: 3.9',
     'Programming Language :: Python :: 3.10',
     'Programming Language :: Python :: 3.11',
+    'Programming Language :: Python :: 3.12',
     'Operating System :: OS Independent',
     'Topic :: Software Development :: Libraries',
     'Topic :: Software Development :: Libraries :: Python Modules',
@@ -120,11 +109,10 @@ project = dict(
     py_modules=MODULES,
     package_dir={'': 'src'},
     packages=PACKAGES,
-    install_requires=[i.strip() for i in REQUIRES.splitlines() if i.strip()],
-    python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*',
+    python_requires='>=3.7',
     classifiers=CLASSIFIERS,
     keywords=KEYWORDS,
-    license='BSD (2 clause)',
+    license='BSD-3-Clause',
 )
 
 if __name__ == '__main__':
