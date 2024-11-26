@@ -20,7 +20,9 @@ You can find a full manual on how to use ConfigObj at [readthedocs](http://confi
 
 ## Status
 
-This is a mature project that is not actively maintained at this time.
+This is a mature project that is only being maintained for bug fixes and
+compatibility with new versions of Python. It is not under active development,
+though we will try to respond to issues and pull requests.
 
 ## Past Contributors:
 
