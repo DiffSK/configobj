@@ -508,7 +508,7 @@ def test_unicode_handling():
     file_like.seek(0)
     uc2 = ConfigObj(file_like)
     assert uc2 == uc
-    assert uc2.filename == None
+    assert uc2.filename is None
     assert uc2.newlines == '\r'
 
 
