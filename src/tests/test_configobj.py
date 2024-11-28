@@ -628,6 +628,23 @@ class TestUnrepr(object):
             'key4': [1, 2, 3, 'a mixed list#']
         }
 
+    def test_empty_value(self):
+        cfg = ConfigObj(['k = '], unrepr=True)
+        assert cfg == {'k': ''}
+
+    def test_unclosed_quote(self):
+        with pytest.raises(co.UnreprError) as excinfo:
+            ConfigObj(['k = "'], unrepr=True)
+        assert str(excinfo.value) == (
+            "Parse error from unrepr-ing value at line 1.")
+
+    def test_multiline_string_empty(self):
+        config = ['k = """', '"""']
+        with pytest.raises(co.UnreprError) as excinfo:
+            ConfigObj(config, unrepr=True)
+        assert str(excinfo.value) == (
+            "Parse error from unrepr-ing multiline value at line 2.")
+
 
 class TestValueErrors(object):
     def test_bool(self, empty_cfg):
