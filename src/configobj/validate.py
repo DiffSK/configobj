@@ -163,7 +163,6 @@ __all__ = (
 
 import re
 import sys
-from pprint import pprint
 
 
 _list_arg = re.compile(r'''
@@ -264,7 +263,8 @@ def dottedQuadToNum(ip):
     """
     
     # import here to avoid it when ip_addr values are not used
-    import socket, struct
+    import socket
+    import struct
     
     try:
         return struct.unpack('!L',
@@ -314,7 +314,8 @@ def numToDottedQuad(num):
     """
     
     # import here to avoid it when ip_addr values are not used
-    import socket, struct
+    import socket
+    import struct
     
     # no need to intercept here, 4294967295L is fine
     if num > int(4294967295) or num < 0:
@@ -653,7 +654,7 @@ class Validator(object):
                 keymatch = self._key_arg.match(arg)
                 if keymatch:
                     val = keymatch.group(2)
-                    if not val in ("'None'", '"None"'):
+                    if val not in ("'None'", '"None"'):
                         # Special case a quoted None
                         val = self._unquote(val)
                     fun_kwargs[keymatch.group(1)] = val
@@ -740,7 +741,7 @@ def _is_num_param(names, values, to_float=False):
         elif isinstance(val, (int, float, str)):
             try:
                 out_params.append(fun(val))
-            except ValueError as e:
+            except ValueError:
                 raise VdtParamError(name, val)
         else:
             raise VdtParamError(name, val)
@@ -919,9 +920,9 @@ def is_boolean(value):
     # we do an equality test rather than an identity test
     # this ensures Python 2.2 compatibilty
     # and allows 0 and 1 to represent True and False
-    if value == False:
+    if value is False:
         return False
-    elif value == True:
+    elif value is True:
         return True
     else:
         raise VdtTypeError(value)
@@ -1301,7 +1302,7 @@ def is_option(value, *options):
     """
     if not isinstance(value, str):
         raise VdtTypeError(value)
-    if not value in options:
+    if value not in options:
         raise VdtValueError(value)
     return value
 

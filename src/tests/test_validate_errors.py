@@ -69,14 +69,14 @@ def test_invalid_lines_with_percents(tmpdir, specpath):
     ini = tmpdir.join('config.ini')
     ini.write('extra: %H:%M\n')
     with pytest.raises(ParseError):
-        conf = ConfigObj(str(ini), configspec=specpath, file_error=True)
+        ConfigObj(str(ini), configspec=specpath, file_error=True)
 
 
 def test_no_parent(tmpdir, specpath):
     ini = tmpdir.join('config.ini')
     ini.write('[[haha]]')
     with pytest.raises(NestingError):
-        conf = ConfigObj(str(ini), configspec=specpath, file_error=True)
+        ConfigObj(str(ini), configspec=specpath, file_error=True)
 
 
 def test_re_dos(val):

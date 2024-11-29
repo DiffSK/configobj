@@ -297,7 +297,7 @@ class InterpolationEngine(object):
 
     def interpolate(self, key, value):
         # short-cut
-        if not self._cookie in value:
+        if self._cookie not in value:
             return value
         
         def recursive_interpolate(key, value, section, backtrail):
@@ -528,7 +528,7 @@ class Section(dict):
         except AttributeError:
             # not yet: first time running _interpolate(), so pick the engine
             name = self.main.interpolation
-            if name == True:  # note that "if name:" would be incorrect here
+            if name is True:  # note that "if name:" would be incorrect here
                 # backwards-compatibility: interpolation=True means use default
                 name = DEFAULT_INTERPOLATION
             name = name.lower()  # so that "Template", "template", etc. all work
@@ -948,9 +948,9 @@ class Section(dict):
         0
         """
         val = self[key]
-        if val == True:
+        if val is True:
             return True
-        elif val == False:
+        elif val is False:
             return False
         else:
             try:
@@ -2237,7 +2237,7 @@ class ConfigObj(Section):
             if entry in ('__many__', '___many___'):
                 # reserved names
                 continue
-            if (not entry in section.scalars) or (entry in section.defaults):
+            if (entry not in section.scalars) or (entry in section.defaults):
                 # missing entries
                 # or entries from defaults
                 missing = True
@@ -2300,9 +2300,9 @@ class ConfigObj(Section):
                 section.inline_comments[entry] = configspec.inline_comments.get(entry, '')
             check = self.validate(validator, preserve_errors=preserve_errors, copy=copy, section=section[entry])
             out[entry] = check
-            if check == False:
+            if check is False:
                 ret_true = False
-            elif check == True:
+            elif check is True:
                 ret_false = False
             else:
                 ret_true = False
@@ -2421,15 +2421,15 @@ def flatten_errors(cfg, res, levels=None, results=None):
         # first time called
         levels = []
         results = []
-    if res == True:
+    if res is True:
         return sorted(results)
-    if res == False or isinstance(res, Exception):
+    if res is False or isinstance(res, Exception):
         results.append((levels[:], None, res))
         if levels:
             levels.pop()
         return sorted(results)
     for (key, val) in list(res.items()):
-        if val == True:
+        if val is True:
             continue
         if isinstance(cfg.get(key), dict):
             # Go down one level

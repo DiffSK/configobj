@@ -11,7 +11,6 @@
 # This software is licensed under the terms of the BSD license.
 # http://opensource.org/licenses/BSD-3-Clause
 
-import sys
 from distutils.core import setup
 from validate import __version__ as VERSION
 
