@@ -1031,64 +1031,71 @@ class ConfigObj(Section):
     MAX_PARSE_ERROR_DETAILS = 5
 
     # Override/append to this class variable for alternative comment markers
-    # TODO: also support inline comments (needs dynamic compiling of the regex below)
     COMMENT_MARKERS = ['#']
 
-    _keyword = re.compile(r'''^ # line start
-        (\s*)                   # indentation
-        (                       # keyword
-            (?:".*?")|          # double quotes
-            (?:'.*?')|          # single quotes
-            (?:[^'"=].*?)       # no quotes
-        )
-        \s*=\s*                 # divider
-        (.*)                    # value (including list values and comments)
-        $   # line end
-        ''',
-        re.VERBOSE)
+    # Use the @classmethod decorator to initialize regular expressions
+    # that depend on another class variable.
+    @classmethod
+    def __regex_init__(cls):
+        #Filter and modify the list to keep only single-character elements
+        process_list = lambda lst: [item for item in lst if len(item) == 1]
+        ConfigObj.COMMENT_MARKERS = process_list(ConfigObj.COMMENT_MARKERS)
 
-    _sectionmarker = re.compile(r'''^
-        (\s*)                     # 1: indentation
-        ((?:\[\s*)+)              # 2: section marker open
-        (                         # 3: section name open
-            (?:"\s*\S.*?\s*")|    # at least one non-space with double quotes
-            (?:'\s*\S.*?\s*')|    # at least one non-space with single quotes
-            (?:[^'"\s].*?)        # at least one non-space unquoted
-        )                         # section name close
-        ((?:\s*\])+)              # 4: section marker close
-        (\s*(?:\#.*)?)?           # 5: optional comment
-        $''',
-        re.VERBOSE)
+        ConfigObj._keyword = re.compile(r'''^ # line start
+            (\s*)                   # indentation
+            (                       # keyword
+                (?:".*?")|          # double quotes
+                (?:'.*?')|          # single quotes
+                (?:[^'"=].*?)       # no quotes
+            )
+            \s*=\s*                 # divider
+            (.*)                    # value (including list values and comments)
+            $   # line end
+            ''',
+            re.VERBOSE)
 
-    # this regexp pulls list values out as a single string
-    # or single values and comments
-    # FIXME: this regex adds a '' to the end of comma terminated lists
-    #   workaround in ``_handle_value``
-    _valueexp = re.compile(r'''^
-        (?:
+        ConfigObj._sectionmarker = re.compile((r'''^
+            (\s*)                     # 1: indentation
+            ((?:\[\s*)+)              # 2: section marker open
+            (                         # 3: section name open
+                (?:"\s*\S.*?\s*")|    # at least one non-space with double quotes
+                (?:'\s*\S.*?\s*')|    # at least one non-space with single quotes
+                (?:[^'"\s].*?)        # at least one non-space unquoted
+            )                         # section name close
+            ((?:\s*\])+)              # 4: section marker close
+            (\s*(?:[{}].*)?)?         # 5: optional comment
+            $''').format(''.join(ConfigObj.COMMENT_MARKERS)),
+            re.VERBOSE)
+
+        # this regexp pulls list values out as a single string
+        # or single values and comments
+        # FIXME: this regex adds a '' to the end of comma terminated lists
+        #   workaround in ``_handle_value``
+        ConfigObj._valueexp = re.compile((r'''^
             (?:
-                (
-                    (?:
+                (?:
+                    (
                         (?:
-                            (?:".*?")|              # double quotes
-                            (?:'.*?')|              # single quotes
-                            (?:[^'",\#][^,\#]*?)    # unquoted
-                        )
-                        \s*,\s*                     # comma
-                    )*      # match all list items ending in a comma (if any)
-                )
-                (
-                    (?:".*?")|                      # double quotes
-                    (?:'.*?')|                      # single quotes
-                    (?:[^'",\#\s][^,]*?)|           # unquoted
-                    (?:(?<!,))                      # Empty value
-                )?          # last item in a list - or string value
-            )|
-            (,)             # alternatively a single comma - empty list
-        )
-        (\s*(?:\#.*)?)?     # optional comment
-        $''',
-        re.VERBOSE)
+                            (?:
+                                (?:".*?")|              # double quotes
+                                (?:'.*?')|              # single quotes
+                                (?:[^'",\#][^,\#]*?)    # unquoted
+                            )
+                            \s*,\s*                     # comma
+                        )*      # match all list items ending in a comma (if any)
+                    )
+                    (
+                        (?:".*?")|                      # double quotes
+                        (?:'.*?')|                      # single quotes
+                        (?:[^'",\#\s][^,]*?)|           # unquoted
+                        (?:(?<!,))                      # Empty value
+                    )?          # last item in a list - or string value
+                )|
+                (,)             # alternatively a single comma - empty list
+            )
+            (\s*(?:[{}].*)?)?   # optional comment
+            $''').format(''.join(ConfigObj.COMMENT_MARKERS)),
+            re.VERBOSE)
 
     # use findall to get the members of a list value
     _listvalueexp = re.compile(r'''
@@ -1149,6 +1156,7 @@ class ConfigObj(Section):
                     indent_type=None, default_encoding=None, unrepr=False,
                     write_empty_values=False, _inspec=False)``
         """
+        ConfigObj.__regex_init__()
         self._inspec = _inspec
         # init the superclass
         Section.__init__(self, self, 0, self)
@@ -1952,12 +1960,13 @@ class ConfigObj(Section):
 
     def _handle_comment(self, comment):
         """Deal with a comment."""
-        if not comment.strip():
-            return comment or ''  # return trailing whitespace as-is
-        start = self.indent_type
-        if not comment.lstrip().startswith('#'):
-            start += ' # '
-        return (start + comment)
+        if not comment:
+            return ''
+        elif  comment.isspace():
+            return comment
+        if not comment.strip().startswith(tuple(self.COMMENT_MARKERS)):
+            return ' # ' + comment
+        return comment
 
 
     # Public methods
