@@ -2077,7 +2077,7 @@ class ConfigObj(Section):
                 h.write(output_bytes)
 
     def validate(self, validator, preserve_errors=False, copy=False,
-                 section=None):
+                 section=None, strict_spec=False):
         """
         Test the ConfigObj against a configspec.
 
@@ -2108,6 +2108,13 @@ class ConfigObj(Section):
 
         You must have the validate module to use ``preserve_errors=True``.
 
+        If ``strict_spec`` is ``True`` (``False`` is default) then instead of
+        ignoring entries undefined by the configspec, unrecognized entries will
+        fail validation and be inserted into the return dictionary with an
+        informational ``ValidateError``.
+
+        You must have the validate module to use ``strict_spec=True``.
+
         You can then use the ``flatten_errors`` function to turn your nested
         results dictionary into a flattened list of failures - useful for
         displaying meaningful error messages.
@@ -2118,7 +2125,8 @@ class ConfigObj(Section):
             if preserve_errors:
                 # We do this once to remove a top level dependency on the validate module
                 # Which makes importing configobj faster
-                from configobj.validate import VdtMissingValue
+                from configobj.validate import VdtMissingDefinition, VdtMissingValue
+                self._vdtMissingDefinition = VdtMissingDefinition
                 self._vdtMissingValue = VdtMissingValue
 
             section = self
@@ -2242,6 +2250,15 @@ class ConfigObj(Section):
                 ret_false = False
                 msg = 'Section %r was provided as a single value' % entry
                 out[entry] = validator.baseErrorClass(msg)
+        if strict_spec:
+            for entry in unvalidated:
+                if not preserve_errors:
+                    out[entry] = False
+                else:
+                    ret_false = False
+                    msg = 'Value %r was unrecognized' % entry
+                    out[entry] = self._vdtMissingDefinition(msg)
+
 
         # Missing sections will have been created as empty ones when the
         # configspec was read.
