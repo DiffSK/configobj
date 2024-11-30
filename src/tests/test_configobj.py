@@ -921,7 +921,10 @@ class TestInterpolation(object):
             'b': 'goodbye',
             'userdir': r'c:\\home',
             'c': '%(d)s',
-            'd': '%(c)s'
+            'd': '%(c)s',
+            'f': 45.5,
+            'list1': [1, 2, 3],
+            'list2': ['foo', 'bar', 'baz']
         }
         cfg['section'] = {
             'a': r'%(datadir)s\\some path\\file.py',
@@ -929,6 +932,10 @@ class TestInterpolation(object):
             'c': 'Yo %(a)s',
             'd': '%(not_here)s',
             'e': '%(e)s',
+            'ff': 'Some float: %(f)s',
+            'report1': 'list 1: %(list1)s',
+            'report2': '%(report1)s and list 2: %(list2)s',
+            'listreference': '%(list1)s'
         }
         cfg['section']['DEFAULT'] = {
             'datadir': r'c:\\silly_test',
@@ -944,6 +951,10 @@ class TestInterpolation(object):
         'keyword 2' = 'value 2'
         reference = ${keyword1}
         foo = 123
+        f = 45.5
+        list1 = 1, 2, 3
+        list2 = foo, bar, baz
+
 
         [ section ]
         templatebare = $keyword1/foo
@@ -955,6 +966,10 @@ class TestInterpolation(object):
         with_several = $keyword1/$reference/$keyword1
         configparsersample = %(keyword 2)sconfig
         deep = ${reference}
+        ff = Some float: ${f}
+        report1 = list 1: ${list1}
+        report2 = $report1 and list 2: $list2
+        listreference = $list1
 
             [[DEFAULT]]
             baz = $foo
@@ -972,6 +987,12 @@ class TestInterpolation(object):
         assert test_section['a'] == r'c:\\silly_test\\some path\\file.py'
         assert test_section['b'] == r'c:\\home\\some path\\file.py'
         assert test_section['c'] == r'Yo c:\\silly_test\\some path\\file.py'
+        assert test_section['ff'] == r'Some float: 45.5'
+        assert test_section['report1'] == r'list 1: 1, 2, 3'
+        assert test_section['report2'] == r'list 1: 1, 2, 3 and list 2: foo, bar, baz'
+        # FIXME: Hmmm, what should this do, actually?
+        # Could be '1, 2, 3'? or ['1', '2', '3']? or something else?
+        assert test_section['listreference'] == '1, 2, 3'
 
     def test_interpolation_turned_off(self, config_parser_cfg):
         config_parser_cfg.interpolation = False
@@ -1005,6 +1026,12 @@ class TestInterpolation(object):
         assert test_sec['sub-section']['quux'] == '123 + $foo + 123'
         assert (test_sec['sub-section']['sub-sub-section']['convoluted'] ==
                 '$foo + 123 + 123 + $foo + 123 + $foo')
+        assert test_sec['ff'] == r'Some float: 45.5'
+        assert test_sec['report1'] == r'list 1: 1, 2, 3'
+        assert test_sec['report2'] == r'list 1: 1, 2, 3 and list 2: foo, bar, baz'
+        # FIXME: Hmmm, what should this do, actually?
+        # Could be '1, 2, 3'? or ['1', '2', '3']? or something else?
+        assert test_sec['listreference'] == '1, 2, 3'
 
 
 class TestQuotes(object):
