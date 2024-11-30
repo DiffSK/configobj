@@ -2,7 +2,9 @@
 # pylint: disable=wildcard-import, missing-docstring, no-self-use, bad-continuation
 # pylint: disable=invalid-name, redefined-outer-name, too-few-public-methods
 from __future__ import unicode_literals
+import copy
 import os
+import sys
 import re
 import warnings
 
@@ -174,6 +176,92 @@ def test_interoplation_repr():
 
     # This raises a MissingInterpolationOption exception in 4.7.1 and earlier
     repr(c)
+
+
+class TestCopies(object):
+    @pytest.fixture
+    def simple_conf(self):
+        return ConfigObj(['foo = bar', 'baz = $foo'], interpolation='Template')
+
+    @pytest.fixture
+    def nested_conf(self):
+        return ConfigObj(['[a]', 'foo = bar', 'baz = $foo'],
+                         interpolation='Template')
+
+    def test_simple_copy_method(self, simple_conf):
+        conf_dict = simple_conf.copy()
+        assert conf_dict == {'foo': 'bar', 'baz': '$foo'}
+
+    def test_nested_copy_method(self, nested_conf):
+        conf_dict = nested_conf.copy()
+        assert conf_dict == {'a': {'foo': 'bar', 'baz': '$foo'}}
+
+    @pytest.mark.xfail(sys.version_info >= (3, 6, 7),
+                       reason="dict() now uses self.items()"
+                              " instead of dict.items()",
+                       strict=True)
+    def test_simple_dict(self, simple_conf):
+        conf_dict = dict(simple_conf)
+        assert conf_dict == {'foo': 'bar', 'baz': '$foo'}
+
+    # Not exactly sure why this one does not fail in the same
+    # case as test_simple_dict, but at least this is a step in
+    # the right direction.
+    def test_nested_dict(self, nested_conf):
+        # NOTE: this is a subtle behavior change for v5.1.0.
+        # previously, it would interpolate 'baz'.
+        conf_dict = dict(nested_conf)
+        assert conf_dict == {'a': {'foo': 'bar', 'baz': '$foo'}}
+
+    def test_simple_copy(self, simple_conf):
+        conf_new = copy.copy(simple_conf)
+        assert conf_new is not simple_conf
+        assert isinstance(conf_new, ConfigObj)
+        assert conf_new.copy() == simple_conf.copy()
+        conf_new['foo'] = 'abc'
+        # Ensure the original configobj remains unchanged
+        assert simple_conf['foo'] == 'bar'
+        assert simple_conf['baz'] == 'bar'
+        assert conf_new['baz'] == 'abc'
+        assert conf_new.copy() == {'foo': 'abc', 'baz': '$foo'}
+
+    def test_nested_copy(self, nested_conf):
+        conf_new = copy.copy(nested_conf)
+        assert conf_new is not nested_conf
+        assert isinstance(conf_new, ConfigObj)
+        assert conf_new['a'] is nested_conf['a']
+        assert conf_new.copy() == nested_conf.copy()
+        conf_new['a']['foo'] = 'abc'
+        # Ensure the original configobj was changed
+        assert nested_conf['a']['foo'] == 'abc'
+        assert nested_conf['a']['baz'] == 'abc'
+        assert conf_new['a']['baz'] == 'abc'
+        assert conf_new.copy() == {'a': {'foo': 'abc', 'baz': '$foo'}}
+
+    def test_simple_deepcopy(self, simple_conf):
+        conf_new = copy.deepcopy(simple_conf)
+        assert conf_new is not simple_conf
+        assert isinstance(conf_new, ConfigObj)
+        assert conf_new.copy() == simple_conf.copy()
+        conf_new['foo'] = 'abc'
+        # Ensure the original configobj remains unchanged
+        assert simple_conf['foo'] == 'bar'
+        assert simple_conf['baz'] == 'bar'
+        assert conf_new['baz'] == 'abc'
+        assert conf_new.copy() == {'foo': 'abc', 'baz': '$foo'}
+
+    def test_nested_copy(self, nested_conf):
+        conf_new = copy.deepcopy(nested_conf)
+        assert conf_new is not nested_conf
+        assert isinstance(conf_new, ConfigObj)
+        assert conf_new['a'] is not nested_conf['a']
+        assert conf_new.copy() == nested_conf.copy()
+        conf_new['a']['foo'] = 'abc'
+        # Ensure the original configobj remains unchanged
+        assert nested_conf['a']['foo'] == 'bar'
+        assert nested_conf['a']['baz'] == 'bar'
+        assert conf_new['a']['baz'] == 'abc'
+        assert conf_new.copy() == {'a': {'foo': 'abc', 'baz': '$foo'}}
 
 
 class TestEncoding(object):
