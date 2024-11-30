@@ -1417,3 +1417,16 @@ class TestEdgeCasesWhenWritingOut(object):
         c = ConfigObj(cfg, unrepr=True)
         assert repr(c) == "ConfigObj({'thing': {'a': 1}})"
         assert c.write() == ["thing = {'a': 1}"]
+
+
+def test_optional_sections():
+    c = ConfigObj({'sec': {'name': 'value'}}, configspec={'__optional__sec': {'name': 'string'}})
+    assert c.validate(Validator()) == True
+    c = ConfigObj({'unrelated sec': {}},
+                  configspec={'unrelated sec': {},
+                              '__optional__sec': {'some name': 'string',
+                                                  'subsec': {},
+                                                  'something else': 'integer'}})
+    assert c.validate(Validator()) == True
+    c = ConfigObj({'sec': {'name': 'a string'}}, configspec={'__optional__sec': {'name': 'integer'}})
+    assert c.validate(Validator()) != True
