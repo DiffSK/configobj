@@ -24,16 +24,18 @@ This is a mature project that is only being maintained for bug fixes and
 compatibility with new versions of Python. It is not under active development,
 though we will try to respond to issues and pull requests.
 
-## Past Contributors:
+## Past and Current Contributors:
 
 - [Michael Foord](https://agileabstractions.com/)
   - original creator of ``configobj`` and ``validate`` and maintainer through version 4
 - [Rob Dennis](https://github.com/robdennis)
   - released version 5 (first python 3-compatible release) in 2014, bringing the project to github
-  - released the last maintenance release (until new maintainership is established) in 2023
+  - previous release manager until 2023
 - [Eli Courtwright](https://github.com/EliAndrewC)
   - released version 5 (first python 3-compatible release) in 2014
 - [Nicola Larosa](https://pypi.org/user/tekNico/)
-  - Contributions to the pre-version 5 codebase 
+  - Contributions to the pre-version 5 codebase
 - [Jürgen Hermann](https://github.com/jhermann)
   - day-to-day maintenance of the repo
+- [Jelmer Vernooĳ](https://github.com/jelmer)
+  - day-to-day maintenance of the repo, and current release manager
