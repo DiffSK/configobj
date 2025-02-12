@@ -16,12 +16,9 @@
 
 import sys
 
-from io import StringIO
 
-import sys
 
 from configobj import *
-from configobj.validate import Validator
 
 
 def _test_validate():
