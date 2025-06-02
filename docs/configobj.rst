@@ -417,8 +417,7 @@ ConfigObj takes the following arguments (with the default values shown) :
 
     ``default_encoding``, if specified, is the encoding used to decode byte
     strings in the **ConfigObj** before writing. If this is ``None``, then
-    the Python default encoding (``sys.defaultencoding`` - usually ASCII) is
-    used.
+    a default encoding (currently ASCII) is used.
     
     For most Western European users, a value of ``latin-1`` is sensible.
     
@@ -869,7 +868,8 @@ members) will first be decoded to Unicode using the encoding specified by the
 ``default_encoding`` attribute. This ensures that the output is in the encoding
 specified.
 
-If this value is ``None`` then ``sys.defaultencoding`` is used instead.
+If this value is ``None`` then a default encoding (currently ASCII) is used to decode
+any byte-strings in your ConfigObj instance.
 
 
 unrepr
