@@ -2000,6 +2000,8 @@ class ConfigObj(Section):
         start = self.indent_type
         if not comment.startswith('#'):
             start += self._a_to_u(' # ')
+        else:
+            start += self._a_to_u(' ')
         return (start + comment)
 
 
