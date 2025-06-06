@@ -4,6 +4,7 @@ import os
 import re
 
 from codecs import BOM_UTF8
+from pathlib import Path
 from warnings import catch_warnings
 from tempfile import NamedTemporaryFile
 
@@ -1104,6 +1105,24 @@ def test_creating_with_a_dictionary():
     assert dictionary_cfg_content == cfg.dict()
     assert dictionary_cfg_content is not cfg.dict()
 
+def test_reading_a_pathlib_path(cfg_contents):
+    cfg = cfg_contents("""
+[section]
+foo = bar""")
+    c = ConfigObj(Path(cfg))
+    assert 'foo' in c['section']
+
+def test_creating_a_file_from_pathlib_path(tmp_path):
+    infile = tmp_path / 'config.ini'
+    assert not Path(tmp_path / 'config.ini').is_file()
+    c = ConfigObj(Path(infile), create_empty=True)
+    assert Path(tmp_path / 'config.ini').is_file()
+
+def test_creating_a_file_from_string(tmp_path):
+    infile = str(tmp_path / 'config.ini')
+    assert not Path(infile).is_file()
+    c = ConfigObj(infile, create_empty=True)
+    assert Path(infile).is_file()
 
 class TestComments(object):
     @pytest.fixture
