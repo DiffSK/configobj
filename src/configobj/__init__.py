@@ -18,6 +18,7 @@ import re
 import sys
 
 from codecs import BOM_UTF8, BOM_UTF16, BOM_UTF16_BE, BOM_UTF16_LE
+from pathlib import Path
 
 from ._version import __version__
 
@@ -1241,7 +1242,20 @@ class ConfigObj(Section):
                     with open(infile, 'w') as h:
                         h.write('')
                 content = []
-                
+
+        elif isinstance(infile, Path):
+            self.filename = str(infile)
+            if infile.is_file():
+                with infile.open('rb') as h:
+                    content = h.readlines() or []
+            elif self.file_error:
+                raise IOError('Config file not found: "%s".' % self.filename)
+            else:
+                if self.create_empty:
+                    with infile.open('w') as h:
+                        h.write('')
+                content = []
+
         elif isinstance(infile, (list, tuple)):
             content = list(infile)
             
@@ -1275,7 +1289,7 @@ class ConfigObj(Section):
             # needs splitting into lines - but needs doing *after* decoding
             # in case it's not an 8 bit encoding
         else:
-            raise TypeError('infile must be a filename, file like object, or list of lines.')
+            raise TypeError('infile must be a filename, file like object, pathlib.Path or list of lines.')
 
         if content:
             # don't do it for the empty ConfigObj

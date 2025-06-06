@@ -281,9 +281,10 @@ ConfigObj takes the following arguments (with the default values shown) :
     * Nothing. In which case the ``filename`` attribute of your ConfigObj will be
       ``None``. You can set a filename at any time.
 
-    * A filename. What happens if the file doesn't already exist is determined by
-      the options ``file_error`` and ``create_empty``. The filename will be
-      preserved as the ``filename`` attribute. This can be changed at any time.
+    * A filename or pathlib.Path object. What happens if the file doesn't already
+      exist is determined by the options ``file_error`` and ``create_empty``. The
+      filename will be preserved as the ``filename`` attribute. This can be
+      changed at any time.
 
     * A list of lines. Any trailing newlines will be removed from the lines. The
       ``filename`` attribute of your ConfigObj will be ``None``.
