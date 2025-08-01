@@ -129,9 +129,11 @@
 
     A badly formatted set of arguments will raise a ``VdtParamError``.
 """
+from __future__ import annotations
 import re
 import sys
 from pprint import pprint
+from typing import Any, Callable, Sequence
 
 __version__ = '1.0.1'
 
@@ -245,7 +247,7 @@ _paramstring = r'''
 _matchstring = '^%s*' % _paramstring
 
 
-def dottedQuadToNum(ip):
+def dottedQuadToNum(ip: str) -> int | None:
     """
     Convert decimal dotted quad string to long integer
 
@@ -259,14 +261,14 @@ def dottedQuadToNum(ip):
     import socket, struct
 
     try:
-        return struct.unpack('!L',
+        return struct.unpack('!L',  # type: ignore [no-any-return]
             socket.inet_aton(ip.strip()))[0]
     except socket.error:
         raise ValueError('Not a good dotted-quad IP: %s' % ip)
     return
 
 
-def numToDottedQuad(num):
+def numToDottedQuad(num: int) -> str:
     """
     Convert int int to dotted quad string
 
@@ -339,7 +341,7 @@ class VdtMissingValue(ValidateError):
 class VdtUnknownCheckError(ValidateError):
     """An unknown check function was requested"""
 
-    def __init__(self, value):
+    def __init__(self, value: Any):
         """
         >>> raise VdtUnknownCheckError('yoda')
         Traceback (most recent call last):
@@ -353,7 +355,7 @@ class VdtParamError(SyntaxError):
 
     NOT_GIVEN = object()
 
-    def __init__(self, name_or_msg, value=NOT_GIVEN):
+    def __init__(self, name_or_msg: str, value: Any = NOT_GIVEN):
         """
         >>> raise VdtParamError('yoda', 'jedi')
         Traceback (most recent call last):
@@ -371,7 +373,7 @@ class VdtParamError(SyntaxError):
 class VdtTypeError(ValidateError):
     """The value supplied was of the wrong type"""
 
-    def __init__(self, value):
+    def __init__(self, value: Any):
         """
         >>> raise VdtTypeError('jedi')
         Traceback (most recent call last):
@@ -383,7 +385,7 @@ class VdtTypeError(ValidateError):
 class VdtValueError(ValidateError):
     """The value supplied was of the correct type, but was not an allowed value."""
 
-    def __init__(self, value):
+    def __init__(self, value: Any):
         """
         >>> raise VdtValueError('jedi')
         Traceback (most recent call last):
@@ -395,7 +397,7 @@ class VdtValueError(ValidateError):
 class VdtValueTooSmallError(VdtValueError):
     """The value supplied was of the correct type, but was too small."""
 
-    def __init__(self, value):
+    def __init__(self, value: Any):
         """
         >>> raise VdtValueTooSmallError('0')
         Traceback (most recent call last):
@@ -407,7 +409,7 @@ class VdtValueTooSmallError(VdtValueError):
 class VdtValueTooBigError(VdtValueError):
     """The value supplied was of the correct type, but was too big."""
 
-    def __init__(self, value):
+    def __init__(self, value: Any):
         """
         >>> raise VdtValueTooBigError('1')
         Traceback (most recent call last):
@@ -419,7 +421,7 @@ class VdtValueTooBigError(VdtValueError):
 class VdtValueTooShortError(VdtValueError):
     """The value supplied was of the correct type, but was too short."""
 
-    def __init__(self, value):
+    def __init__(self, value: Any):
         """
         >>> raise VdtValueTooShortError('jed')
         Traceback (most recent call last):
@@ -433,7 +435,7 @@ class VdtValueTooShortError(VdtValueError):
 class VdtValueTooLongError(VdtValueError):
     """The value supplied was of the correct type, but was too long."""
 
-    def __init__(self, value):
+    def __init__(self, value: Any):
         """
         >>> raise VdtValueTooLongError('jedie')
         Traceback (most recent call last):
@@ -533,11 +535,11 @@ class Validator(object):
     _matchfinder = re.compile(_matchstring, re.VERBOSE | re.DOTALL)
 
 
-    def __init__(self, functions=None):
+    def __init__(self, functions: dict[str, Callable[..., Any]] | None = None):
         """
         >>> vtri = Validator()
         """
-        self.functions = {
+        self.functions: dict[str, Callable[..., Any]] = {
             '': self._pass,
             'integer': is_integer,
             'float': is_float,
@@ -559,11 +561,11 @@ class Validator(object):
         if functions is not None:
             self.functions.update(functions)
         # tekNico: for use by ConfigObj
-        self.baseErrorClass = ValidateError
-        self._cache = {}
+        self.baseErrorClass: type[Exception] = ValidateError
+        self._cache: dict[Any, tuple[str, Sequence[Any], dict[str, Any], Any | None]] = {}
 
 
-    def check(self, check, value, missing=False):
+    def check(self, check: str, value: Any, missing: bool = False) -> Any:
         """
         Usage: check(check, value)
 
@@ -599,7 +601,7 @@ class Validator(object):
         return self._check_value(value, fun_name, fun_args, fun_kwargs)
 
 
-    def _handle_none(self, value):
+    def _handle_none(self, value: Any) -> Any | None:
         if value == 'None':
             return None
         elif value in ("'None'", '"None"'):
@@ -608,7 +610,7 @@ class Validator(object):
         return value
 
 
-    def _parse_with_caching(self, check):
+    def _parse_with_caching(self, check: Any) -> tuple[str, Sequence[Any], dict[str, Any], Any | None]:
         if check in self._cache:
             fun_name, fun_args, fun_kwargs, default = self._cache[check]
             # We call list and dict below to work with *copies* of the data
@@ -622,7 +624,7 @@ class Validator(object):
         return fun_name, fun_args, fun_kwargs, default
 
 
-    def _check_value(self, value, fun_name, fun_args, fun_kwargs):
+    def _check_value(self, value: Any, fun_name: str, fun_args: Sequence[Any], fun_kwargs: dict[str, Any]) -> Any:
         try:
             fun = self.functions[fun_name]
         except KeyError:
@@ -631,7 +633,7 @@ class Validator(object):
             return fun(value, *fun_args, **fun_kwargs)
 
 
-    def _parse_check(self, check):
+    def _parse_check(self, check: Any) -> tuple[str, Sequence[Any], dict[str, Any], Any | None]:
         fun_match = self._func_re.match(check)
         if fun_match:
             fun_name = fun_match.group(1)
@@ -640,24 +642,24 @@ class Validator(object):
             if arg_match is None:
                 # Bad syntax
                 raise VdtParamError('Bad syntax in check "%s".' % check)
-            fun_args = []
-            fun_kwargs = {}
+            fun_args: list[Any] = []
+            fun_kwargs: dict[str, Any] = {}
             # pull out args of group 2
             for arg in self._paramfinder.findall(arg_string):
                 # args may need whitespace removing (before removing quotes)
                 arg = arg.strip()
                 listmatch = self._list_arg.match(arg)
                 if listmatch:
-                    key, val = self._list_handle(listmatch)
-                    fun_kwargs[key] = val
+                    key, val_l = self._list_handle(listmatch)
+                    fun_kwargs[key] = val_l
                     continue
                 keymatch = self._key_arg.match(arg)
                 if keymatch:
-                    val = keymatch.group(2)
-                    if not val in ("'None'", '"None"'):
+                    val_k = keymatch.group(2)
+                    if not val_k in ("'None'", '"None"'):
                         # Special case a quoted None
-                        val = self._unquote(val)
-                    fun_kwargs[keymatch.group(1)] = val
+                        val_k = self._unquote(val_k)
+                    fun_kwargs[keymatch.group(1)] = val_k
                     continue
 
                 fun_args.append(self._unquote(arg))
@@ -671,16 +673,16 @@ class Validator(object):
         return fun_name, fun_args, fun_kwargs, default
 
 
-    def _unquote(self, val):
+    def _unquote(self, val: str) -> str:
         """Unquote a value if necessary."""
         if (len(val) >= 2) and (val[0] in ("'", '"')) and (val[0] == val[-1]):
             val = val[1:-1]
         return val
 
 
-    def _list_handle(self, listmatch):
+    def _list_handle(self, listmatch: re.Match[str]) -> tuple[str, list[str]]:
         """Take apart a ``keyword=list('val, 'val')`` type string."""
-        out = []
+        out: list[str] = []
         name = listmatch.group(1)
         args = listmatch.group(2)
         for arg in self._list_members.findall(args):
@@ -688,7 +690,7 @@ class Validator(object):
         return name, out
 
 
-    def _pass(self, value):
+    def _pass(self, value: Any) -> Any:
         """
         Dummy check that always passes
 
@@ -700,7 +702,7 @@ class Validator(object):
         return value
 
 
-    def get_default_value(self, check):
+    def get_default_value(self, check: Any) -> Any:
         """
         Given a check, return the default value for the check
         (converted to the right type).
@@ -717,7 +719,7 @@ class Validator(object):
         return self._check_value(value, fun_name, fun_args, fun_kwargs)
 
 
-def _is_num_param(names, values, to_float=False):
+def _is_num_param(names: Sequence[str], values: Sequence[int | float | str | None], to_float: bool = False) -> list[int | float | None]:
     """
     Return numbers from inputs or raise VdtParamError.
 
@@ -733,8 +735,8 @@ def _is_num_param(names, values, to_float=False):
     Traceback (most recent call last):
     VdtParamError: passed an incorrect value "a" for parameter "a".
     """
-    fun = to_float and float or int
-    out_params = []
+    fun = float if to_float else int
+    out_params: list[int | float | None] = []
     for (name, val) in zip(names, values):
         if val is None:
             out_params.append(val)
@@ -754,7 +756,7 @@ def _is_num_param(names, values, to_float=False):
 # note: if the params are specified wrongly in your input string,
 #       you will also raise errors.
 
-def is_integer(value, min=None, max=None):
+def is_integer(value: int | str, min: int | float | str | None = None, max: int | float | str | None = None) -> int:
     """
     A check that tests that a given value is an integer (int)
     and optionally, between bounds. A negative value is accepted, while
@@ -811,7 +813,7 @@ def is_integer(value, min=None, max=None):
     return value
 
 
-def is_float(value, min=None, max=None):
+def is_float(value: int | float | str, min: int | float | str | None = None, max: int | float | str | None = None) -> float:
     """
     A check that tests that a given value is a float
     (an integer will be accepted), and optionally - that it is between bounds.
@@ -869,7 +871,7 @@ bool_dict = {
 }
 
 
-def is_boolean(value):
+def is_boolean(value: str | bool) -> bool:
     """
     Check if the value represents a boolean.
 
@@ -929,7 +931,7 @@ def is_boolean(value):
         raise VdtTypeError(value)
 
 
-def is_ip_addr(value):
+def is_ip_addr(value: str) -> str:
     """
     Check that the supplied value is an Internet Protocol address, v.4,
     represented by a dotted-quad string, i.e. '1.2.3.4'.
@@ -966,7 +968,7 @@ def is_ip_addr(value):
     return value
 
 
-def is_list(value, min=None, max=None):
+def is_list(value: Sequence[Any], min: int | float | str | None = None, max: int | float | str | None = None) -> list[Any]:
     """
     Check that the value is a list of values.
 
@@ -1012,7 +1014,7 @@ def is_list(value, min=None, max=None):
     return list(value)
 
 
-def is_tuple(value, min=None, max=None):
+def is_tuple(value: Sequence[Any], min: int | float | str | None = None, max: int | float | str | None = None) -> tuple[Any, ...]:
     """
     Check that the value is a tuple of values.
 
@@ -1046,7 +1048,7 @@ def is_tuple(value, min=None, max=None):
     return tuple(is_list(value, min, max))
 
 
-def is_string(value, min=None, max=None):
+def is_string(value: str, min: int | float | str | None = None, max: int | float | str | None = None) -> str:
     """
     Check that the supplied value is a string.
 
@@ -1083,7 +1085,7 @@ def is_string(value, min=None, max=None):
     return value
 
 
-def is_int_list(value, min=None, max=None):
+def is_int_list(value: Sequence[int| str], min: int | float | str | None = None, max: int | float | str | None = None) -> list[int]:
     """
     Check that the value is a list of integers.
 
@@ -1106,7 +1108,7 @@ def is_int_list(value, min=None, max=None):
     return [is_integer(mem) for mem in is_list(value, min, max)]
 
 
-def is_bool_list(value, min=None, max=None):
+def is_bool_list(value: Sequence[str | bool], min: int | float | str | None = None, max: int | float | str | None = None) -> list[bool]:
     """
     Check that the value is a list of booleans.
 
@@ -1131,7 +1133,7 @@ def is_bool_list(value, min=None, max=None):
     return [is_boolean(mem) for mem in is_list(value, min, max)]
 
 
-def is_float_list(value, min=None, max=None):
+def is_float_list(value: Sequence[int | float | str], min: int | float | str | None = None, max: int | float | str | None = None) -> list[float]:
     """
     Check that the value is a list of floats.
 
@@ -1154,7 +1156,7 @@ def is_float_list(value, min=None, max=None):
     return [is_float(mem) for mem in is_list(value, min, max)]
 
 
-def is_string_list(value, min=None, max=None):
+def is_string_list(value: Sequence[str], min: int | float | str | None = None, max: int | float | str | None = None) -> list[str]:
     """
     Check that the value is a list of strings.
 
@@ -1180,7 +1182,7 @@ def is_string_list(value, min=None, max=None):
     return [is_string(mem) for mem in is_list(value, min, max)]
 
 
-def is_ip_addr_list(value, min=None, max=None):
+def is_ip_addr_list(value: Sequence[str], min: int | float | str | None = None, max: int | float | str | None = None) -> list[str]:
     """
     Check that the value is a list of IP addresses.
 
@@ -1201,7 +1203,7 @@ def is_ip_addr_list(value, min=None, max=None):
     return [is_ip_addr(mem) for mem in is_list(value, min, max)]
 
 
-def force_list(value, min=None, max=None):
+def force_list(value: Any, min: int | float | str | None = None, max: int | float | str | None = None) -> list[Any]:
     """
     Check that a value is a list, coercing strings into
     a list with one member. Useful where users forget the
@@ -1224,7 +1226,7 @@ def force_list(value, min=None, max=None):
 
 
 
-fun_dict = {
+fun_dict: dict[str | type[Any], Callable[..., Any]] = {
     int: is_integer,
     'int': is_integer,
     'integer': is_integer,
@@ -1240,7 +1242,7 @@ fun_dict = {
 }
 
 
-def is_mixed_list(value, *args):
+def is_mixed_list(value: Sequence[Any], *args: str) -> list[Any]:
     """
     Check that the value is a list.
     Allow specifying the type of each member.
@@ -1297,7 +1299,7 @@ def is_mixed_list(value, *args):
         raise VdtParamError('mixed_list', cause)
 
 
-def is_option(value, *options):
+def is_option(value: str, *options: str) -> str:
     """
     This check matches the value to any of a set of options.
 
@@ -1317,7 +1319,7 @@ def is_option(value, *options):
     return value
 
 
-def _test(value, *args, **keywargs):
+def _test(value: Any, *args: Any, **keywargs: Any) -> tuple[Any, Any, Any]:
     """
     A function that exists for test purposes.
 
@@ -1401,7 +1403,7 @@ def _test(value, *args, **keywargs):
     return (value, args, keywargs)
 
 
-def _test2():
+def _test2() -> None:
     """
     >>>
     >>> v = Validator()
@@ -1411,7 +1413,7 @@ def _test2():
     3
     """
 
-def _test3():
+def _test3() -> None:
     r"""
     >>> vtor.check('string(default="")', '', missing=True)
     ''
