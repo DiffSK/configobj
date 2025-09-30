@@ -25,6 +25,24 @@ This is a mature project that is only being maintained for bug fixes and
 compatibility with new versions of Python. It is not under active development,
 though we will try to respond to issues and pull requests.
 
+## Branches
+
+The default branch of this repository is the [`release` branch](https://github.com/DiffSK/configobj/tree/release),
+rather than the [`master` branch](https://github.com/DiffSK/configobj/tree/master).
+This decision dates back to when this project moved from being actively
+maintained to it's current state as a mature project.
+At that time (in 2023), [changes introduced](https://github.com/DiffSK/configobj/compare/v5.0.6...master)
+into the `master` branch had not been fully integrated, and the tooling had
+shifted in ways that made [continuing from `master` unclear](https://github.com/DiffSK/configobj/pull/237#issuecomment-1925401612).
+
+Instead, [we chose to continue development](https://github.com/DiffSK/configobj/issues/213#issuecomment-1377686121)
+from the `5.0.6` release branch. Any changes made to master after that release
+were effectively abandoned, and the `release` branch has served as the main
+line of development since.
+
+As a result, going forward, new pull requests should be made against the
+`release` branch as the `master` branch is frozen in time.
+
 ## Past and Current Contributors:
 
 - [Michael Foord](https://agileabstractions.com/)
