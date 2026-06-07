@@ -15,13 +15,10 @@
 # https://github.com/DiffSK/configobj
 
 import sys
-
-from io import StringIO
-
-import sys
+from io import StringIO  # noqa: F401  (used in doctests)
 
 from configobj import *
-from configobj.validate import Validator
+from configobj.validate import Validator  # noqa: F401  (used in doctests)
 
 
 def _test_validate():

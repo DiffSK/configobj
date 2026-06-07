@@ -2,7 +2,7 @@
 
 from configobj import ConfigObj
 import pytest
-from configobj.validate import Validator, VdtValueTooSmallError
+from configobj.validate import VdtValueTooSmallError
 
 
 class TestImporting(object):
