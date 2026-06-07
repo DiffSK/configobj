@@ -163,6 +163,7 @@ __all__ = (
 
 import re
 import sys
+from pprint import pprint  # noqa: F401  (used in doctests)
 
 
 _list_arg = re.compile(r'''
