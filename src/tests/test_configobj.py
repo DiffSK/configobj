@@ -1295,6 +1295,19 @@ class TestEdgeCasesWhenWritingOut(object):
         empty_cfg.write(collector)
         assert collector.getvalue() == b'a = "b # something", "c # something"\n'
 
+    def test_key_with_equals_is_quoted(self, empty_cfg):
+        # issue #273: a key containing '=' was written unquoted, so on the
+        # next parse the first '=' was read as the key/value divider,
+        # splitting the key and corrupting the value.
+        empty_cfg.newlines = '\n'
+        empty_cfg['a = b'] = 'val'
+        collector = io.BytesIO()
+        empty_cfg.write(collector)
+        assert collector.getvalue() == b'"a = b" = val\n'
+        # and the written form round-trips back to the original key/value
+        collector.seek(0)
+        assert dict(ConfigObj(collector)) == {'a = b': 'val'}
+
     def test_detecting_line_endings_from_existing_files(self):
         for expected_line_ending in ('\r\n', '\n'):
             with open('temp', 'w') as h:
