@@ -1760,7 +1760,7 @@ class ConfigObj(Section):
         return value
 
 
-    def _quote(self, value, multiline=True):
+    def _quote(self, value, multiline=True, is_key=False):
         """
         Return a safely quoted version of a value.
         
@@ -1808,7 +1808,12 @@ class ConfigObj(Section):
         check_for_single = (no_lists_no_quotes or not need_triple) and not hash_triple_quote
         
         if check_for_single:
-            if not self.list_values:
+            if is_key and '=' in value:
+                # A key containing '=' must be quoted, otherwise the first
+                # '=' is read back as the key/value divider, splitting the
+                # key and corrupting the value on the next parse.
+                quot = self._get_single_quote(value)
+            elif not self.list_values:
                 # we don't quote if ``list_values=False``
                 quot = noquot
             # for normal values either single or double quotes will do
@@ -1992,7 +1997,7 @@ class ConfigObj(Section):
         else:
             val = repr(this_entry)
         return '%s%s%s%s%s' % (indent_string,
-                               self._decode_element(self._quote(entry, multiline=False)),
+                               self._decode_element(self._quote(entry, multiline=False, is_key=True)),
                                self._a_to_u(' = '),
                                val,
                                self._decode_element(comment))
