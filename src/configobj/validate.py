@@ -277,24 +277,8 @@ def dottedQuadToNum(ip):
 
 def numToDottedQuad(num):
     """
-    Convert int or long int to dotted quad string
+    Convert int to dotted quad string
     
-    >>> numToDottedQuad(int(-1))
-    Traceback (most recent call last):
-    ValueError: Not a good numeric IP: -1
-    >>> numToDottedQuad(int(1))
-    '0.0.0.1'
-    >>> numToDottedQuad(int(16777218))
-    '1.0.0.2'
-    >>> numToDottedQuad(int(16908291))
-    '1.2.0.3'
-    >>> numToDottedQuad(int(16909060))
-    '1.2.3.4'
-    >>> numToDottedQuad(int(4294967295))
-    '255.255.255.255'
-    >>> numToDottedQuad(int(4294967296))
-    Traceback (most recent call last):
-    ValueError: Not a good numeric IP: 4294967296
     >>> numToDottedQuad(-1)
     Traceback (most recent call last):
     ValueError: Not a good numeric IP: -1
@@ -319,11 +303,11 @@ def numToDottedQuad(num):
     import struct
     
     # no need to intercept here, 4294967295L is fine
-    if num > int(4294967295) or num < 0:
+    if num > 4294967295 or num < 0:
         raise ValueError('Not a good numeric IP: %s' % num)
     try:
         return socket.inet_ntoa(
-            struct.pack('!L', int(num)))
+            struct.pack('!L', num))
     except (socket.error, struct.error, OverflowError):
         raise ValueError('Not a good numeric IP: %s' % num)
 
