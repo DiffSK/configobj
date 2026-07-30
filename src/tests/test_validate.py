@@ -1,5 +1,3 @@
-# coding=utf-8
-
 from configobj import ConfigObj
 import pytest
 from configobj.validate import VdtValueTooSmallError

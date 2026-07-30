@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # setup.py
-# -*- coding: utf-8 -*-
 # pylint: disable=invalid-name
 
 """Install script for ConfigObj"""
