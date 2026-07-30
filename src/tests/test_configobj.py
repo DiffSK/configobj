@@ -171,7 +171,7 @@ def test_interoplation_repr():
     repr(c)
 
 
-class TestEncoding(object):
+class TestEncoding:
     @pytest.fixture
     def ant_cfg(self):
         return """
@@ -512,7 +512,7 @@ def test_unicode_handling():
     assert uc2.newlines == '\r'
 
 
-class TestWritingConfigs(object):
+class TestWritingConfigs:
     def test_validate(self, val):
         spec = [
             '# Initial Comment',
@@ -565,7 +565,7 @@ class TestWritingConfigs(object):
         assert cfg.write() == ['', 'key1 = ', 'key2 = # a comment']
 
 
-class TestUnrepr(object):
+class TestUnrepr:
     def test_in_reading(self):
         config_to_be_unreprd = cfg_lines("""
             key1 = (1, 2, 3)    # comment
@@ -613,7 +613,7 @@ class TestUnrepr(object):
         }
 
 
-class TestValueErrors(object):
+class TestValueErrors:
     def test_bool(self, empty_cfg):
         empty_cfg['a'] = 'fish'
         with pytest.raises(ValueError) as excinfo:
@@ -674,7 +674,7 @@ def test_error_types():
         raise co.ReloadError()
 
 
-class TestSectionBehavior(object):
+class TestSectionBehavior:
     def test_dictionary_representation(self, a):
 
         n = a.dict()
@@ -772,7 +772,7 @@ def test_reset_a_configobj():
     assert repr(cfg) == 'ConfigObj({})'
 
 
-class TestReloading(object):
+class TestReloading:
     @pytest.fixture
     def reloadable_cfg_content(self):
         content = '''
@@ -847,7 +847,7 @@ class TestReloading(object):
         assert cfg.validate(Validator())
 
 
-class TestDuplicates(object):
+class TestDuplicates:
     def test_duplicate_section(self):
         cfg = '''
         [hello]
@@ -877,7 +877,7 @@ class TestDuplicates(object):
         assert str(excinfo.value) == 'Duplicate keyword name at line 7.'
 
 
-class TestInterpolation(object):
+class TestInterpolation:
     """
     tests various interpolation behaviors using config par
     """
@@ -974,7 +974,7 @@ class TestInterpolation(object):
                 '$foo + 123 + 123 + $foo + 123 + $foo')
 
 
-class TestQuotes(object):
+class TestQuotes:
     """
     tests what happens whn dealing with quotes
     """
@@ -1018,7 +1018,7 @@ def test_handle_stringify_off():
     assert str(excinfo.value) == 'Value is not a string "1".'
 
 
-class TestValues(object):
+class TestValues:
     """
     Tests specifics about behaviors with types of values
     """
@@ -1105,7 +1105,7 @@ def test_creating_with_a_dictionary():
     assert dictionary_cfg_content is not cfg.dict()
 
 
-class TestComments(object):
+class TestComments:
     @pytest.fixture
     def comment_filled_cfg(self, cfg_contents):
         return cfg_contents("""
@@ -1217,7 +1217,7 @@ def test_interpolation_using_default_sections():
     assert c.write() == ['a = %(a)s', '[DEFAULT]', 'a = fish']
     
 
-class TestIndentation(object):
+class TestIndentation:
     @pytest.fixture
     def max_tabbed_cfg(self):
         return ['[sect]', '    [[sect]]', '        foo = bar']
@@ -1248,7 +1248,7 @@ class TestIndentation(object):
         assert ConfigObj(one_tab, indent_type='    ').write() == max_tabbed_cfg
 
 
-class TestEdgeCasesWhenWritingOut(object):
+class TestEdgeCasesWhenWritingOut:
     def test_newline_terminated(self, empty_cfg):
         empty_cfg.newlines = '\n'
         empty_cfg['a'] = 'b'

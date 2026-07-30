@@ -5,7 +5,7 @@ import pytest
 from configobj.validate import VdtValueTooSmallError
 
 
-class TestImporting(object):
+class TestImporting:
     def test_top_level(self, val):
         import validate
         assert val.__class__ is validate.Validator
@@ -19,7 +19,7 @@ class TestImporting(object):
         assert val.__class__ is configobj.validate.Validator
 
 
-class TestBasic(object):
+class TestBasic:
     def test_values_too_small(self, val):
         config = '''
         test1=40
