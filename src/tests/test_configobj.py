@@ -19,11 +19,11 @@ def cfg_lines(config_string_representation):
     """
     :param config_string_representation: string representation of a config
         file (typically a triple-quoted string)
-    :type config_string_representation: str or unicode
+    :type config_string_representation: str | bytes
     :return: a list of lines of that config. Whitespace on the left will be
         trimmed based on the indentation level to make it a bit saner to assert
         content of a particular line
-    :rtype: str or unicode
+    :rtype: str | bytes
     """
     lines = config_string_representation.splitlines()
 
@@ -59,11 +59,11 @@ def cfg_contents(request):
         """
         :param config_string_representation: string representation of a config
             file (typically a triple-quoted string)
-        :type config_string_representation: str or unicode
+        :type config_string_representation: str | bytes
         :return: a list of lines of that config. Whitespace on the left will be
             trimmed based on the indentation level to make it a bit saner to assert
             content of a particular line
-        :rtype: basestring
+        :rtype: str
         """
 
         lines = cfg_lines(config_string_representation)

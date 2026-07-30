@@ -1357,11 +1357,6 @@ def _test(value, *args, **keywargs):
     >>> v.check('pass(default=list(1, 2, 3, 4))', None, True)
     ['1', '2', '3', '4']
     
-    Bug test for unicode arguments
-    >>> v = Validator()
-    >>> v.check('string(min=4)', 'test') == 'test'
-    True
-    
     >>> v = Validator()
     >>> v.get_default_value('string(min=4, default="1234")') == '1234'
     True
