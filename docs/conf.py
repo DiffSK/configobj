@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # configobj documentation build configuration file, created by
 # sphinx-quickstart on Sat Feb  8 01:26:54 2014.
 #
