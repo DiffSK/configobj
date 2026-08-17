@@ -270,6 +270,13 @@ class InterpolationEngine:
                     replacement = v
                 else:
                     # Further interpolation may be needed to obtain final value
+                    if not isinstance(v, str):
+                        # Only strings can be substituted into a value; a list
+                        # (or any other non-string) has no meaningful textual
+                        # form to interpolate.
+                        raise InterpolationError(
+                            'cannot interpolate non-string value of '
+                            'option "%s".' % k)
                     replacement = recursive_interpolate(k, v, s, backtrail)
                 # Replace the matched string with its final value
                 start, end = match.span()

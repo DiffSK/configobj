@@ -957,6 +957,19 @@ class TestInterpolation:
         assert (str(excinfo.value) ==
                 'interpolation loop detected in value "e".')
 
+    def test_interpolation_of_list_value_raises(self):
+        # A reference to a key whose value is a list has no meaningful
+        # string form to substitute, so a clear InterpolationError should
+        # be raised rather than a raw TypeError leaking out.
+        cfg = ConfigObj(['foo = %(bar)s', 'bar = a, b, c'])
+        with pytest.raises(co.InterpolationError):
+            cfg['foo']
+
+        tmpl = ConfigObj(['foo = ${bar}', 'bar = a, b, c'],
+                         interpolation='template')
+        with pytest.raises(co.InterpolationError):
+            tmpl['foo']
+
     def test_template_interpolation(self, template_cfg):
         test_sec = template_cfg['section']
         assert test_sec['templatebare'] == 'value1/foo'
