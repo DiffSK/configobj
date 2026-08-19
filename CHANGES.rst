@@ -1,6 +1,12 @@
 Changelog
 ---------
 
+Unreleased
+""""""""""
+
+* raise ``InterpolationError`` instead of leaking a raw ``TypeError`` when a
+  value interpolates a reference to an option whose value is a list
+
 Release 5.0.9
 """""""""""""
 
