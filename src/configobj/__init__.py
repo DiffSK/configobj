@@ -1709,7 +1709,8 @@ class ConfigObj(Section):
         * Obey list syntax for empty and single member lists.
         
         If ``list_values=False`` then the value is only quoted if it contains
-        a ``\\n`` (is multiline) or '#'.
+        a ``\\n`` (is multiline), starts with a quote character, or contains
+        '#', so that written output can be read back unchanged.
         
         If ``write_empty_values`` is set, and the value is an empty string, it
         won't be quoted.
@@ -1737,15 +1738,23 @@ class ConfigObj(Section):
         if not value:
             return '""'
         
-        no_lists_no_quotes = not self.list_values and '\n' not in value and '#' not in value
+        no_lists_no_quotes = (not self.list_values and '\n' not in value
+            and '#' not in value and value[0] not in ('"', "'"))
         need_triple = multiline and ((("'" in value) and ('"' in value)) or ('\n' in value ))
         hash_triple_quote = multiline and not need_triple and ("'" in value) and ('"' in value) and ('#' in value)
         check_for_single = (no_lists_no_quotes or not need_triple) and not hash_triple_quote
         
         if check_for_single:
             if not self.list_values:
-                # we don't quote if ``list_values=False``
-                quot = noquot
+                if no_lists_no_quotes:
+                    # we don't quote if ``list_values=False``
+                    # and the bare form cannot be misparsed when read back
+                    quot = noquot
+                else:
+                    # a ``#`` would truncate the value at reading time, and
+                    # a leading quote character makes the line unparseable,
+                    # so quote to keep the output re-parseable
+                    quot = self._get_single_quote(value)
             # for normal values either single or double quotes will do
             elif '\n' in value:
                 # will only happen if multiline is off - e.g. '\n' in key
@@ -1799,8 +1808,16 @@ class ConfigObj(Section):
             mat = self._nolistvalue.match(value)
             if mat is None:
                 raise SyntaxError()
-            # NOTE: we don't unquote here
-            return mat.groups()
+            entry = mat.group(1)
+            comment = mat.group(2)
+            if (len(entry) >= 2 and entry[0] == entry[-1]
+                    and entry[0] in ('"', "'")
+                    and entry[0] not in entry[1:-1]):
+                # a fully quoted value is unquoted here, symmetrically to
+                # how ``_quote`` writes it with ``list_values=False``;
+                # anything else keeps its verbatim text
+                entry = self._unquote(entry)
+            return (entry, comment)
         #
         mat = self._valueexp.match(value)
         if mat is None:
