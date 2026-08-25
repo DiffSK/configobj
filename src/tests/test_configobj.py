@@ -394,8 +394,8 @@ def test_behavior_when_list_values_is_false():
     cfg = ConfigObj(cfg_lines(c), list_values=False)
     assert cfg == {
         'key1': 'no quotes',
-        'key2': "'single quotes'",
-        'key3': '"double quotes"',
+        'key2': 'single quotes',
+        'key3': 'double quotes',
         'key4': '"list", \'with\', several, "quotes"'
     }
 
@@ -404,7 +404,7 @@ def test_behavior_when_list_values_is_false():
     cfg2['key2'] = '''"Value" with 'quotes' !'''
     assert cfg2.write() == [
         "key1 = '''Multiline\nValue'''",
-        'key2 = "Value" with \'quotes\' !'
+        'key2 = \'\'\'"Value" with \'quotes\' !\'\'\''
     ]
 
     cfg2.list_values = True
@@ -412,6 +412,27 @@ def test_behavior_when_list_values_is_false():
         "key1 = '''Multiline\nValue'''",
         'key2 = \'\'\'"Value" with \'quotes\' !\'\'\''
     ]
+
+
+def test_list_values_false_written_output_can_be_read_back():
+    # A ``#`` would truncate the value at reading time and a leading quote
+    # character would make the line unparseable, so such values are quoted
+    # on writing and unquoted on reading again.
+    values = [
+        'hello # world',
+        '"hello" world',
+        "'quoted' # with hash",
+        '',
+        'no special characters',
+    ]
+    for value in values:
+        cfg = ConfigObj(list_values=False)
+        cfg['key'] = value
+        assert ConfigObj(cfg.write(), list_values=False)['key'] == value
+
+    cfg = ConfigObj(list_values=False)
+    cfg['key'] = 'hello # world'
+    assert cfg.write() == ['key = "hello # world"']
 
 
 def test_flatten_errors(val, cfg_contents):

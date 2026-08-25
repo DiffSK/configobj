@@ -6,6 +6,9 @@ Unreleased
 
 * raise ``InterpolationError`` instead of leaking a raw ``TypeError`` when a
   value interpolates a reference to an option whose value is a list
+* quote values on writing with ``list_values=False`` when they contain ``#``
+  or start with a quote character, and unquote them again on reading, so
+  written output can be loaded back unchanged (issue #270)
 
 Release 5.0.9
 """""""""""""
