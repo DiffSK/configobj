@@ -6,6 +6,9 @@ Unreleased
 
 * raise ``InterpolationError`` instead of leaking a raw ``TypeError`` when a
   value interpolates a reference to an option whose value is a list
+* reject ``NaN`` against a declared ``float`` bound; every comparison against
+  ``NaN`` is False, so it previously satisfied neither the ``min`` nor the
+  ``max`` check and was accepted as valid
 
 Release 5.0.9
 """""""""""""
