@@ -840,9 +840,12 @@ def is_float(value, min=None, max=None):
             value = float(value)
         except ValueError:
             raise VdtTypeError(value)
-    if (min_val is not None) and (value < min_val):
+    # Phrased as "must satisfy the bound" rather than "must not violate it",
+    # so that a NaN -- for which every comparison is False -- fails a declared
+    # bound instead of slipping past both checks.
+    if (min_val is not None) and not (value >= min_val):
         raise VdtValueTooSmallError(value)
-    if (max_val is not None) and (value > max_val):
+    if (max_val is not None) and not (value <= max_val):
         raise VdtValueTooBigError(value)
     return value
 
