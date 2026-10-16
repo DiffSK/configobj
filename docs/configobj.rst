@@ -2017,7 +2017,7 @@ For ``ConfigParser``-style interpolation, you specify a value to be
 substituted by including ``%(name)s`` in the value.
 
 For ``Template``-style interpolation, you specify a value to be substituted
-by including ``${cl}name{cr}`` in the value. Alternately, if 'name' is a valid
+by including ``${name}`` in the value. Alternately, if 'name' is a valid
 Python identifier (i.e., is composed of nothing but alphanumeric characters,
 plus the underscore character), then the braces are optional and the value
 can be written as ``$name``.
