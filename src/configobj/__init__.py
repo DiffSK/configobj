@@ -30,8 +30,8 @@ compiler = None
 # encoding attribute to.
 BOMS = {
     BOM_UTF8: ('utf_8', None),
-    BOM_UTF16_BE: ('utf16_be', 'utf_16'),
-    BOM_UTF16_LE: ('utf16_le', 'utf_16'),
+    BOM_UTF16_BE: ('utf_16', 'utf_16'),
+    BOM_UTF16_LE: ('utf_16', 'utf_16'),
     BOM_UTF16: ('utf_16', 'utf_16'),
     }
 # All legal variants of the BOM codecs.
@@ -1230,7 +1230,7 @@ class ConfigObj(Section):
             self.filename = infile
             if os.path.isfile(infile):
                 with open(infile, 'rb') as h:
-                    content = h.readlines() or []
+                    content = h.read()
             elif self.file_error:
                 # raise an error if the file doesn't exist
                 raise IOError('Config file not found: "%s".' % self.filename)
@@ -1247,7 +1247,7 @@ class ConfigObj(Section):
             self.filename = str(infile)
             if infile.is_file():
                 with infile.open('rb') as h:
-                    content = h.readlines() or []
+                    content = h.read()
             elif self.file_error:
                 raise IOError('Config file not found: "%s".' % self.filename)
             else:
