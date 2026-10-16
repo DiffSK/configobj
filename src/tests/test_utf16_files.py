@@ -27,6 +27,21 @@ class UTF16Files(unittest.TestCase):
                             config = ConfigObj(source, encoding=explicit)
                             self.assertEqual(config.dict(), expected)
 
+    def test_other_file_encodings(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'config.ini'
+            for encoding in ('utf-8', 'utf-8-sig', 'latin-1'):
+                for newline in ('\n', '\r\n'):
+                    with self.subTest(encoding=encoding, newline=newline):
+                        text = newline.join(('name = café', 'value = crème', ''))
+                        path.write_bytes(text.encode(encoding))
+                        config = ConfigObj(path, encoding=encoding)
+                        self.assertEqual(config['name'], 'café')
+                        self.assertEqual(config['value'], 'crème')
+                        self.assertEqual(config.newlines, newline)
+            path.write_bytes(b'')
+            self.assertEqual(ConfigObj(path).dict(), {})
+
     def test_written_utf16_file_roundtrip(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / 'roundtrip.ini'
