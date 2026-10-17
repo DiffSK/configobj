@@ -6,6 +6,8 @@ Unreleased
 
 * raise ``InterpolationError`` instead of leaking a raw ``TypeError`` when a
   value interpolates a reference to an option whose value is a list
+* ``copy.copy()``, ``copy.deepcopy()``, pickling and ``Section.copy()`` no
+  longer interpolate values, so copies keep their raw values again (#188)
 
 Release 5.0.9
 """""""""""""
