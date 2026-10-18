@@ -2127,7 +2127,8 @@ class ConfigObj(Section):
             if copy:
                 section.initial_comment = section.configspec.initial_comment
                 section.final_comment = section.configspec.final_comment
-                section.encoding = section.configspec.encoding
+                if section.configspec.encoding is not None:
+                    section.encoding = section.configspec.encoding
                 section.BOM = section.configspec.BOM
                 section.newlines = section.configspec.newlines
                 section.indent_type = section.configspec.indent_type

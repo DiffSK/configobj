@@ -621,6 +621,41 @@ class TestWritingConfigs:
             'key1 = 3.0'
         ]
 
+    @pytest.mark.parametrize('encoding', ['utf-8', 'latin-1'])
+    def test_validate_copy_preserves_encoding(self, val, encoding):
+        cfg = ConfigObj(configspec=['value = string(default="café")'],
+                        encoding=encoding)
+        assert cfg.configspec.encoding is None
+        assert cfg.validate(val, copy=True) is True
+        output = io.BytesIO()
+        cfg.write(output)
+        assert output.getvalue() == ('value = café' + os.linesep).encode(encoding)
+        assert cfg.encoding == encoding
+        assert cfg.configspec.encoding is None
+
+    @pytest.mark.parametrize('encoding', [None, 'utf-8', 'latin-1'])
+    @pytest.mark.parametrize('spec_encoding', ['utf-8', 'latin-1'])
+    def test_validate_copy_uses_spec_encoding(self, val, encoding, spec_encoding):
+        spec = ConfigObj(['value = string(default="café")'],
+                         encoding=spec_encoding, _inspec=True)
+        cfg = ConfigObj(configspec=spec, encoding=encoding)
+        assert cfg.validate(val, copy=True) is True
+        output = io.BytesIO()
+        cfg.write(output)
+        assert output.getvalue() == ('value = café' + os.linesep).encode(spec_encoding)
+        assert cfg.encoding == spec_encoding
+
+    @pytest.mark.parametrize('encoding', ['utf-8', 'latin-1'])
+    @pytest.mark.parametrize('spec_encoding', [None, 'utf-8', 'latin-1'])
+    def test_validate_without_copy_preserves_encoding(self, val, encoding, spec_encoding):
+        spec = ConfigObj(['value = string'], encoding=spec_encoding, _inspec=True)
+        cfg = ConfigObj(['value = café'], configspec=spec, encoding=encoding)
+        assert cfg.validate(val, copy=False) is True
+        output = io.BytesIO()
+        cfg.write(output)
+        assert output.getvalue() == ('value = café' + os.linesep).encode(encoding)
+        assert cfg.encoding == encoding
+
     def test_writing_empty_values(self):
         config_with_empty_values = [
             '',
