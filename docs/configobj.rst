@@ -492,15 +492,27 @@ write
 
 .. code-block:: python
 
-    write(file_object=None)
+    write(outfile=None)
 
 This method writes the current ConfigObj and takes a single, optional argument
 [#]_.
 
-If you pass in a file like object to the ``write`` method, the config file will
-be written to this. (The only method of this object that is used is its
-``write`` method, so a ``StringIO`` instance, or any other file like object
-will work.)
+If you pass a file-like object as ``outfile``, the configuration will be
+written to it. Its ``write`` method must accept bytes, so use a file opened
+in binary mode (``'wb'``) or an ``io.BytesIO`` instance, rather than a text
+stream such as ``io.StringIO``. ConfigObj handles encoding, newlines and any
+byte order mark before writing the bytes to the stream.
+
+For example, to write a separate copy without changing ``config.filename``:
+
+.. code-block:: python
+
+    from configobj import ConfigObj
+
+    config = ConfigObj({'title': u'caf\u00e9'}, encoding='utf-8')
+    config.filename = 'original.ini'
+    with open('snapshot.ini', 'wb') as output:
+        config.write(outfile=output)
 
 Otherwise, the behaviour of this method depends on the ``filename`` attribute
 of the ConfigObj.
