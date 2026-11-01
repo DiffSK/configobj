@@ -8,6 +8,9 @@ Unreleased
   value interpolates a reference to an option whose value is a list
 * ``copy.copy()``, ``copy.deepcopy()``, pickling and ``Section.copy()`` no
   longer interpolate values, so copies keep their raw values again (#188)
+* reject ``NaN`` against a declared ``float`` bound; every comparison against
+  ``NaN`` is False, so it previously satisfied neither the ``min`` nor the
+  ``max`` check and was accepted as valid
 
 Release 5.0.9
 """""""""""""

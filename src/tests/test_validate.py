@@ -1,6 +1,8 @@
+import math
+
 from configobj import ConfigObj
 import pytest
-from configobj.validate import VdtValueTooSmallError
+from configobj.validate import VdtValueTooBigError, VdtValueTooSmallError
 
 
 class TestImporting:
@@ -173,3 +175,23 @@ class TestBasic:
                     'test3': 3,
                     'test4': 6.0
         }}}
+
+
+class TestFloatBounds:
+    """A declared bound must reject NaN, for which every comparison is False."""
+
+    def test_nan_fails_min(self, val):
+        with pytest.raises(VdtValueTooSmallError):
+            val.check('float(0, 10)', 'nan')
+
+    def test_nan_fails_max_only(self, val):
+        with pytest.raises(VdtValueTooBigError):
+            val.check('float(max=10)', 'nan')
+
+    def test_bounded_floats_still_pass(self, val):
+        assert val.check('float(0, 10)', '5.0') == 5.0
+        assert val.check('float(0, 10)', '0') == 0.0
+        assert val.check('float(0, 10)', '10') == 10.0
+
+    def test_unbounded_float_is_unchanged(self, val):
+        assert math.isnan(val.check('float', 'nan'))
