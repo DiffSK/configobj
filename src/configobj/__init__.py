@@ -532,6 +532,9 @@ class Section(dict):
         
         ``unrepr`` must be set when setting a value to a dictionary, without
         creating a new sub-section.
+
+        Custom overrides used to merge dictionary-valued scalars must accept
+        the ``unrepr`` keyword and forward it to the superclass.
         """
         if not isinstance(key, str):
             raise ValueError('The key "%s" is not a string.' % key)
@@ -755,10 +758,12 @@ class Section(dict):
         ConfigObj({'section1': {'option1': 'False', 'subsection': {'more_options': 'False'}}})
         """
         for key, val in list(indict.items()):
-            if (key in self and isinstance(self[key], dict) and
+            if (key in self and isinstance(self[key], Section) and
                                 isinstance(val, dict)):
                 self[key].merge(val)
-            else:   
+            elif isinstance(val, dict) and isinstance(indict, Section) and key in indict.scalars:
+                self.__setitem__(key, val, unrepr=True)
+            else:
                 self[key] = val
 
 

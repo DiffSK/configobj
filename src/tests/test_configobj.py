@@ -743,6 +743,84 @@ def test_error_types():
 
 
 class TestSectionBehavior:
+    @pytest.mark.parametrize('nested', [False, True])
+    @pytest.mark.parametrize('original', [None, '{}', "{'old': 1}", "{'nested': {'old': 1}}"])
+    def test_merging_dictionary_scalars(self, nested, original):
+        prefix = ['[settings]'] if nested else []
+        target_lines = prefix + ["keep = 'target'"]
+        if original is not None:
+            target_lines.append('data = ' + original)
+        target = ConfigObj(target_lines, unrepr=True)
+        source = ConfigObj(prefix + ["data = {'new': 2}"], unrepr=True)
+        source_before = copy.deepcopy(source.dict())
+
+        target.merge(source)
+
+        section = target['settings'] if nested else target
+        assert type(section['data']) is dict
+        assert section['data'] == {'new': 2}
+        assert section['keep'] == 'target'
+        assert 'data' in section.scalars
+        assert 'data' not in section.sections
+        assert ConfigObj(target.write(), unrepr=True).dict() == target.dict()
+        assert source.dict() == source_before
+
+    def test_merging_plain_dictionary_sections(self):
+        target = ConfigObj(['[settings]', 'keep = target', 'change = old'])
+
+        target.merge({'settings': {'change': 'new'}, 'added': {'value': 'new'}})
+
+        assert target.dict() == {
+            'settings': {'keep': 'target', 'change': 'new'},
+            'added': {'value': 'new'},
+        }
+        assert ConfigObj(target.write()).dict() == target.dict()
+
+    def test_merging_strings_with_a_two_argument_custom_setitem(self):
+        class CustomConfigObj(ConfigObj):
+            def __setitem__(self, key, value):
+                super().__setitem__(key, value)
+
+        target = CustomConfigObj({'value': 'old'})
+        target.merge({'value': 'new'})
+        assert target['value'] == 'new'
+
+    def test_merging_dictionary_scalar_with_non_string_keys(self):
+        target = ConfigObj(["data = {}"], unrepr=True)
+        source = ConfigObj(["data = {1: {'nested': 2}}"], unrepr=True)
+
+        target.merge(source)
+
+        assert type(target['data']) is dict
+        assert target['data'] == {1: {'nested': 2}}
+        assert target.scalars == ['data']
+        assert not target.sections
+        assert ConfigObj(target.write(), unrepr=True).dict() == target.dict()
+
+    def test_merging_dictionary_scalars_uses_custom_validation(self):
+        calls = []
+
+        class ValidatingConfigObj(ConfigObj):
+            def __setitem__(self, key, value, unrepr=False):
+                calls.append((key, unrepr))
+                if key == 'forbidden':
+                    raise ValueError('forbidden key')
+                super().__setitem__(key, value, unrepr=unrepr)
+
+        target = ValidatingConfigObj(unrepr=True)
+        target.merge(ConfigObj(["data = {'new': 2}"], unrepr=True))
+
+        assert calls == [('data', True)]
+        assert type(target['data']) is dict
+        assert target['data'] == {'new': 2}
+        assert target.scalars == ['data']
+        assert not target.sections
+        before = copy.deepcopy(target.dict())
+        with pytest.raises(ValueError, match='forbidden key'):
+            target.merge(ConfigObj(["forbidden = {'bad': 1}"], unrepr=True))
+        assert target.dict() == before
+        assert 'forbidden' not in target
+
     def test_dictionary_representation(self, a):
 
         n = a.dict()
