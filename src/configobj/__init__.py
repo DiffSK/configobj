@@ -536,6 +536,8 @@ class Section(dict):
         if not isinstance(key, str):
             raise ValueError('The key "%s" is not a string.' % key)
         
+        had_key = key in self
+        was_section = had_key and isinstance(dict.__getitem__(self, key), Section)
         # add the comment
         if key not in self.comments:
             self.comments[key] = []
@@ -576,6 +578,12 @@ class Section(dict):
                 else:
                     raise TypeError('Value is not a string "%s".' % value)
             dict.__setitem__(self, key, value)
+
+        is_section = isinstance(dict.__getitem__(self, key), Section)
+        if had_key and was_section != is_section:
+            old_order, new_order = (self.sections, self.scalars) if was_section else (self.scalars, self.sections)
+            old_order.remove(key)
+            new_order.append(key)
 
 
     def __delitem__(self, key):
