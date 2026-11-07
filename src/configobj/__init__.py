@@ -1864,8 +1864,17 @@ class ConfigObj(Section):
             mat = self._nolistvalue.match(value)
             if mat is None:
                 raise SyntaxError()
-            # NOTE: we don't unquote here
-            return mat.groups()
+            val, comment = mat.groups()
+            # ``list_values=True`` unquotes values, so an empty value written
+            # by configobj (which becomes ``""``) is read back as ``''``.
+            # For consistency, do the same here only for the empty-value
+            # case, so that an empty string round-trips instead of being
+            # read back as the literal string ``'""'`` - see issue #242.
+            # Non-empty quoted values intentionally keep their quotes
+            # (raw mode), as before.
+            if val in ('""', "''"):
+                val = ''
+            return (val, comment)
         #
         mat = self._valueexp.match(value)
         if mat is None:

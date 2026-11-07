@@ -417,6 +417,32 @@ def test_behavior_when_list_values_is_false():
     ]
 
 
+def test_empty_value_roundtrip_with_list_values_false():
+    # An empty string is written as ``""``. With ``list_values=False`` it used
+    # to be read back as the literal string ``'""'`` instead of ``''``
+    # (see issue #242). It must round-trip to an empty string, and
+    # non-empty quoted values must keep their quotes (raw mode).
+    cfg = ConfigObj(list_values=False)
+    cfg['key'] = ''
+    written = cfg.write()
+    assert written == ['key = ""']
+
+    reread = ConfigObj(written, list_values=False)
+    assert reread['key'] == ''
+
+    # Explicitly written empty quotes must also parse to empty.
+    explicit = ConfigObj(['key = ""'], list_values=False)
+    assert explicit['key'] == ''
+
+    # Non-empty quoted values are preserved verbatim (unchanged behaviour).
+    raw = ConfigObj(['key = "double quotes"'], list_values=False)
+    assert raw['key'] == '"double quotes"'
+
+    # The default (list_values=True) already handled this correctly.
+    default = ConfigObj(['key = ""'])
+    assert default['key'] == ''
+
+
 def test_flatten_errors(val, cfg_contents):
     config = cfg_contents("""
        test1=40

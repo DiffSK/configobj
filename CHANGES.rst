@@ -1,6 +1,12 @@
 Changelog
 ---------
 
+Release 5.0.10
+"""""""""""""
+
+* fix empty values written as ``""`` being read back as the literal string
+  ``'""'`` when parsing with ``list_values=False`` (issue #242)
+
 Release 5.0.9
 """""""""""""
 
