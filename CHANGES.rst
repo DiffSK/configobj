@@ -4,6 +4,8 @@ Changelog
 Unreleased
 """"""""""
 
+* merging configurations with dictionary-valued scalars no longer calls
+  ``merge()`` on a plain dictionary or converts new scalar values to sections (#162)
 * raise ``InterpolationError`` instead of leaking a raw ``TypeError`` when a
   value interpolates a reference to an option whose value is a list
 * ``copy.copy()``, ``copy.deepcopy()``, pickling and ``Section.copy()`` no
