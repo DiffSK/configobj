@@ -105,6 +105,71 @@ def test_order_preserved():
     assert c['section']['section'] is not c2['section']['section']
 
 
+def test_scalar_replaced_with_section():
+    c = ConfigObj({'before': 'first', 'value': 'old', 'after': 'last'})
+    c.comments['value'] = ['# keep this comment']
+    c.inline_comments['value'] = '# inline'
+    c['value'] = {'child': 'new'}
+    assert c.scalars == ['before', 'after']
+    assert c.sections == ['value']
+    assert c.comments['value'] == ['# keep this comment']
+    assert c.inline_comments['value'] == '# inline'
+    assert ConfigObj(c.write()).dict() == c.dict()
+    c.pop('value')
+    assert c.keys() == ['before', 'after']
+
+
+def test_section_replaced_with_scalar():
+    c = ConfigObj({'before': 'first', 'value': {'child': 'old'}, 'after': 'last'})
+    c['value'] = 'new'
+    assert c.scalars == ['before', 'after', 'value']
+    assert c.sections == []
+    assert ConfigObj(c.write()).dict() == c.dict()
+
+
+def test_nested_scalar_replaced_with_section():
+    c = ConfigObj({'outer': {'before': 'first', 'value': 'old', 'after': 'last'}})
+    outer = c['outer']
+    outer['value'] = co.Section(outer, outer.depth + 1, c, {'child': 'new'}, name='value')
+    assert outer.scalars == ['before', 'after']
+    assert outer.sections == ['value']
+    assert ConfigObj(c.write()).dict() == c.dict()
+
+
+def test_same_kind_replacement_preserves_order():
+    c = ConfigObj({'a': 'one', 'b': 'two', 'c': 'three'}, stringify=False)
+    c['b'] = 'new'
+    assert c.scalars == ['a', 'b', 'c']
+    c['section'] = {'child': 'old'}
+    c['other'] = {}
+    c['section'] = {'child': 'new'}
+    assert c.sections == ['section', 'other']
+    with pytest.raises(TypeError):
+        c['section'] = 42
+    assert c.sections == ['section', 'other']
+    assert 'section' not in c.scalars
+    assert c['section']['child'] == 'new'
+
+
+def test_unrepr_dictionary_replaces_section_as_scalar():
+    c = ConfigObj(unrepr=True)
+    c['value'] = {'child': 'section'}
+    c.__setitem__('value', {'child': 'literal'}, unrepr=True)
+    assert c.scalars == ['value']
+    assert c.sections == []
+    assert not isinstance(c['value'], co.Section)
+    assert ConfigObj(c.write(), unrepr=True).dict() == c.dict()
+
+
+def test_invalid_section_contents_preserve_scalar_order():
+    c = ConfigObj({'before': 'first', 'value': 'old', 'after': 'last'}, stringify=False)
+    with pytest.raises(TypeError):
+        c['value'] = {'child': 42}
+    assert c.scalars == ['before', 'value', 'after']
+    assert c.sections == []
+    assert c['value'] == 'old'
+
+
 def test_options_deprecation():
     with catch_warnings(record=True) as log:
         ConfigObj(options={})
