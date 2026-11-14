@@ -577,6 +577,12 @@ class Section(dict):
                     raise TypeError('Value is not a string "%s".' % value)
             dict.__setitem__(self, key, value)
 
+        was_section = key in self.sections
+        is_section = isinstance(dict.__getitem__(self, key), Section)
+        if was_section != is_section:
+            (self.sections if was_section else self.scalars).remove(key)
+            (self.scalars if was_section else self.sections).append(key)
+
 
     def __delitem__(self, key):
         """Remove items from the sequence when deleting."""
