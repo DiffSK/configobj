@@ -1124,6 +1124,21 @@ class TestQuotes:
     """
     tests what happens whn dealing with quotes
     """
+    @pytest.mark.parametrize('list_values', [True, False])
+    @pytest.mark.parametrize('value', [
+        '\'"""hello""" # world',
+        '"\'\'\'hello\'\'\' # world',
+        'before\n"""after',
+        "before\n'''after",
+        '"""quoted"""\n',
+        "'''quoted'''\n",
+    ])
+    def test_triple_quoted_values_round_trip(self, value, list_values):
+        config = ConfigObj(list_values=list_values)
+        config['value'] = value
+        restored = ConfigObj(io.StringIO('\n'.join(config.write())), list_values=list_values)
+        assert restored['value'] == value
+
     def assert_bad_quote_message(self, empty_cfg, to_quote, **kwargs):
         #TODO: this should be use repr instead of str
         message = 'Value "{0}" cannot be safely quoted.'
