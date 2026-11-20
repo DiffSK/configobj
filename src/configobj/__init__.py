@@ -139,7 +139,15 @@ def unrepr(s):
     
     # this is supposed to be safe
     import ast
-    return ast.literal_eval(s)
+
+    class NonFiniteLiterals(ast.NodeTransformer):
+        def visit_Name(self, node):
+            if node.id in ('nan', 'inf'):
+                return ast.copy_location(ast.Constant(value=float(node.id)), node)
+            return node
+
+    tree = ast.parse(s.lstrip(' \t'), mode='eval')
+    return ast.literal_eval(NonFiniteLiterals().visit(tree))
 
 
 class ConfigObjError(SyntaxError):

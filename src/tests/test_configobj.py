@@ -8,10 +8,39 @@ from tempfile import NamedTemporaryFile
 
 import pytest
 import io
+import math
 
 import configobj as co
 from configobj import ConfigObj, flatten_errors, ReloadError, DuplicateError, MissingInterpolationOption, InterpolationLoopError, ConfigObjError
 from configobj.validate import Validator, VdtValueTooSmallError
+
+
+@pytest.mark.parametrize('value', [float('nan'), float('inf'), -float('inf')])
+def test_unrepr_nonfinite_float_round_trip(value):
+    config = ConfigObj({'value': value}, unrepr=True)
+    restored = ConfigObj(config.write(), unrepr=True)['value']
+    if math.isnan(value):
+        assert math.isnan(restored)
+    else:
+        assert restored == value
+
+
+def test_unrepr_nested_nonfinite_floats():
+    value = co.unrepr("[nan, inf, -inf, {'text': 'nan', 'finite': 1.5}]")
+    assert math.isnan(value[0])
+    assert value[1:] == [float('inf'), -float('inf'), {'text': 'nan', 'finite': 1.5}]
+
+
+def test_unrepr_leading_whitespace():
+    assert co.unrepr(' \t1.5') == 1.5
+    assert co.unrepr(' \t+inf') == float('inf')
+    assert math.isnan(co.unrepr('-nan'))
+
+
+@pytest.mark.parametrize('expression', ['unknown', 'math.inf', "float('nan')", 'nan()', 'nan * 2'])
+def test_unrepr_rejects_nonliteral_expressions(expression):
+    with pytest.raises(ValueError):
+        co.unrepr(expression)
 
 
 def cfg_lines(config_string_representation):
