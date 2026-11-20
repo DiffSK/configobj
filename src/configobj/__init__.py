@@ -1794,7 +1794,7 @@ class ConfigObj(Section):
     def _get_triple_quote(self, value):
         if (value.find('"""') != -1) and (value.find("'''") != -1):
             raise ConfigObjError('Value "%s" cannot be safely quoted.' % value)
-        if value.find('"""') == -1:
+        if value.find("'''") == -1:
             quot = tdquot
         else:
             quot = tsquot 
