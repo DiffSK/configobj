@@ -30,8 +30,8 @@ compiler = None
 # encoding attribute to.
 BOMS = {
     BOM_UTF8: ('utf_8', None),
-    BOM_UTF16_BE: ('utf16_be', 'utf_16'),
-    BOM_UTF16_LE: ('utf16_le', 'utf_16'),
+    BOM_UTF16_BE: ('utf_16', 'utf_16'),
+    BOM_UTF16_LE: ('utf_16', 'utf_16'),
     BOM_UTF16: ('utf_16', 'utf_16'),
     }
 # All legal variants of the BOM codecs.
@@ -63,6 +63,14 @@ BOM_SET = {
     'utf16_le': BOM_UTF16_LE,
     None: BOM_UTF8
     }
+
+
+def _split_config_lines(text):
+    """Split at physical line endings, not other Unicode separators."""
+    lines = re.split(r'(?<=\x0a)|(?<=\x0d)(?!\x0a)', text)
+    if lines[-1] == '':
+        lines.pop()
+    return lines
 
 
 def match_utf8(encoding):
@@ -1230,7 +1238,7 @@ class ConfigObj(Section):
             self.filename = infile
             if os.path.isfile(infile):
                 with open(infile, 'rb') as h:
-                    content = h.readlines() or []
+                    content = h.read()
             elif self.file_error:
                 # raise an error if the file doesn't exist
                 raise IOError('Config file not found: "%s".' % self.filename)
@@ -1247,7 +1255,7 @@ class ConfigObj(Section):
             self.filename = str(infile)
             if infile.is_file():
                 with infile.open('rb') as h:
-                    content = h.readlines() or []
+                    content = h.read()
             elif self.file_error:
                 raise IOError('Config file not found: "%s".' % self.filename)
             else:
@@ -1474,9 +1482,9 @@ class ConfigObj(Section):
                         infile = newline
                     # UTF-8
                     if isinstance(infile, str):
-                        return infile.splitlines(True)
+                        return _split_config_lines(infile)
                     elif isinstance(infile, bytes):
-                        return infile.decode('utf-8').splitlines(True)
+                        return _split_config_lines(infile.decode('utf-8'))
                     else:
                         return self._decode(infile, 'utf-8')
                 # UTF16 - have to decode
@@ -1485,7 +1493,7 @@ class ConfigObj(Section):
 
         # No BOM discovered and no encoding specified, default to UTF-8
         if isinstance(infile, bytes):
-            return infile.decode('utf-8').splitlines(True)
+            return _split_config_lines(infile.decode('utf-8'))
         else:
             return self._decode(infile, 'utf-8')
 
@@ -1505,11 +1513,11 @@ class ConfigObj(Section):
         if is a string, it also needs converting to a list.
         """
         if isinstance(infile, str):
-            return infile.splitlines(True)
+            return _split_config_lines(infile)
         if isinstance(infile, bytes):
             # NOTE: Could raise a ``UnicodeDecodeError``
             if encoding:
-                return infile.decode(encoding).splitlines(True)
+                return _split_config_lines(infile.decode(encoding))
             else:
                 return infile.splitlines(True)
 
