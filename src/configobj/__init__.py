@@ -781,6 +781,7 @@ class Section(dict):
     def merge(self, indict):
         """
         A recursive update - useful for merging config files.
+        Entries added from another Section retain their comments.
         
         >>> a = '''[section1]
         ...     option1 = True
@@ -798,11 +799,14 @@ class Section(dict):
         ConfigObj({'section1': {'option1': 'False', 'subsection': {'more_options': 'False'}}})
         """
         for key, val in list(indict.items()):
-            if (key in self and isinstance(self[key], dict) and
-                                isinstance(val, dict)):
+            is_new = key not in self
+            if not is_new and isinstance(self[key], dict) and isinstance(val, dict):
                 self[key].merge(val)
-            else:   
+            else:
                 self[key] = val
+                if is_new and isinstance(indict, Section):
+                    self.comments[key] = list(indict.comments[key])
+                    self.inline_comments[key] = indict.inline_comments[key]
 
 
     def rename(self, oldkey, newkey):
