@@ -736,6 +736,41 @@ If the ConfigObj does not have a filename attribute pointing to a file, then a `
 will be raised.
 
 
+Reloading validated values
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+``reload()`` reloads the input and configspec, but does not run validation.
+Call ``validate()`` again before using values that depend on type conversion,
+defaults, or checks such as ``force_list()``. A scalar input becomes a list
+only when the validator is applied:
+
+.. code:: python
+
+    from pathlib import Path
+    from tempfile import TemporaryDirectory
+    from configobj import ConfigObj
+    from validate import Validator
+
+    with TemporaryDirectory() as directory:
+        filename = Path(directory) / 'settings.ini'
+        filename.write_text('items = hello\n', encoding='utf-8')
+        config = ConfigObj(str(filename), configspec=['items = force_list()'])
+        validator = Validator()
+
+        assert config.validate(validator) is True
+        assert config['items'] == ['hello']
+
+        config.reload()
+        assert config['items'] == 'hello'
+
+        assert config.validate(validator) is True
+        assert config['items'] == ['hello']
+
+Check the validation result after each reload; it can report invalid values if
+the file changed. Reusing a configspec does not mean that its conversions have
+already been applied.
+
+
 reset
 ~~~~~
 
