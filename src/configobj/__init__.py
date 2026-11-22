@@ -1984,7 +1984,7 @@ class ConfigObj(Section):
                 section[entry].configspec = configspec[entry]
                         
 
-    def _write_line(self, indent_string, entry, this_entry, comment):
+    def _write_line(self, indent_string, entry, this_entry, comment, *, spaces=True):
         """Write an individual line, for the write method"""
         # NOTE: the calls to self._quote here handles non-StringType values.
         if not self.unrepr:
@@ -1993,7 +1993,7 @@ class ConfigObj(Section):
             val = repr(this_entry)
         return '%s%s%s%s%s' % (indent_string,
                                self._decode_element(self._quote(entry, multiline=False)),
-                               self._a_to_u(' = '),
+                               self._a_to_u(' = ' if spaces else '='),
                                val,
                                self._decode_element(comment))
 
@@ -2021,9 +2021,12 @@ class ConfigObj(Section):
 
     # Public methods
 
-    def write(self, outfile=None, section=None):
+    def write(self, outfile=None, section=None, *, spaces=True):
         """
         Write the current ConfigObj as a file
+
+        Set spaces=False to omit spaces around assignment delimiters at every
+        section depth. Whitespace within values and comments is unchanged.
         
         tekNico: FIXME: use StringIO instead of real files
         
@@ -2074,13 +2077,14 @@ class ConfigObj(Section):
                     this_entry.depth,
                     entry,
                     comment))
-                out.extend(self.write(section=this_entry))
+                out.extend(self.write(section=this_entry, spaces=spaces))
             else:
                 out.append(self._write_line(
                     indent_string,
                     entry,
                     this_entry,
-                    comment))
+                    comment,
+                    spaces=spaces))
                 
         if section is self:
             for line in self.final_comment:

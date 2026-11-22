@@ -1,6 +1,12 @@
 Changelog
 ---------
 
+Unreleased
+""""""""""
+
+* Add ``write(spaces=False)`` to omit spaces around assignment delimiters,
+  including in nested sections (#159).
+
 Release 5.0.9
 """""""""""""
 

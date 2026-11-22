@@ -495,9 +495,9 @@ write
 
 .. code-block:: python
 
-    write(file_object=None)
+    write(outfile=None, *, spaces=True)
 
-This method writes the current ConfigObj and takes a single, optional argument
+This method writes the current ConfigObj and takes an optional output argument
 [#]_.
 
 If you pass in a file like object to the ``write`` method, the config file will
@@ -517,6 +517,20 @@ of the ConfigObj.
 First the 'initial_comment' is written, then the config file, followed by the
 'final_comment'. Comment lines and inline comments are written with each
 key/value.
+
+Pass ``spaces=False`` to write ``key=value`` instead of the default
+``key = value``. This applies to assignments in all nested sections, for both
+file output and returned lines. It does not remove spaces inside values,
+lists or comments, and does not change the default for subsequent calls.
+
+.. code-block:: python
+
+    >>> from configobj import ConfigObj
+    >>> config = ConfigObj({'name': 'a = b'})
+    >>> config.write(spaces=False)
+    ['name=a = b']
+    >>> config.write()
+    ['name = a = b']
 
 
 validate
