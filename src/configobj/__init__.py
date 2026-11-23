@@ -2136,7 +2136,7 @@ class ConfigObj(Section):
                 h.write(output_bytes)
 
     def validate(self, validator, preserve_errors=False, copy=False,
-                 section=None):
+                 section=None, validate_section_names=False):
         """
         Test the ConfigObj against a configspec.
         
@@ -2170,6 +2170,12 @@ class ConfigObj(Section):
         You can then use the ``flatten_errors`` function to turn your nested
         results dictionary into a flattened list of failures - useful for
         displaying meaningful error messages.
+
+        With ``validate_section_names=True``, a scalar ``__name__`` check in a
+        section's configspec validates its name without converting or renaming
+        the key. Name failures use ``__name__`` in the result dictionary. The
+        option is off by default so existing fields named ``__name__`` retain
+        their normal meaning.
         """
         if section is None:
             if self.configspec is None:
@@ -2244,13 +2250,31 @@ class ConfigObj(Section):
         out = {}
         ret_true = True
         ret_false = True
+
+        name_check = validate_section_names and '__name__' in configspec.scalars
+        if name_check:
+            if section is self:
+                raise ValueError('A __name__ check requires a named section, not the config root.')
+            try:
+                validator.check(configspec['__name__'], section.name, missing=False)
+            except validator.baseErrorClass as error:
+                ret_true = False
+                if preserve_errors:
+                    out['__name__'] = error
+                    ret_false = False
+                else:
+                    out['__name__'] = False
+            else:
+                out['__name__'] = True
+                ret_false = False
         
         unvalidated = [k for k in section.scalars if k not in configspec]
         incorrect_sections = [k for k in configspec.sections if k in section.scalars]        
-        incorrect_scalars = [k for k in configspec.scalars if k in section.sections]
+        incorrect_scalars = [k for k in configspec.scalars if k in section.sections
+                             and not (name_check and k == '__name__')]
         
         for entry in configspec.scalars:
-            if entry in ('__many__', '___many___'):
+            if entry in ('__many__', '___many___') or (name_check and entry == '__name__'):
                 # reserved names
                 continue
             if (not entry in section.scalars) or (entry in section.defaults):
@@ -2314,7 +2338,8 @@ class ConfigObj(Section):
             if copy:
                 section.comments[entry] = configspec.comments.get(entry, [])
                 section.inline_comments[entry] = configspec.inline_comments.get(entry, '')
-            check = self.validate(validator, preserve_errors=preserve_errors, copy=copy, section=section[entry])
+            check = self.validate(validator, preserve_errors=preserve_errors, copy=copy,
+                                  section=section[entry], validate_section_names=validate_section_names)
             out[entry] = check
             if check == False:
                 ret_true = False

@@ -1,6 +1,11 @@
 Changelog
 ---------
 
+Unreleased
+""""""""""
+
+* Support opt-in section-name validation through ``__name__`` configspec checks.
+
 Release 5.0.9
 """""""""""""
 

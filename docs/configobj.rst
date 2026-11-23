@@ -525,7 +525,8 @@ validate
 
 .. code-block:: python
 
-    validate(validator, preserve_errors=False, copy=False)
+    validate(validator, preserve_errors=False, copy=False,
+             validate_section_names=False)
 
 .. code-block:: python
 
@@ -539,6 +540,35 @@ validate
     test = config.validate(val)
     if test == True:
         print 'Succeeded.'
+
+With ``validate_section_names=True``, the scalar ``__name__`` in a section's
+configspec is a check on that section's name. For example, device names can be
+restricted to integers in a range::
+
+    [devices]
+    [[__many__]]
+    __name__ = integer(100,10000000)
+    label = string
+    count = integer(default=3)
+
+Call ``config.validate(Validator(), validate_section_names=True)`` to enable
+the check. The same check works in an explicitly named section, and normal
+validators, custom validators and ``preserve_errors`` behave as for values.
+Successful conversion is used only to check the name: a section called ``00100``
+keeps that exact string key and is never renamed to the integer ``100``.
+
+Name errors appear under ``__name__`` in validation results. With
+``preserve_errors=True``, ``flatten_errors()`` reports, for example,
+``(['devices', 'bad-name'], '__name__', error)`` alongside any field errors.
+The check does not create a value, default or comment named ``__name__`` and
+does not write metadata into the configuration, including in ``copy=True`` mode.
+A name check at the unnamed configuration root raises ``ValueError``.
+
+The option defaults to ``False`` for compatibility: existing configspec fields
+called ``__name__`` still validate ordinary data. Enabling it reserves that
+scalar in section configspecs for name validation; an existing data field with
+the same spelling is left untouched. A section named ``__name__`` in a
+configspec, rather than a scalar check, remains an ordinary section.
 
 The validate method uses the :validate: module to do the
 validation.
