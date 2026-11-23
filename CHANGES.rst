@@ -1,6 +1,12 @@
 Changelog
 ---------
 
+Unreleased
+""""""""""
+
+* Add opt-in environment overrides for existing and schema-declared scalar
+  values, with configurable prefix, section separator and case conversion.
+
 Release 5.0.9
 """""""""""""
 

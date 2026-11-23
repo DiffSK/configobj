@@ -447,6 +447,63 @@ ConfigObj takes the following arguments (with the default values shown) :
     creating a ConfigObj instance from a configspec file you must pass True
     for this argument as well as ``list_values=False``.
 
+* 'use_env_vars': ``False``
+
+    Opt in to environment overrides when loading the configuration. See
+    `Environment overrides`_ below. Configspecs are never overridden.
+
+* 'env_vars_prefix': ``''``
+
+    Prefix for environment variable names, for example ``MYAPP_``.
+
+* 'env_vars_section_separator': ``'__'``
+
+    Separator between section names and the scalar key.
+
+* 'env_vars_uppercase': ``True``
+
+    Convert the complete environment variable name to uppercase.
+
+
+Environment overrides
+~~~~~~~~~~~~~~~~~~~~~
+
+Applications can opt in without rewriting their existing configuration reads::
+
+    config = ConfigObj('settings.ini', use_env_vars=True,
+                       env_vars_prefix='MYAPP_')
+    port = config['server']['port']  # MYAPP_SERVER__PORT overrides the file
+
+The environment is captured once after parsing and before validation. A value
+in the environment, including an empty string, takes precedence over the file
+and configspec defaults. Only scalar names already present in the configuration
+or declared in its configspec are considered. Environment variables do not
+invent arbitrary keys or section names, and cannot replace a section. Repeated
+sections use their actual names, not the ``__many__`` placeholder.
+
+Each name component replaces characters outside ASCII letters, digits and
+underscores with underscores. Components are joined with the section separator
+and prefixed; unsupported characters in the resulting name are replaced too.
+A leading digit in the complete name is prefixed with an underscore. Finally,
+the name is uppercased unless ``env_vars_uppercase=False``. For example,
+``dotted.key`` maps to ``DOTTED_KEY``, and ``9lives`` to ``_9LIVES``. Different
+keys that normalize to the same name receive the same override. Environment
+lookup follows the platform's case rules (case-insensitive on Windows).
+
+Environment values remain whole strings; commas, hashes and newlines are data,
+not configuration syntax. Interpolation operates on the resulting configuration,
+and ``validate()`` performs the usual type conversion and error reporting. This
+also permits required, schema-declared values to be supplied entirely through
+the environment, including values under a missing named section.
+
+The result is an ordinary, editable ConfigObj: iteration, ``dict()``, and
+``write()`` all see the effective values. **Writing the configuration therefore
+persists environment overrides too.** Later environment changes do not silently
+invalidate validated types. ``reload()`` rereads the file and captures a fresh
+environment using the same options; ``reset()`` restores the default, disabled
+mode. A ``[ConfigObj]`` section in the file does not enable this mode; activation
+is an explicit constructor option.
+
 
 Methods
 -------

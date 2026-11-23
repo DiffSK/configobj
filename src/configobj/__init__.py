@@ -119,6 +119,10 @@ OPTION_DEFAULTS = {
     'default_encoding': None,
     'unrepr': False,
     'write_empty_values': False,
+    'use_env_vars': False,
+    'env_vars_prefix': '',
+    'env_vars_section_separator': '__',
+    'env_vars_uppercase': True,
 }
 
 def getObj(s):
@@ -1171,7 +1175,9 @@ class ConfigObj(Section):
                  interpolation=True, raise_errors=False, list_values=True,
                  create_empty=False, file_error=False, stringify=True,
                  indent_type=None, default_encoding=None, unrepr=False,
-                 write_empty_values=False, _inspec=False):
+                 write_empty_values=False, _inspec=False, use_env_vars=False,
+                 env_vars_prefix='', env_vars_section_separator='__',
+                 env_vars_uppercase=True):
         """
         Parse a config file or create a config file object.
         
@@ -1179,7 +1185,9 @@ class ConfigObj(Section):
                     interpolation=True, raise_errors=False, list_values=True,
                     create_empty=False, file_error=False, stringify=True,
                     indent_type=None, default_encoding=None, unrepr=False,
-                    write_empty_values=False, _inspec=False)``
+                    write_empty_values=False, _inspec=False,
+                    use_env_vars=False, env_vars_prefix='',
+                    env_vars_section_separator='__', env_vars_uppercase=True)``
         """
         self._inspec = _inspec
         # init the superclass
@@ -1193,7 +1201,11 @@ class ConfigObj(Section):
                     'create_empty': create_empty, 'file_error': file_error,
                     'stringify': stringify, 'indent_type': indent_type,
                     'default_encoding': default_encoding, 'unrepr': unrepr,
-                    'write_empty_values': write_empty_values}
+                    'write_empty_values': write_empty_values,
+                    'use_env_vars': use_env_vars,
+                    'env_vars_prefix': env_vars_prefix,
+                    'env_vars_section_separator': env_vars_section_separator,
+                    'env_vars_uppercase': env_vars_uppercase}
 
         if options is None:
             options = _options
@@ -1223,6 +1235,7 @@ class ConfigObj(Section):
         configspec = options['configspec']
         self._original_configspec = configspec
         self._load(infile, configspec)
+        self._apply_environment()
         
         
     def _load(self, infile, configspec):
@@ -1354,6 +1367,10 @@ class ConfigObj(Section):
         self.newlines = None
         self.write_empty_values = options['write_empty_values']
         self.unrepr = options['unrepr']
+        self.use_env_vars = options['use_env_vars']
+        self.env_vars_prefix = options['env_vars_prefix']
+        self.env_vars_section_separator = options['env_vars_section_separator']
+        self.env_vars_uppercase = options['env_vars_uppercase']
         
         self.initial_comment = []
         self.final_comment = []
@@ -1366,6 +1383,13 @@ class ConfigObj(Section):
         Section._initialise(self)
         
         
+    def _apply_environment(self):
+        """Read one environment snapshot after parsing, before validation."""
+        if self.use_env_vars and not self._inspec:
+            from ._environment import apply_environment
+            apply_environment(self)
+
+
     def __repr__(self):
         def _getval(key):
             try:
@@ -2376,6 +2400,7 @@ class ConfigObj(Section):
         self.clear()
         self._initialise(current_options)
         self._load(filename, configspec)
+        self._apply_environment()
         
 
 
