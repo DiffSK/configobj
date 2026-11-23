@@ -2132,8 +2132,8 @@ class ConfigObj(Section):
         if outfile is not None:
             outfile.write(output_bytes)
         else:
-            with open(self.filename, 'wb') as h:
-                h.write(output_bytes)
+            from ._atomic import atomic_write
+            atomic_write(self.filename, output_bytes)
 
     def validate(self, validator, preserve_errors=False, copy=False,
                  section=None):

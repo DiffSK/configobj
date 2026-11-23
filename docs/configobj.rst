@@ -509,7 +509,19 @@ Otherwise, the behaviour of this method depends on the ``filename`` attribute
 of the ConfigObj.
 
 ``filename``
-    ConfigObj will write the configuration to the file specified.
+    ConfigObj writes to a temporary file in the destination directory, flushes
+    and syncs it, and atomically replaces the destination. A failure before
+    replacement leaves the previous file intact and removes the temporary file.
+    On POSIX the directory is also synced after replacement; if that sync fails,
+    the error is raised but the complete new file is already in place.
+
+    This requires write access to the destination directory. Symbolic links are
+    followed and existing permission bits are preserved. New files use the usual
+    creation permissions (``0666`` limited by the process umask). Replacement
+    creates a new file: other hard links still refer to the old contents, and
+    ownership, ACLs and extended attributes are not preserved. Non-regular
+    destinations are rejected. Atomicity and durability depend on the filesystem;
+    concurrent writers are not locked, and the last replacement wins.
 
 ``None``
     ``write`` returns a list of lines. (Not ``'\n'`` terminated)
