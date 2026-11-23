@@ -1080,18 +1080,90 @@ class ConfigObj(Section):
         ''',
         re.VERBOSE)
 
-    _sectionmarker = re.compile(r'''^
-        (\s*)                     # 1: indentation
-        ((?:\[\s*)+)              # 2: section marker open
-        (                         # 3: section name open
-            (?:"\s*\S.*?\s*")|    # at least one non-space with double quotes
-            (?:'\s*\S.*?\s*')|    # at least one non-space with single quotes
-            (?:[^'"\s].*?)        # at least one non-space unquoted
-        )                         # section name close
-        ((?:\s*\])+)              # 4: section marker close
-        \s*(\#.*)?                # 5: optional comment
-        $''',
-        re.VERBOSE)
+    @staticmethod
+    def _parse_section_header(line):
+        """Return header fields without backtracking over whitespace/brackets."""
+        length = len(line)
+        indent_end = 0
+        while indent_end < length and line[indent_end].isspace():
+            indent_end += 1
+        pos = indent_end
+        open_count = 0
+        last_open = pos
+        while pos < length and line[pos] == '[':
+            open_count += 1
+            last_open = pos
+            pos += 1
+            while pos < length and line[pos].isspace():
+                pos += 1
+        if not open_count:
+            return None
+        name_start = pos
+        name_newline = line.find('\n', name_start)
+        last_newline = line.rfind('\n')
+        content_start = name_start + 1
+        while content_start < length and line[content_start].isspace():
+            content_start += 1
+        content_newline = line.find('\n', content_start)
+        first_suffix = None
+        while pos < length:
+            if line[pos] != ']':
+                pos += 1
+                continue
+            close_start = pos
+            second_close = None
+            # Consume each run once, including runs inside the section name.
+            while True:
+                close_end = pos + 1
+                pos = close_end
+                while pos < length and line[pos].isspace():
+                    pos += 1
+                if pos >= length or line[pos] != ']':
+                    break
+                if second_close is None:
+                    second_close = pos
+            if pos < length and line[pos] != '#':
+                continue
+            if pos < length and last_newline >= pos:
+                continue
+            if first_suffix is None:
+                first_suffix = (close_start, close_end, pos)
+            name_end = close_start
+            while name_end > name_start and line[name_end - 1].isspace():
+                name_end -= 1
+            if name_end == name_start and second_close is not None:
+                name_end = close_start + 1
+            if name_end <= name_start:
+                continue
+            if line[name_start] in '\"\'':
+                if line[name_end - 1] != line[name_start]:
+                    continue
+                if content_start >= name_end - 1:
+                    continue
+                content_end = name_end - 1
+                while content_end > content_start and line[content_end - 1].isspace():
+                    content_end -= 1
+                if 0 <= content_newline < content_end:
+                    continue
+            elif 0 <= name_newline < name_end:
+                continue
+            return (line[:indent_end], line[indent_end:name_start],
+                    line[name_start:name_end], line[name_end:close_end],
+                    line[pos:] if pos < length else None)
+        # Preserve the historical greedy-marker fallback: the last '[' can
+        # itself start an unquoted name, for example in '[[ ]'.
+        if open_count > 1 and first_suffix is not None:
+            close_start, close_end, comment_start = first_suffix
+            name_start = last_open
+            name_end = close_start
+            while name_end > name_start and line[name_end - 1].isspace():
+                name_end -= 1
+            if 0 <= line.find('\n', name_start) < name_end:
+                return None
+            return (line[:indent_end], line[indent_end:name_start],
+                    line[name_start:name_end], line[name_end:close_end],
+                    line[comment_start:] if comment_start < length else None)
+        return None
 
     # this regexp pulls list values out as a single string
     # or single values and comments
@@ -1578,10 +1650,10 @@ class ConfigObj(Section):
                 
             reset_comment = True
             # first we check if it's a section marker
-            mat = self._sectionmarker.match(line)
-            if mat is not None:
+            section = self._parse_section_header(line)
+            if section is not None:
                 # is a section line
-                (indent, sect_open, sect_name, sect_close, comment) = mat.groups()
+                (indent, sect_open, sect_name, sect_close, comment) = section
                 if indent and (self.indent_type is None):
                     self.indent_type = indent
                 cur_depth = sect_open.count('[')
@@ -1629,7 +1701,7 @@ class ConfigObj(Section):
             #
             # it's not a section marker,
             # so it should be a valid ``key = value`` line
-            mat = self._keyword.match(line)
+            mat = self._keyword.match(line) if '=' in line else None
             if mat is None:
                 self._handle_error(
                     'Invalid line ({0!r}) (matched as neither section nor keyword)'.format(line),
