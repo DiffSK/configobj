@@ -67,7 +67,7 @@ BOM_SET = {
 
 def _split_config_lines(text):
     """Split at physical line endings, not other Unicode separators."""
-    lines = re.split(r'(?<=\x0a)|(?<=\x0d)(?!\x0a)', text)
+    lines = re.split(r'(?<=\n)|(?<=\r)(?!\n)', text)
     if lines[-1] == '':
         lines.pop()
     return lines
@@ -1519,6 +1519,7 @@ class ConfigObj(Section):
             if encoding:
                 return _split_config_lines(infile.decode(encoding))
             else:
+                # bytes.splitlines only recognizes CR, LF and CRLF.
                 return infile.splitlines(True)
 
         if encoding:
