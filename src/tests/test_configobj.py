@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 import os
 import re
 
-from codecs import BOM_UTF8
+from codecs import BOM_UTF8, BOM_UTF16_BE, BOM_UTF16_LE
 from pathlib import Path
 from warnings import catch_warnings
 from tempfile import NamedTemporaryFile
@@ -224,6 +224,86 @@ class TestEncoding(object):
         cfg = ConfigObj(cfg_file.name, encoding='utf-8')
         assert isinstance(cfg['tags']['bug']['translated'], str)
         cfg.write()
+
+    @pytest.mark.parametrize('encoding', ['utf-16', 'utf-16-le', 'utf-16-be'])
+    def test_bom_utf16_files_are_decoded_before_splitting(self, tmp_path, encoding):
+        # The file has to be decoded before it is split into lines, otherwise
+        # the UTF-16 code units are split down the middle.
+        infile = tmp_path / 'config.ini'
+        text = 'name = café\n[section]\nvalue = crème\n'
+        data = text.encode(encoding)
+        if encoding == 'utf-16-le':
+            data = BOM_UTF16_LE + data
+        elif encoding == 'utf-16-be':
+            data = BOM_UTF16_BE + data
+        infile.write_bytes(data)
+
+        expected = {'name': 'café', 'section': {'value': 'crème'}}
+        assert ConfigObj(str(infile)).dict() == expected
+        assert ConfigObj(infile).dict() == expected
+
+    def test_bom_utf16_files_are_read_as_streams_too(self, tmp_path):
+        infile = tmp_path / 'config.ini'
+        infile.write_bytes('name = café\n'.encode('utf-16'))
+        with infile.open('rb') as handle:
+            assert ConfigObj(handle).dict() == {'name': 'café'}
+
+    @pytest.mark.parametrize('encoding', ['utf-8', 'utf-8-sig', 'latin-1'])
+    @pytest.mark.parametrize('newline', ['\n', '\r\n'])
+    def test_other_encodings_are_split_after_decoding(self, tmp_path, encoding, newline):
+        infile = tmp_path / 'config.ini'
+        infile.write_bytes(
+            newline.join(['name = café', 'value = crème', '']).encode(encoding))
+
+        config = ConfigObj(infile, encoding=encoding)
+        assert config['name'] == 'café'
+        assert config['value'] == 'crème'
+        assert config.newlines == newline
+
+    def test_empty_bom_utf16_file(self, tmp_path):
+        infile = tmp_path / 'config.ini'
+        infile.write_bytes(b'')
+        assert ConfigObj(infile).dict() == {}
+
+    def test_written_utf16_file_roundtrip(self, tmp_path):
+        infile = tmp_path / 'roundtrip.ini'
+        config = ConfigObj({'name': 'café'}, encoding='utf-16')
+        config.filename = str(infile)
+        config.write()
+        assert ConfigObj(infile).dict() == config.dict()
+        assert ConfigObj(infile, encoding='utf-16').dict() == config.dict()
+
+    @pytest.mark.parametrize('encoding', ['utf-8', 'utf-16'])
+    @pytest.mark.parametrize('newline', ['\n', '\r\n'])
+    def test_values_may_contain_non_line_separators(self, tmp_path, encoding, newline):
+        # splitting on str.splitlines() also broke values at \x0c and U+2028,
+        # which are not line endings in a config file.
+        infile = tmp_path / 'config.ini'
+        text = newline.join([
+            'form_feed = left\x0cright',
+            'unicode_separator = north\u2028south',
+            '',
+        ])
+        infile.write_bytes(text.encode(encoding))
+
+        expected = {
+            'form_feed': 'left\x0cright',
+            'unicode_separator': 'north\u2028south',
+        }
+        for source in (str(infile), infile):
+            config = ConfigObj(source)
+            assert config.dict() == expected
+            config = ConfigObj(source, encoding=encoding)
+            assert config.dict() == expected
+
+    @pytest.mark.parametrize('encoding', ['utf-8', 'utf-16'])
+    def test_bare_carriage_return_is_still_a_line_ending(self, tmp_path, encoding):
+        infile = tmp_path / 'config.ini'
+        infile.write_bytes(
+            'a = left\x0cright\rb = value\r'.encode(encoding))
+
+        assert ConfigObj(infile).dict() == {'a': 'left\x0cright', 'b': 'value'}
+
 
 @pytest.fixture
 def testconfig1():
